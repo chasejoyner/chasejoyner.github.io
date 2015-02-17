@@ -1,0 +1,118 @@
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+	$(document).ready(function(){
+		var width = $(window).width();
+		var height = $(window).height();
+		$('html').css('background-size', width + ' ' + height);
+		$("#chasejoyner").hide();
+		$("#mathematics").hide();
+		$("#resume").hide();
+	});
+	$(function(){
+		$('#toggle1').click(function(){
+			$('#chasejoyner').slideToggle();
+			$('#active1').toggleClass('change');
+			return false;
+		});
+		$('#toggle2').click(function(){
+			$('#mathematics').slideToggle();
+			$('#active2').toggleClass('change');
+			return false;
+		});
+		$('#toggle3').click(function(){
+			$('#resume').slideToggle();
+			$('#active3').toggleClass('change');
+			return false;
+		});
+	});
+</script>
+</head>
+<body>
+	<div id="container">
+		<div id="toggle1">
+			Chase Joyner
+			<br />
+			<div id="active1">
+			</div>
+		</div>
+		<div id="chasejoyner">
+			Hello, I am a senior at Clemson University majoring in Mathematical Sciences. 
+			After my May 2014 expected graduation, I plan to attend graduate school at Clemson 
+			University. I will specialize in either Statistics or Mathematical Computation. I enjoy 
+			programming in Python and R. My goal in the future is to work for a company in a 
+			programming or statistical department.	Please look around my website for samples of 
+			school work and sample code that I have written during my free time. Thanks!
+		</div>
+		<div id="toggle2">
+			Mathematics
+			<br />
+			<div id="active2">
+			</div>
+		</div>
+		<div id="mathematics">
+			<a href="Probability Distributions.pdf" target="_blank">Probability Distributions</a><br />
+			<a href="Sums of Distributions.pdf" target="_blank">Sums of Distributions</a><br />
+			<a href="Memoryless Property.pdf" target="_blank">Memoryless Property</a><br />
+			<a href="Bayesian Paper.pdf" target="_blank">Bayesian Paper</a><br />
+		</div>
+		<div id="toggle3">
+			Resume
+			<br />
+			<div id="active3">
+			</div>
+		</div>
+		<div id="resume">
+			<br />
+			<center><a href="Resume.pdf" target="_blank" id="rdl">Download my Resume</a></center>
+			<br />
+			<pre id="resume2">
+<font style="font-size: 16px; font-weight: bold;">CHASE N. JOYNER</font>
+			<div id="resumehr"></div>
+<b>Current Address</b>:  <i>Removed</i>
+<b>Permanent Address</b>:  <i>Removed</i>
+<b>Phone Number</b>: <i>Removed</i>
+<b>Email</b>:  chasej@g.clemson.edu
+<b>URL</b>:  www.chasejoyner.com
+			<div id="resumehr"></div>
+<b>Education</b>   	Bachelor of Science in <b>Mathematical Sciences</b>
+			Emphasis:  <b>Statistics</b>
+			Clemson University, May 2014; Clemson, South Carolina
+			GPA:  3.89/4.0
+			
+<b>Experience</b>  	<b>Husqvarna Group</b>; Charlotte, North Carolina
+			<i>Parts and Accessories Intern</i>					June 2013 - August 2013
+			&middot;  Analyzed 10 years of sales data to estimate future inventory levels
+			&middot;  Managed excel files with thousands of rows of data
+			&middot;  Updated inventory information in Husqvarna's systems
+						
+			<b>Atlantic Towers Condominiums</b>; Carolina Beach, North Carolina
+			<i>General Maintenance</i>					Summer 2011 & Summer 2012
+			&middot;  Performed maintenance on 135 condominiums
+			&middot;  Improved up-keep on 2.5 acres of the building's premises
+			&middot;  Ensured the safety of over 300 guests every day
+						
+			<b>Best Buy Retail Stores</b>; Charlotte, North Carolina
+			<i>Customer Specialist</i>							  August 2009 - July 2010
+			&middot;  Completed over 100 sales transactions a day
+			&middot;  Increased the sale of computers and accessories
+			&middot;  Oversaw the training of new part-time employees
+						
+<b>Volunteer</b>	<b>Canned Food Drive</b>; Carolina Beach, North Carolina
+<b>Work</b>		<i>Volunteer</i>									  July 2011 - August 2011
+			&middot;  Participated in packing over 200 boxes to be shipped to Africa
+						
+<b>Computer</b>	Basic knowledge of HTML, CSS, C++, Python, and R programming
+<b>Skills</b>		Advanced in computer hardware, building computers, and troubleshooting
+			
+<b>Honors</b>		Dean's List, President's List, Life Scholarship, Irvin Plowden Scholarship
+			</pre>
+			<br />
+			<div id="footer"></div>
+		</div>
+	</div>
+</body>
+</html>

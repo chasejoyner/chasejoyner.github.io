@@ -1,0 +1,165 @@
+html
+{
+	background-image: url('Background.png');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	overflow-y: scroll;
+	margin: 0px auto;
+}
+body
+{
+	margin: 0px auto;
+}
+#container
+{
+	position: absolute;
+	width: 700px;
+	left: 14.2%;
+	padding: 75px;
+}
+#chasejoyner
+{
+	background-color: orange;
+	border-left: 1px black solid;
+	border-right: 1px black solid;
+	border-bottom: 1px black solid;
+	padding: 10px;
+}
+#mathematics
+{
+	background-color: orange;
+	border-left: 1px black solid;
+	border-right: 1px black solid;
+	border-bottom: 1px black solid;
+	padding: 10px;
+}
+#resume
+{
+	background-color: orange;
+	opacity: .95;
+	border-left: 1px black solid;
+	border-right: 1px black solid;
+	border-bottom: 1px black solid;
+}
+#toggle1
+{
+	text-decoration: none;
+	border: 1px black solid;
+	padding: 10px;
+	font-family: Arial;
+	font-weight: bold;
+	background-color: #6622FF;
+	text-align: center;
+}
+#toggle1:hover
+{
+	cursor: hand;
+	cursor: pointer;
+	background-color: #6655DD;
+}
+#toggle2
+{
+	border: 1px black solid;
+	border-top: 0px;
+	text-decoration: none;
+	padding: 10px;
+	font-family: Arial;
+	font-weight: bold;
+	background-color: #6622FF;
+	text-align: center;
+}
+#toggle2:hover
+{
+	cursor: hand;
+	cursor: pointer;
+	background-color: #6655DD;
+}
+#toggle3
+{
+	padding: 10px;
+	font-family: Arial;
+	font-weight: bold;
+	border: 1px black solid;
+	border-top: 0px;
+	background-color: #6622FF;
+	text-align: center;
+}
+#toggle3:hover
+{
+	cursor: hand;
+	cursor: pointer;
+	background-color: #6655DD;
+}
+#resumehr
+{
+	position: relative;
+	width: 592px;
+	height: 2px;
+	background-color: black;
+}
+#resume2
+{
+	position: relative;
+	margin: 0px auto;
+	border: 2px solid black;
+	padding: 30px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	width: 590px;
+	font-family: Arial;
+	font-size: 14px;
+	background-color: orange;
+}
+#rdl
+{
+	text-decoration: none; 
+	font-weight: bold; 
+	font-family: Dotum; 
+	font-size: 15px; 
+	color: black;
+}
+#rdl:hover
+ {
+	text-decoration: underline; 
+	font-size: 15px; 
+	color: #0489B1;
+}
+#footer
+{
+	background-color: #6622FF;
+	height: 42px;
+	border-top: 1px black solid;
+}
+#active1
+{
+	width: 50px;
+	height: 5px;
+	position: relative;
+	left: 50%;
+	margin-left: -25px;
+	border-radius: 500px;
+}
+#active2
+{
+	width: 50px;
+	height: 5px;
+	position: relative;
+	left: 50%;
+	margin-left: -25px;
+	border-radius: 500px;
+}
+#active3
+{
+	width: 50px;
+	height: 5px;
+	position: relative;
+	left: 50%;
+	margin-left: -25px;
+	border-radius: 500px;
+}
+.change
+{
+	background-color: white !important;
+	opacity: 0.7;
+}
+
