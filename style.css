@@ -1,10 +1,6 @@
 html
 {
-	background-image: url('Background.png');
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	overflow-y: scroll;
-	margin: 0px auto;
+	background-color:  green
 }
 body
 {
