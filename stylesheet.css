@@ -13,7 +13,15 @@ html
 	font-family: Verdana;
 	font-size: 14pt;
 	font-weight: bold;
-	color: #4B0082;
+	color: black;
+}
+#wrapper p
+{
+	font-family: Verdana;
+	font-size: 14pt;
+	font-weight: normal;
+	margin: 0 auto;
+	margin-top: 15px;
 }
 #wrapper table
 {
@@ -31,15 +39,18 @@ html
 #wrapper div
 {
 	text-align: left;
-	#background-color:  F5F5F5;
 	width: 800px;
 	margin: 0 auto;
-	margin-top: 3%;
 	max-width: 100%;
+	margin-top: 20px;
 }
 #wrapper a
 {
 	text-decoration: none;
 	color: #C0392B;
 	font-family: Arial black;
+}
+#info
+{
+	margin: 0 auto;
 }
