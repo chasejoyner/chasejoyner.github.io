@@ -23,6 +23,15 @@ html
 	margin: 0 auto;
 	margin-top: 15px;
 }
+#wrapper p.myclass
+{
+	font-family: Verdana;
+	font-size: 14pt;
+	font-weight: normal;
+	margin: 0 auto;
+	margin-top: 15px;
+	text-align: center;
+}
 #wrapper table
 {
 	font-family: Verdana;
