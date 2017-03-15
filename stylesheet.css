@@ -28,7 +28,8 @@ html
 	font-family: Verdana;
 	font-size: 14pt;
 	font-weight: bold;
-	color: black;	
+	color: black;
+	white-space: nowrap;
 }
 #wrapper img
 {
