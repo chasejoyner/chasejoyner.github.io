@@ -1,0 +1,307 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+
+\title{Chase Joyner}
+\author{801 Homework 4}
+\date{October 15, 2015}
+
+\begin{document}
+\maketitle
+\section*{Problem 1:}  (a)  Show that the $F$ test developed in the first part of this section is equivalent to the (generalized) likelihood ratio test for the reduced versus full models.  (b)  Find an $F$ test for $H_0\colon X\beta = X\beta_0$ where $\beta_0$ is known.  (c)  Construct a full versus reduced model test when $\sigma^2$ has a known value $\sigma_0^2$.
+\begin{itemize}
+\item[] {\bf Solution:} (a)  Let the full model be $Y = X\beta + \epsilon$ and the reduced model be $Y = X_0\gamma + \epsilon$, where $\epsilon \sim N(0,\sigma^2I)$.  Denote the likelihood under the full model $L_F$ and the likelihood under the reduced model $L_R$.  Then, the likelihood ratio is
+\[
+r = \frac{\sup L_F(\sigma^2,\beta)}{\sup L_R(\sigma^2,\gamma)} = \frac{(\widehat{\sigma}^2_F)^{-n/2}\exp\{-(Y-X\widehat{\beta})'(Y-X\widehat{\beta})/2\widehat{\sigma}^2_F\}}{(\widehat{\sigma}^2_R)^{-n/2}\exp\{-(Y-X_0\widehat{\gamma})'(Y-X_0\widehat{\gamma})/2\widehat{\sigma}^2_R\}}.
+\]
+First, note that the estimates for $\sigma^2$ under the full and reduced model is the MLE under those models, i.e.
+\[
+\widehat{\sigma}^2_F = \frac{Y'(I-M)Y}{n} \hspace{5mm}\text{and}\hspace{5mm} \widehat{\sigma}^2_R = \frac{Y'(I-M_0)Y}{n}.
+\]
+Then, we see that we can rewrite the exponentials as
+\begin{align*}
+\exp\{-(Y-X_0\widehat{\gamma})'(Y-X_0\widehat{\gamma})/2\widehat{\sigma}^2_R\} &= \exp\bigg{\{}-\frac{n}{2}\cdot\frac{(Y-M_0Y)'(Y-M_0Y)}{Y'(I-M_0)Y} \bigg{\}} \\
+&= \exp\bigg{\{}-\frac{n}{2}\cdot\frac{Y'Y - Y'M_0Y}{Y'Y-Y'M_0Y} \bigg{\}} \\
+&= \exp\bigg{\{} -\frac{n}{2} \bigg{\}}
+\end{align*}
+and
+\[
+\exp\{-(Y-X\widehat{\beta})'(Y-X\widehat{\beta})/2\widehat{\sigma}^2_F\} = \exp\bigg{\{} -\frac{n}{2}\bigg{\}}.
+\]
+Therefore, the ratio becomes 
+\begin{align*}
+r = \left(\frac{\widehat{\sigma}^2_F}{\widehat{\sigma}^2_R}\right)^{-n/2} &= \left( \frac{Y'(I-M)Y}{Y'(I-M_0)Y} \right)^{-n/2} = \left( \frac{Y'(I-M_0)Y}{Y'(I-M)Y} \right)^{n/2} \\
+&= \left( \frac{Y'(I-M)Y + Y'(M-M_0)Y}{Y'(I-M)Y} \right)^{n/2} \\
+&= \left(1 + \frac{r(M-M_0)}{r(I-M)}\cdot\frac{Y'(M-M_0)Y/r(M-M_0)}{Y'(I-M)Y/r(I-M)}  \right)^{n/2}.
+\end{align*}
+Since this is monotone increasing in $\frac{Y'(M-M_0)Y/r(M-M_0)}{Y'(I-M)Y/r(I-M)}$ and the $F$ statistic is
+\[
+F = \frac{Y'(M-M_0)Y/r(M-M_0)}{Y'(I-M)Y/r(I-M)},
+\]
+we see the two test tests are equivalent. \\ 
+(b)  Let the full model be $Y = X\beta + \epsilon$.  Then, the reduced model induced by $H_0$ is $Y^\star = X_0\gamma + \epsilon$, where $Y^\star = Y - X\beta_0$ and $X_0 = 0$.  Then, note that $M = X(X'X)^-X'$ and $M_0 = 0$, and so $M-M_0 = M$. Then, we calculate the test statistic
+\begin{align*}
+F &= \frac{Y^\star(M-M_0)Y^\star/r(M-M_0)}{Y'(I-M)Y/r(I-M)} \\
+&= \frac{(Y-X\beta_0)'M(Y-X\beta_0)/r(M)}{Y'(I-M)Y/r(I-M)}.
+\end{align*}
+Then, reject $H_0$ if $F > f\big{(}1-\alpha, r(M), r(I-M)\big{)}$. \\
+(c)  Recall from section 2.6 that
+\[
+\frac{Y'(I-M)Y}{\sigma^2} \sim \chi^2\big{(}r(I-M)\big{)}.
+\]
+Then, under $H_0$, we calculate the test statistic
+\[
+\chi^2_0 = \frac{Y'(I-M)Y}{\sigma_0^2}.
+\]
+Therefore, reject $H_0$ if $\chi^2_0 < \chi^2\big{(}\alpha, r(I-M)\big{)}$ or if $\chi^2_0 > \chi^2\big{(}1-\alpha, r(I-M)\big{)}$. 
+\end{itemize}
+
+\section*{Problem 2:}  Redo the tests in Exercise 2.2 using the theory of Section 3.2.  Write down the models and explain the procedure.  {\bf Exercise 2.2:}  Let $y_{11},y_{12},...,y_{1r}$ be $N(\mu_1,\sigma^2)$ and $y_{21},y_{22},...,y_{2s}$ be $N(\mu_2,\sigma^2)$ with all $y_{ij}$'s independent.  Write this as a linear model.  Find estimates of $\mu_1,\mu_2,\mu_1-\mu_2$, and $\sigma^2$.  Form an $\alpha = .01$ test for $H_0\colon \mu_1 = \mu_2$.  Similarly, form 95$\%$ confidence intervals for $\mu_1-\mu_2$ and $\mu_1$.  What is the test for $H_0\colon\mu_1 = \mu_2 + \Delta$, where $\Delta$ is some known fixed quantity?  How do these results compare with the usual analysis for two independent samples?
+\begin{itemize}
+\item[] {\bf Solution:}  The full linear model can be written as $Y=X\beta + \epsilon$, where
+\[
+\begin{bmatrix}
+y_{11} \\ \vdots \\ y_{1r} \\ y_{21} \\ \vdots \\ y_{2s}
+\end{bmatrix} = \begin{bmatrix}
+1 & 0 \\
+\vdots & \vdots \\
+1 & 0 \\
+0 & 1 \\
+\vdots & \vdots \\
+0 & 1
+\end{bmatrix} \begin{bmatrix}
+\mu_1 \\ \mu_2
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_{11} \\ \vdots \\ \epsilon_{1r} \\ \epsilon_{21} \\ \vdots \\ \epsilon_{2s}
+\end{bmatrix},
+\]
+and $\epsilon \sim N(0,\sigma^2I)$.  We want to form an $\alpha = .01$ test for $H_0\colon \mu_1 = \mu_2$, i.e. the reduced model is $Y = X_0\gamma + \epsilon$, where
+\[
+\begin{bmatrix}
+y_{11} \\ \vdots \\ y_{1r} \\ y_{21} \\ \vdots \\ y_{2s}
+\end{bmatrix} = \begin{bmatrix}
+1 \\ \vdots \\ 1 \\ 1 \\\vdots \\ 1
+\end{bmatrix}\begin{bmatrix}
+\gamma_1
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_{11} \\ \vdots \\ \epsilon_{1r} \\ \epsilon_{21} \\ \vdots \\ \epsilon_{2s}
+\end{bmatrix},
+\]
+and $\epsilon \sim N(0,\sigma^2 I)$.  We have the projection matrices
+\[
+M = X(X'X)^-X' = \begin{bmatrix}
+{\bf \frac{1}{r}} & {\bf 0} \\
+{\bf 0} & {\bf \frac{1}{s}}
+\end{bmatrix}_{(r+s)\times(r+s)}
+\]
+and
+\[
+M_0 = X_0(X_0'X_0)^-X_0' = \begin{bmatrix}
+{\bf \frac{1}{(r+s)}}
+\end{bmatrix}_{(r+s)\times(r+s)}.
+\]
+Then, we obtain the test statistic to be
+\begin{align*}
+F &= \frac{Y'(M-M_0)Y/r(M-M_0)}{Y'(I-M)Y/r(I-M)} \\
+&= \frac{(MY)'(MY) - (M_0Y)'(M_0Y)/r(M-M_0)}{Y'Y-(MY)'(MY)/r(I-M)} \\
+&= \frac{(X\widehat{\beta})'(X\widehat{\beta}) - (X_0\widehat{\gamma})'(X_0\widehat{\gamma})/r(M-M_0)}{Y'Y-(X\widehat{\beta})'(X\widehat{\beta})/r(I-M)}.
+\end{align*}
+Recall from homework 3 problem 1 that
+\[
+\widehat{\beta} = \begin{bmatrix}
+\overline{y}_1 \\ \overline{y}_2
+\end{bmatrix} \hspace{5mm}\text{and}\hspace{5mm}\widehat{\gamma} = \begin{bmatrix}
+\overline{y}_{12}
+\end{bmatrix}
+\]
+where $\overline{y}_{12} = \frac{1}{r+s}(y_{11} + ... + y_{2s})$.  Multiplying these by $X$ and $X_0$, respectively, gives
+\begin{align*}
+F & = \frac{\big{(}r\overline{y}_1^2 + s\overline{y}_2^2 - (r+s)\overline{y}_{12}^2\big{)}/1}{\big{(}\sum_{i=1}^r(y_{1i}^2 - \overline{y}_1^2) + \sum_{i=1}^s(y_{2i}^2 - \overline{y}_2^2)\big{)}/(r+s-2)}.
+\end{align*}
+Then, reject $H_0$ if $F > f(1-\alpha, 1, r+s-2)$. \\
+Now we wish to find the test for $H_0\colon \mu_1 = \mu_2 + \Delta$.  Let the full model be $Y = X\beta + \epsilon$, where $\epsilon\sim N(0,\sigma^2I)$, i.e.
+\[
+\begin{bmatrix}
+y_{11} \\ \vdots \\ y_{1r} \\ y_{21} \\ \vdots \\ y_{2s}
+\end{bmatrix} = \begin{bmatrix}
+1 & 0 \\
+\vdots & \vdots \\
+1 & 0 \\
+0 & 1 \\
+\vdots & \vdots \\
+0 & 1
+\end{bmatrix} \begin{bmatrix}
+\mu_1 \\ \mu_2
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_{11} \\ \vdots \\ \epsilon_{1r} \\ \epsilon_{21} \\ \vdots \\ \epsilon_{2s}
+\end{bmatrix}.
+\]
+The reduced model $Y = X_0\gamma + \epsilon$ can be written as
+\[
+\begin{bmatrix}
+y_{11} \\ \vdots \\ y_{1r} \\ y_{21} \\ \vdots \\ y_{2s}
+\end{bmatrix} = \begin{bmatrix}
+1 & 0 \\
+\vdots & \vdots \\
+1 & 0 \\
+0 & 1 \\
+\vdots & \vdots \\
+0 & 1
+\end{bmatrix}\begin{bmatrix}
+\mu_2 + \Delta \\ \mu_2
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_{11} \\ \vdots \\ \epsilon_{1r} \\ \epsilon_{21} \\ \vdots \\ \epsilon_{2s}
+\end{bmatrix},
+\]
+or equivalently, 
+\[
+\begin{bmatrix}
+y_{11} \\ \vdots \\ y_{1r} \\ y_{21} \\ \vdots \\ y_{2s}
+\end{bmatrix} = \begin{bmatrix}
+1 \\ \vdots \\ 1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix}\begin{bmatrix}
+\mu_2
+\end{bmatrix} + X\begin{bmatrix}
+\Delta \\ 0
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_{11} \\ \vdots \\ \epsilon_{1r} \\ \epsilon_{21} \\ \vdots \\ \epsilon_{2s}
+\end{bmatrix}.
+\]
+Therefore, defining $Y^\star = Y - Xb$, where $b = (\Delta,0)'$, we have the reduced model $Y^\star = X_0\gamma + \epsilon$, where $X_0 = J_{r+s}, \gamma = \begin{bmatrix}
+\mu_2
+\end{bmatrix},$ and $\epsilon \sim N(0,\sigma^2I)$.
+Then, we calculate the test statistic
+\begin{align*}
+F &= \frac{Y^{\star'}(M-M_0)Y^\star/r(M-M_0)}{Y'(I-M)Y/r(I-M)} \\
+&= \frac{\big{(}(MY^{\star})'(MY^\star) - (M_0Y^\star)'(M_0Y)\big{)}/r(M-M_0)}{\big{(}(Y'Y - (MY)'(MY) \big{)}/r(I-M)} \\
+&= \frac{\frac{1}{r}\left(\sum_{i=1}^ry_{1i} - \Delta\right)^2 + \frac{1}{s}\left(\sum_{i=1}^sy_{2i}\right)^2 - \frac{1}{r+s}\left(\sum_{i=1}^r(y_{1i} - \Delta) + \sum_{i=1}^sy_{2i}\right)}{\big{(}\sum_{i=1}^r(y_{1i}^2 - \overline{y}_1^2) + \sum_{i=1}^s(y_{2i}^2 - \overline{y}_2^2)\big{)}/(r+s-2)}.
+\end{align*}
+Therefore, reject $H_0$ if $F > f(1-\alpha, 1, r+s-2)$.
+\end{itemize}
+
+\section*{Problem 3:}  Redo the tests in Exercise 2.3 using the procedures of Section 3.2.  Write down the models and explain the procedure.  Hints:  (a) Let $A$ be a matrix of zeros, the generalized inverse of $A$, $A^-$, can be anything at all because $AA^-A = A$ for any choice of $A^-$.  (b) There is no reason why $X_0$ cannot be a matrix of zeros.  {\bf Exercise 2.3:}  Let $y_1,...,y_n$ be independent $N(\mu,\sigma^2)$.  Write a linear model for these data.  Form an $\alpha = .01$ test for $H_0\colon \mu=\mu_0$, where $\mu_0$ is some known fixed number and form a 95$\%$ confidence interval for $\mu$.  How do these results compare with the usual analysis for one sample?
+\begin{itemize}
+\item[] {\bf Solution:}  The full linear model $Y = X\beta + \epsilon$ can be written as
+\[
+\begin{bmatrix}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{bmatrix} = \begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix}\begin{bmatrix}
+\mu
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_1 \\ \epsilon_2 \\ \vdots \\ \epsilon_n
+\end{bmatrix},
+\]
+where $\epsilon \sim N(0,\sigma^2I)$.  Then, the reduced model is $Y=X\beta_0 + \epsilon$ and can be written as
+\[
+\begin{bmatrix}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{bmatrix} = \begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix}\begin{bmatrix}
+\mu_0
+\end{bmatrix} + \begin{bmatrix}
+\epsilon_1 \\ \epsilon_2 \\ \vdots \\ \epsilon_n
+\end{bmatrix},
+\]
+where $\epsilon \sim N(0,\sigma^2I)$, i.e. $X_0 = 0$.  Then, we calculate the projection matrices
+\begin{align*}
+M &= X(X'X)^-X' = \begin{bmatrix}
+{\bf \frac{1}{n}}
+\end{bmatrix}_{n\times n} \\
+M_0 &= X_0(X_0'X_0)^-X_0' = \begin{bmatrix}
+{\bf 0}
+\end{bmatrix}_{n\times n}
+\end{align*}
+and therefore we have $M-M_0 = M$.  Notice that $r(M-M_0) = r(M) = 1$ and $r(I-M) = n - r(M) = n-1$.  Then, we calculate
+\begin{align*}
+(Y-X\beta_0)(M-M_0)(Y-X\beta_0) &= (Y-X\beta_0)M(Y-X\beta_0) \\
+&= (MY-MX\beta_0)'(MY-X\beta_0) \\
+&= \begin{bmatrix}
+\overline{y}-\mu_0 & \cdots &\overline{y}-\mu_0
+\end{bmatrix}\begin{bmatrix}
+\overline{y}-\mu_0 \\ \vdots \\ \overline{y}-\mu_0 \\
+\end{bmatrix} \\
+&= n(\overline{y}-\mu_0)^2.
+\end{align*}
+and
+\begin{align*}
+Y'(I-M)Y = Y'Y - Y'MY = \sum_{i=1}^n y_i^2 - n\overline{y}^2.
+\end{align*}
+Then, we obtain the test statistic
+\begin{align*}
+F &= \frac{(Y-X\beta_0)'(M-M_0)(Y-X\beta_0)/r(M-M_0)}{Y'(I-M)Y/r(I-M)} \\
+&= \frac{n(\overline{y} - \mu_0)^2}{\big{(}\sum_{i=1}^ny_i^2 - n\overline{y}^2\big{)} / (n-1)}.
+\end{align*}
+Therefore, with $\alpha = .01$, reject $H_0$ if $F > f(.99, 1, n-1)$.
+
+\end{itemize}
+
+\section*{Problem 4:}  Show that $\beta'X'M_{MP}X\beta = 0$ if and only if $\Lambda'\beta = 0$.
+\begin{itemize}
+\item[] {\bf Solution:}  Let $\Lambda'\beta = 0$.  Then, $P'X\beta = 0$ and so $P'MX\beta = 0$.  Then, notice that
+\[
+\beta' X'M_{MP}X\beta = \beta'X'MP(P'MP)^-P'MX\beta = 0.
+\]
+Now, let $\beta'X'M_{MP}X\beta = 0$.  Then, $(M_{MP}X\beta)'(M_{MP}X\beta) = 0$, which implies that $M_{MP}X\beta = 0$.  Then, $P'M_{MP}X\beta = 0$.  Then, we have
+\begin{align*}
+&P'M_{MP}X\beta = 0 \\
+\Longrightarrow \hspace{5mm}& P'MP(P'MP)^-(MP)'X\beta = 0 \\
+\Longrightarrow \hspace{5mm} & \big{[}(P'M)(MP)(P'MP)^-(MP)'\big{]} X\beta = 0 \\
+\Longrightarrow \hspace{5mm} & \big{[}(MP)(P'MP)^-(MP)'(MP)\big{]}'X\beta = 0 \\
+\Longrightarrow \hspace{5mm} & P'MX\beta = 0 \\
+\Longrightarrow \hspace{5mm} & P'X\beta = 0.
+\end{align*}
+Therefore, $\Lambda'\beta = 0$.
+\end{itemize}
+
+\section*{Problem 5:}  Consider a set of seemingly unrelated regression equations
+\[
+Y_i = X_i\beta_i + e_i, \hspace{5mm} e_i\sim N(0,\sigma^2I),
+\]
+$i = 1,...,r,$ where $X_i$ is an $n_i\times p$ matrix and the $e_i$s are independent.  Find the test for $H_0\colon \beta_1=...=\beta_r$.
+\begin{itemize}
+\item[] {\bf Solution:}  Notice the full model $Y=X\beta + e$ can be written as
+\[
+\begin{bmatrix}
+Y_1 \\ Y_2 \\ \vdots \\ Y_r
+\end{bmatrix} = \begin{bmatrix}
+X_1 & 0 & 0 & \cdots & 0 \\
+0 & X_2 & 0 & \cdots & 0 \\
+0 & 0 & \ddots & & 0 \\
+\vdots & \vdots & & \ddots \\
+0 & 0 & 0 & \cdots & X_r
+\end{bmatrix} \begin{bmatrix}
+\beta_1 \\ \beta_2 \\ \vdots \\ \beta_r
+\end{bmatrix} + \begin{bmatrix}
+e_1 \\ e_2 \\ \vdots \\ e_r
+\end{bmatrix}.
+\]
+Then, the reduced model $Y = X_0\gamma + e$ can be written as
+\[
+\begin{bmatrix}
+Y_1 \\ Y_2 \\ \vdots \\ Y_r
+\end{bmatrix} = \begin{bmatrix}
+X_1 \\ X_2 \\ \vdots \\ X_r
+\end{bmatrix}\begin{bmatrix}
+\beta_1
+\end{bmatrix} + \begin{bmatrix}
+e_1 \\ e_2 \\ \vdots \\ e_r
+\end{bmatrix}.
+\]
+Then, calculating $M = X(X'X)^-X'$ and $M_0 = X_0(X_0'X_0)^-X_0'$, we obtain the statistic
+\[
+F = \frac{Y'(M-M_0)Y/r(M-M_0)}{Y'(I-M)Y/r(I-M)}.
+\]
+Then, reject $H_0$ if $F>f\big{(}1-\alpha, r(M-M_0), r(I-M)\big{)}$.
+\end{itemize}
+
+\end{document}

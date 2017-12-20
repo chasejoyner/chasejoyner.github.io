@@ -1,0 +1,413 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+
+\title{Chase Joyner}
+\author{801 Homework 1}
+\date{September 3, 2015}
+
+\begin{document}
+\maketitle
+\section*{Problem A.11:}  Let $A$ and $B$ be the matrices
+\[ A=
+\begin{bmatrix}
+1 & 1 & 0 & 0 \\
+1 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 1 & 1
+\end{bmatrix}
+\hspace{5mm}
+B=
+\begin{bmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}.
+\]
+Find $C(A)^\perp$ and $C(B)^\perp$ with respect to $\R^4$.
+\begin{itemize}
+\item[] {\bf Solution:}  The basis for the column space of $A$ is given by the three vectors
+\[
+a_1 = \begin{bmatrix}
+1 \\ 1 \\ 0 \\ 0
+\end{bmatrix}, \hspace{5mm}
+a_2 = \begin{bmatrix}
+0 \\ 0 \\ 1 \\ 1
+\end{bmatrix}, \hspace{5mm}
+a_3 = \begin{bmatrix}
+0 \\ 0 \\ 0 \\ 1
+\end{bmatrix}.
+\]
+Then, $x\in C(A)^\perp$ must satisfy $a_i^Tx = 0$ for $i=1,2,3$.  For $i=1$, 
+\[
+\begin{bmatrix}
+1 & 1 & 0 & 0
+\end{bmatrix}\begin{bmatrix}
+x_1 \\ x_2 \\ x_3 \\ x_4 
+\end{bmatrix} = 0
+\]
+implies that $x_1 = -x_2$.  For $i=3$, 
+\[
+\begin{bmatrix}
+0 & 0 & 0 & 1
+\end{bmatrix}\begin{bmatrix}
+x_1 \\ x_2 \\ x_3 \\ x_4 
+\end{bmatrix} = 0
+\] implies that $x_4 = 0$.  Thus, for $i=2$ we have $x_3 = 0$.  Thus, 
+\[
+C(A)^\perp = \left\{\begin{bmatrix}
+a \\ -a \\ 0 \\ 0 
+\end{bmatrix}\colon a\in\R \right\}.
+\]
+Repeating the procedure that we did for matrix $A$, we see that $C(B)^\perp = C(A)^\perp$.
+\end{itemize}
+\section*{Problem A.14:}
+Find an orthogonal basis for the space spanned by the columns of 
+\[
+X = \begin{bmatrix}
+1 & 1 & 4 \\
+1 & 2 & 1 \\
+1 & 3 & 0 \\
+1 & 4 & 0 \\
+1 & 5 & 1 \\
+1 & 6 & 4
+\end{bmatrix}.
+\]
+\begin{itemize}
+\item[] {\bf Solution:}    To find an orthogonal basis for $C(X)$, we use Gram-Schmidt without normalizing.  Let the columns of $X$ be $x_1,x_2,$ and $x_3$ so that $X = \begin{bmatrix}
+x_1 & x_2 & x_3
+\end{bmatrix}$.
+Let $y_1 = x_1$.
+Then, we find $y_2$ to be
+\[
+y_2 = x_2 - \frac{\langle x_2,y_1\rangle}{\langle y_1, y_1\rangle}y_1 = x_2 - \frac{21}{6}y_1 = \begin{bmatrix}
+-5/2 \\ -3/2 \\ -1/2 \\ 1/2 \\ 3/2 \\ 5/2
+\end{bmatrix}.
+\]
+Next, we see that $y_3$ is
+\[
+y_3 = x_3 - \frac{\langle x_3,y_1\rangle}{\langle y_1, y_1\rangle}y_1 - \frac{\langle x_3,y_2\rangle}{\langle y_2, y_2\rangle}y_2 = x_3 - \frac{10}{6}y_1 - \frac{0}{35/2}y_2 = \begin{bmatrix}
+14/6 \\ -4/6 \\ -10/6 \\ - 10/6 \\ -4/6 \\ 14/6
+\end{bmatrix}.
+\]
+Calculating the dot product for $y_i,y_j$ for $i\not= j$ yields 0.  Therefore, by Gram-Schmidt, an orthogonal basis for $C(X)$ is $B = \{y_1,y_2,y_3\}$.
+\end{itemize}
+\section*{Problem A.16:}  Let $X$ be an $n\times p$ matrix.  Prove or disprove the following statement:  Every vector in $\R^n$ is in either $C(X)$ or $C(X)^\perp$ or both.
+\begin{itemize}
+\item[] {\bf Solution:}  We will provide a counterexample to the statement.  Let $n=2$ and
+\[
+X = \begin{bmatrix}
+1 & 0 \\
+0 & 0
+\end{bmatrix}.
+\]
+Then, we easily see that 
+\begin{align*}
+C(X) &= \left\{\begin{bmatrix}
+a \\ 0
+\end{bmatrix} \colon a\in\R\right\} \\
+C(X)^\perp &= \left\{\begin{bmatrix}
+0 \\ a
+\end{bmatrix} \colon a\in\R\right\}.
+\end{align*}
+However, for the vector $(1,1)'\in\R^2$, it is not in $C(X)$ nor $C(X)^\perp$.
+\end{itemize}
+\section*{Problem B.11:}
+Let $A$, $B$, and $C$ be the following matrices:
+\[
+A = \begin{bmatrix}
+2 & 0 & 4 \\
+1 & 5 & 7 \\
+1 & -5 & -3
+\end{bmatrix}, \hspace{5mm}
+B = \begin{bmatrix}
+1 & 0 & 0 \\
+0 & 0 & 1 \\
+0 & 1 & 0
+\end{bmatrix}, \hspace{5mm}
+C = \begin{bmatrix}
+1 & 4 & 1 \\
+2 & 5 & 1 \\
+-3 & 0 & 1
+\end{bmatrix}.
+\]
+Use Theorem B.35:  Let $o_1, ..., o_r$ be an orthonormal basis for $C(X)$, and let $O = [o_1, ..., o_r]$.  Then $OO' = \sum_{i=1}^ro_io_i'$ is the perpendicular projection operator onto $C(X)$., to find the perpendicular projection operator onto the column space of each matrix.
+\begin{itemize}
+\item[] {\bf Solution:}  First note that $\dim(C(A)) = 2$, $\dim(C(B)) = 3$, and $\dim(C(C)) = 2$.  Denote $a_1,a_2,a_3$ as the columns of $A$, $b_1,b_2,b_3$ as the columns of $B$, and $c_1,c_2,c_3$ as the columns of $C$.  We first need to find an orthonormal basis $\mathcal{B}_A, \mathcal{B}_B,$ and $\mathcal{B}_C$ for $C(A), C(B),$ and $C(C)$, respectively; use Gram-schmidt to do this.  By Gram-Schmidt, we let the first element of each basis be
+\begin{align*}
+ba_1 &= \frac{a_1}{||a_1||} = \frac{1}{\sqrt{6}}a_1 = \begin{bmatrix}
+2 / \sqrt{6} \\ 1 / \sqrt{6} \\ 1 / \sqrt{6}
+\end{bmatrix} \\
+bb_1 &= \frac{b_1}{||b_1||} = b_1 = \begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix} \\
+bc_1 &= \frac{c_1}{||c_1||} = \frac{1}{\sqrt{14}}c_1 = \begin{bmatrix}
+1 / \sqrt{14} \\ 2 /\sqrt{14} \\ -3/\sqrt{14}
+\end{bmatrix}.
+\end{align*}
+We calculate the following vectors
+\begin{align*}
+ua_2 &= a_2 - \frac{\langle a_2, a_1 \rangle}{\langle a_1, a_1 \rangle}a_1 = a_2 - \frac{0}{6}a_1 = \begin{bmatrix}
+0 \\ 5 \\ -5
+\end{bmatrix} \\
+ub_2 &= b_2 - \frac{\langle b_2, b_1\rangle}{\langle b_1,b_1\rangle}b_1 = b_2 - \frac{0}{1} b_1 = \begin{bmatrix}
+0 \\ 0 \\ 1
+\end{bmatrix} \\
+uc_2 &= c_2 - \frac{\langle c_2, c_1 \rangle}{\langle c_1, c_1 \rangle}c_1 = c_2 - \frac{14}{14}c_1 = \begin{bmatrix}
+3 \\ 3 \\ 3
+\end{bmatrix}.
+\end{align*}
+Then, normalizing these, we have the second element of each basis to be
+\begin{align*}
+ba_2 &= \frac{ua_2}{||ua_2||} = \frac{1}{\sqrt{50}}ua_2 = \begin{bmatrix}
+0 \\ 5/\sqrt{50} \\ -5/\sqrt{50}
+\end{bmatrix} \\
+bb_2 &= \frac{ub_2}{||ub_2||} = \frac{1}{1}ub_2 = \begin{bmatrix}
+0 \\ 0 \\ 1
+\end{bmatrix} \\
+bc_2 &= \frac{uc_2}{||uc_2||} = \frac{1}{\sqrt{27}}uc_2 = \begin{bmatrix}
+3/\sqrt{27} \\ 3/\sqrt{27} \\ 3/\sqrt{27}
+\end{bmatrix}.
+\end{align*}
+We calculate the following vectors
+\begin{align*}
+ua_3 &= a_3 - \frac{\langle a_3, a_1 \rangle}{\langle a_1, a_1 \rangle}a_1 - \frac{\langle a_3, ua_2\rangle}{\langle ua_2,ua_2\rangle}ua_2 = a_3 - \frac{12}{6}a_1 - \frac{50}{50}ua_2 = \begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix} \\
+ub_3 &= b_3 - \frac{\langle b_3, b_1 \rangle}{\langle b_1, b_1 \rangle}b_1 - \frac{\langle b_3, ub_2\rangle}{\langle ub_2,ub_2\rangle}ub_2 = b_3 - \frac{0}{1}b_1 - \frac{0}{1}ub_2 = \begin{bmatrix}
+0 \\ 1 \\ 0
+\end{bmatrix} \\
+uc_3 &= c_3 - \frac{\langle c_3, c_1 \rangle}{\langle c_1, c_1 \rangle}c_1 - \frac{\langle c_3, uc_2\rangle}{\langle uc_2,uc_2\rangle}uc_2 = c_3 - \frac{0}{14}c_1 - \frac{9}{27}uc_2 = \begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}.
+\end{align*}
+Notice that $ua_3$ and $uc_3$ are the zero vector, which makes sense because the dimensions of $C(A)$ and $C(C)$ are both 2.  Lastly, since $||ub_3|| = 1$, we have $b_3 = ub_3$.  Therefore, we have
+\begin{align*}
+\mathcal{B}_A &= \left\{\begin{bmatrix}
+2/\sqrt{6} \\ 1/\sqrt{6} \\ 1/\sqrt{6}\end{bmatrix}, \begin{bmatrix}
+0 \\ 5/\sqrt{50} \\ -5/\sqrt{50}
+\end{bmatrix}
+\right\} \\
+\mathcal{B}_B &= \left\{ \begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix},\begin{bmatrix}
+0 \\ 0 \\ 1
+\end{bmatrix}, \begin{bmatrix}
+0 \\ 1 \\ 0
+\end{bmatrix} \right\} \\
+\mathcal{B}_C &= \left\{\begin{bmatrix}
+1/\sqrt{14} \\ 2/\sqrt{14} \\ -3/\sqrt{14}
+\end{bmatrix}, \begin{bmatrix}
+3/\sqrt{27} \\ 3/\sqrt{27} \\ 3/\sqrt{27}
+\end{bmatrix} \right\}
+\end{align*}
+are orthonormal bases for $C(A), C(B),$ and $C(C)$, respectively.  Now let 
+\[
+O_A = \begin{bmatrix}
+2/\sqrt{6} & 0 \\
+1/\sqrt{6} & 5/\sqrt{50} \\
+1/\sqrt{6} & -5/\sqrt{50}
+\end{bmatrix}, \hspace{5mm} O_B = \begin{bmatrix}
+1 & 0 & 0 \\
+0 & 0 & 1 \\
+0 & 1 & 0
+\end{bmatrix}, \hspace{5mm} O_C = \begin{bmatrix}
+1/\sqrt{14} & 3/\sqrt{27} \\
+2/\sqrt{14} & 3/\sqrt{27} \\
+-3/\sqrt{14} & 3/\sqrt{27}
+\end{bmatrix},
+\]
+to find the perpendicular projection operators
+\[
+O_AO_A' = \begin{bmatrix}
+2/3 & 1 / 3 & 1 / 3 \\
+1 / 3 & 2/3 & -1/3 \\
+1 / 3 & -1/3 & 2/3
+\end{bmatrix}, O_BO_B' = \begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}, O_CO_C' = \begin{bmatrix}
+17 / 42 & 10/21 & 5/42 \\
+10/21 & 1 / 2 & -2/21 \\
+5 / 42 & -2 / 21 & 41 / 42
+\end{bmatrix}
+\]
+onto the column spaces of $C(A), C(B)$, and $C(C)$, respectively, by Theorem B.35.
+\end{itemize}
+\section*{Problem B.12:}
+Show that for a perpendicular projection matrix $M$, 
+\[
+\sum_i\sum_j m_{ij}^2 = r(M).
+\]
+\begin{itemize}
+\item[] {\bf Solution:}  Assume that $M$ is an $n\times n$ matrix.  Note that since $M$ is a perpendicular projection matrix, it is idempotent and $M=M'M = MM'$ by problem $B.13$.  Because $M$ is idempotent, $r(M) = \text{tr}(M) = \text{tr}(MM')$.  Also, by definition of trace,
+\begin{align*}
+r(M) = \text{tr}(MM') &= \sum_{i=1}^n (MM')_{ii} = \sum_{i=1}^n\sum_{j=1}^n m_{ij}m_{ji}' \\
+&= \sum_{i=1}^n\sum_{j=1}^nm_{ij}m_{ij} = \sum_i\sum_j m_{ij}^2.
+\end{align*}
+This proves the equality.
+\end{itemize}
+\section*{Problem B.17:}
+Consider the matrix
+\[
+A = \begin{bmatrix}
+0 & 1 \\
+0 & 1
+\end{bmatrix}.
+\]
+\begin{itemize}
+\item[(a)] Show that $A$ is a projection matrix.
+\begin{itemize}
+\item[] {\bf Solution:}  Note that 
+\[
+C(A) = \left\{\begin{bmatrix}
+a \\ a
+\end{bmatrix}\colon a\in\R\right\}.
+\]
+Also, for any $x = (x_1,x_2)'$, we have $Ax = (x_2,x_2)'\in C(A)$.  Therefore, $A$ is a projection matrix onto $C(A)$.
+\end{itemize}
+\item[(b)] Is $A$ a perpendicular projection matrix?  Why or why not?
+\begin{itemize}
+\item[] {\bf Solution:}  Note that for $A$ to be a perpendicular projection matrix, it must be symmetric by Theorem B.33.  However, $A\not= A'$ and therefore is not symmetric.  So, $A$ is not a perpendicular projection matrix.
+\end{itemize}
+\item[(c)] Describe the space that $A$ projects onto and the space that $A$ projects along.  Sketch these spaces.
+\begin{itemize}
+\item[] {\bf Solution:}  The matrix $A$ projects onto $C(A)$ which was found in part (a).  Thus, we see that $A$ projects onto the line $y=x$.  Also, $A$ projects along the space $N(A)$, which is given by
+\[
+N(A) = \left\{\begin{bmatrix}
+a \\ 0
+\end{bmatrix} \colon a \in \R \right\}.
+\]
+Therefore, $A$ projects along the $x$-axis.
+\end{itemize}
+\item[(d)] Find another projection operator onto the space that $A$ projects onto.
+\begin{itemize}
+\item[] {\bf Solution:}  Another simple projection matrix onto $C(A)$ would be the matrix
+\[
+B = \begin{bmatrix}
+1/2 & 1/2 \\
+1/2 & 1/2
+\end{bmatrix}.
+\]
+Therefore, for $x\in C(A)$, $Bx = x$.
+\end{itemize}
+\end{itemize}
+\section*{Problem B.10:}
+Show that the matrix $B$ given below is positive definite, and find a matrix $Q$ such that $B=QQ'$.  (Hint:  The first row of $Q$ can be taken as $(1,-1,0).)$
+\[
+B = \begin{bmatrix}
+2 & -1 & 1 \\
+-1 & 1 & 0 \\
+1 & 0 & 2
+\end{bmatrix}.
+\]
+\begin{itemize}
+\item[] {\bf Solution:}  First we show that $B$ is positive definite by appealing tot he definition.  So,
+\begin{align*}
+x'Bx &= \begin{bmatrix}
+x_1 & x_2 & x_3
+\end{bmatrix}\begin{bmatrix}
+2 & -1 & 1 \\
+-1 & 1 & 0 \\
+1 & 0 & 2
+\end{bmatrix}\begin{bmatrix}
+x_1 \\ x_2 \\ x_3
+\end{bmatrix} \\
+&= \begin{bmatrix}
+x_1 & x_2 & x_3
+\end{bmatrix}\begin{bmatrix}
+2x_1 - x_2 + x_3 \\
+-x_1 + x_2 \\
+x_1 + 2x_3
+\end{bmatrix} \\
+&= 2x_1^2 - x_1x_2 + x_1x_3 - x_1x_2 + x_2^2 + x_1x_3 + 2x_3^2 \\
+&= 2x_1^2 - 2x_1x_2 + 2x_1x_3 + x_2^2 + 2x_3^2 \\
+&= x_1^2 + (x_1 - x_2)^2 + 2x_1x_3 + 2x_3^2 \\
+&= (x_1+x_3)^2 + (x_1-x_2)^2 + x_3^2 \\
+&> 0.
+\end{align*}
+Therefore, $B$ is positive definite.
+To find $Q$, we solve the system
+\[
+B = \begin{bmatrix}
+1 & -1 & 0 \\
+x_1 & x_2 & x_3 \\
+x_4 & x_5 & x_6
+\end{bmatrix} \begin{bmatrix}
+1 & x_1 & x_4 \\
+-1 & x_2 & x_5 \\
+0 & x_3 & x_6
+\end{bmatrix}.
+\]
+This implies the following equations
+\begin{align*}
+x_1 - x_2 &= -1 \\
+x_4 - x_5 &= 1 \\
+x_1^2 + x_2^2 + x_3^2 &= 1 \\
+ x_1x_4 + x_2x_5 + x_3x_6 &= 1 \\
+ x_4^2 + x_5^2 + x_6^2 &= 2.
+\end{align*}
+We have 6 unknowns, but only 5 equations.  Let $x_5 = 0$.  Then $x_4 = 1$.  Now we're left with
+\begin{align*}
+x_1 - x_2 &= -1 \\
+x_1^2 + x_2^2 + x_3^2 &= 1 \\
+x_1 + x_3x_6 &= 1 \\
+1 + x_6^2 &= 2.
+\end{align*}
+So, we have that $x_6 = \pm 1$.  Take $x_6$ to be 1.  Lastly, we solve
+\begin{align*}
+x_1 - x_2 &= -1 \\
+x_1^2 + x_2^2 + x_3^2 &= 1 \\
+x_1 + x_3 &= 1.
+\end{align*}
+Take $x_1 = 0$ and so $x_2 = 1$, which gives that $x_3 = 1$.  Therefore, $Q$ is the matrix
+\[
+Q = \begin{bmatrix}
+1 & -1 & 0 \\
+0 & 1 & 0 \\
+1 & 0 & 1
+\end{bmatrix}.
+\]
+Multiplying $QQ'$ gives that $B=QQ'$.  Therefore, we have found $Q$.
+\end{itemize}
+\section*{Problem B.13:}
+Prove that if $M = M'M$, then $M = M'$ and $M=M^2$.
+\begin{itemize}
+\item[] {\bf Solution:}  Let $M = M'M$.  Then, we have $M' = (M'M)' = M'M = M$.  It follows that $M = M' M = MM = M^2$.
+\end{itemize}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

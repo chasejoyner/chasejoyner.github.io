@@ -1,0 +1,489 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage,undertilde}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+\newcommand{\E}{{\text E}}
+\newcommand{\C}{{\text Cov}}
+
+\title{Chase Joyner}
+\author{801 Homework 2}
+\date{September 15, 2015}
+
+\begin{document}
+\maketitle
+\section*{Problem 1:}
+Let $W$ be an $r\times s$ random matrix, and let $A$ and $C$ be $n\times r$ and $n\times s$ matrices of constants, respectively.  Show that E$(AW+C)$ = $A$E$(W)+C$.  If $B$ is an $s\times t$ matrix of constants, show that E$(AWB) = A$E$(W)B$.  If $s=1$, show that Cov$(AW+C) = A$Cov$(W)A'$.
+\begin{itemize}
+\item[] {\bf Solution:}  Notice that the $ij$th element of the matrix $AW+C$ is
+\[
+(AW+C)_{ij} = \sum_{k=1}^s a_{ik}w_{kj} + c_{ij}.
+\]
+By linearity of expectations in one-dimension, we have
+\begin{align*}
+\E\left(\sum_{k=1}^sa_{ik}w_{kj} + c_{ij}\right) = \sum_{k=1}^sa_{ik}\E(w_{kj}) + c_{ij}.
+\end{align*}
+By definition of E$(AW+C)$, we apply expectation to each element of this matrix.  Therefore, this proves that
+\[
+\E(AW+C) = A\E(W) + C.
+\]
+Note by the first part of this question, we have E$(AWB) = A$E$(WB)$.  All we need to show is that E$(WB) =$ E$(W)B$.  The $ij$th element of the matrix $WB$ is
+\[
+(WB)_{ij} = \sum_{k=1}^sw_{ik}b_{kj}.
+\]
+Again, by linearity of expectations in one-dimension, we have
+\[
+\E\left(\sum_{k=1}^sw_{ik}b_{kj}\right) = \sum_{k=1}^s\E(w_{ik})b_{kj}.
+\]
+Therefore, by definition of E$(WB)$, we take expectations component wise and so $\E(WB) = \E(W)B$.  Thus, $\E(AWB) = A\E(W)B$.  Lastly, we show that if $s=1$, then Cov$(AW+C) = A$Cov$(W)A'$.  By definition of Covariances, we have
+\begin{align*}
+\text{Cov}(AW+C) &= \E[(AW+C)(AW+C)'] - \E[AW+C] \E[AW+C]' \\
+&= \E[(AW)(AW)' + (AW)C' + C(AW)' + CC']\\
+&\hspace{5mm} - (A\E(W))(A\E(W))' + A\E(W)C' + C(A\E(W))' + CC' \\
+&= A\E[WW']A + A\E(W)C' + C\E(W')A' + CC'\\
+&\hspace{5mm} - A\E(W)\E(W)'A' - A\E(W)C' - C\E(W)A' - CC' \\
+&= A\E(WW')A' - A\E(W)\E(W)'A' \\
+&= A(\E(WW') - \E(W)\E(W)')A' \\
+&= A\text{Cov}(W)A'.
+\end{align*}
+Thus, we have proved the desired results.
+\end{itemize}
+
+\section*{Problem 2:}
+Show that Cov$(Y)$ is nonnegative definite for any random vector $Y$.
+\begin{itemize}
+\item[] {\bf Solution:}  Assume that $Y\in\R^n$ and let $x\in\R^n$.  Then, by problem 1, we have
+\[
+x'\text{Cov}(Y)x = \text{Cov}(x'Y) = \text{Var}(x'Y) \geq 0.
+\]
+Therefore, Cov$(Y)$ is nonnegative definite.
+\end{itemize}
+
+\section*{Problem 3:}  
+Show that if $Y$ is an $r$-dimensional random vector with $Y\sim N(\mu,V)$ and if $B$ is a fixed $n\times r$ matrix, then $BY\sim N(B\mu, BVB')$.
+\begin{itemize}
+\item[] {\bf Solution:}  Let $Y$ be an $r$-dimensional random vector with $Y\sim N(\mu,V)$.  Since $V$ is a symmetric matrix, we can decompose it as $V=AA'$ for some vector $A$.  Then, we observe that
+\[
+Y \overset{d}{=} AZ + \mu.
+\]
+Now let $B$ be a fixed $n\times r$ matrix and so we have
+\[
+BY \overset{d}{=} BAZ + B\mu.
+\]
+Noticing that $(BA)(BA)' = BAA'B' = BVB'$, we conclude $BY \sim N(B\mu,BVB')$.
+\end{itemize}
+\newpage
+\section*{Problem 4:}
+Let $M$ be the o.p.m onto $C(X)$.  Show that $(I-M)$ is the o.p.m onto $C(X)^\perp$.  Find tr$(I-M)$ in terms of $r(X)$.
+\begin{itemize}
+\item[] {\bf Solution:}  Let $M$ be the o.p.m onto $C(X)$, i.e. 
+\begin{align*}
+&x \in C(X) \hspace{5mm}\Longrightarrow\hspace{5mm} Mx = x \\
+&y \in C(X)^\perp \hspace{3mm} \Longrightarrow\hspace{5mm} My = 0.
+\end{align*}
+Then for any $x\in C(X)$,
+\[
+Mx = x \hspace{5mm} \Longrightarrow\hspace{5mm} Mx - x = 0 \hspace{5mm}\Longrightarrow\hspace{5mm} (M-I)x = 0 \hspace{5mm}\Longrightarrow\hspace{5mm} (I-M)x=0.
+\]
+For any $y\in C(X)^\perp$,
+\[
+My = 0 \hspace{5mm} \Longrightarrow\hspace{5mm} My - y = -y \hspace{5mm} \Longrightarrow\hspace{5mm} (M-I)y = -y \hspace{5mm} \Longrightarrow\hspace{5mm} (I-M)y = y.
+\]
+Therefore, we conclude that $(I-M)$ is the o.p.m onto $C(X)^\perp$.  Now we find tr$(I-M)$ in terms of $r(X)$.  Let $M = OO'$, where $O = \begin{bmatrix}
+o_1,...,o_r
+\end{bmatrix}$ and $o_1,...,o_r$ is an orthonormal basis for $C(X)$.  By thm B.35, $M$ is the o.p.m onto $C(X)$.  Then, we have
+\begin{align*}
+\text{tr}(I-M) &= \text{tr}(I) - \text{tr}(M) = \text{tr}(I) - \text{tr}(OO') \\
+&= n - r(OO') = n - r(M) = n - r(X).
+\end{align*}
+Therefore, we have tr$(I-M) = n-r(X)$.
+\end{itemize}
+
+\section*{Problem 5:}
+For a linear model $Y=X\beta + e$, E$(e) = 0$, Cov$(e) = \sigma^2I$, show that E$(Y) = X\beta$ and Cov$(Y) = \sigma^2I$.
+\begin{itemize}
+\item[] {\bf Solution:}  By properties of expectations and covariance, we have
+\begin{align*}
+\E(Y) = \E(X\beta + e) = X\beta + \E(e) = X\beta
+\end{align*}
+and
+\begin{align*}
+\C(Y) = \C(X\beta + e) = \C(e) = \sigma^2I.
+\end{align*}
+This shows the desired equalities.
+\end{itemize}
+\newpage
+\section*{Problem 6:}
+Let $Y = (y_1,y_2,y_3)'$ with $Y\sim N(\mu,V)$, where
+\[
+\mu = (5,6,7)'
+\]
+and
+\[
+V = \begin{bmatrix}
+2 & 0 & 1 \\
+0 & 3 & 2 \\
+1 & 2 & 4
+\end{bmatrix}.
+\]
+Find
+\begin{itemize}
+\item[(a)] the marginal distribution of $y_1$,
+\item[(b)] the joint distribution of $y_1$ and $y_2$.
+\item[(c)] the conditional distribution of $y_3$ given $y_1 = u_1$ and $y_2 = u_2$,
+\item[(d)] the conditional distribution of $y_3$ given $y_1= u_1$,
+\item[(e)] the conditional distribution of $y_1$ and $y_2$ given $y_3 = u_3$,
+\item[(f)] the correlations $\rho_{12},\rho_{13},\rho_{23}$,
+\item[(g)] the distribution of
+\[
+Z = \begin{bmatrix}
+2 & 1 & 0 \\
+1 & 1 & 1
+\end{bmatrix}Y + \begin{bmatrix}
+-15 \\ -18
+\end{bmatrix},
+\]
+\item[(h)] the characteristic functions of $Y$ and $Z$.
+\end{itemize}
+\begin{itemize}
+\item[] {\bf Solution:}
+\begin{itemize}
+\item[(a)] Define the row vector $B=(1,0,0)$.  Then, by problem 3, we have
+\[
+BY = y_1 \sim N(B\mu = 5, BVB' = 2).
+\]
+Therefore, the marginal distribution of $y_1$ is $N(5,2)$.
+\end{itemize}
+\begin{itemize}
+\item[(b)]  Define the matrix
+\[
+B=\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0
+\end{bmatrix}.
+\]
+Then, again by problem 3, we have
+\[
+BY = \begin{bmatrix}
+y_1\\y_2
+\end{bmatrix} \sim N\left(\begin{bmatrix}
+5 \\ 6
+\end{bmatrix}, \begin{bmatrix}
+2 & 0 \\ 0 & 3
+\end{bmatrix}\right).
+\]
+\end{itemize}
+\begin{itemize}
+\item[(c)]  Let $Y_1$ and $Y_2$ be the vectors
+\[
+Y_1 = \begin{bmatrix}
+y_3
+\end{bmatrix} \hspace{5mm}\text{and}\hspace{5mm} Y_2 = \begin{bmatrix}
+y_1 \\ y_2
+\end{bmatrix}.
+\]
+Then we have that $Y_1$ given $Y_2 = \utilde{y}_2$ follows a Normal distribution with
+\[
+\mu^\star = 7 + \begin{bmatrix}
+1 & 2
+\end{bmatrix} \begin{bmatrix}
+2 & 0 \\
+0 & 3
+\end{bmatrix}^{-1} \left(\begin{bmatrix}
+u_1 \\ u_2
+\end{bmatrix} - \begin{bmatrix}
+5 \\ 6
+\end{bmatrix}\right) = 7 + \frac{1}{2}(u_1 - 5) + \frac{2}{3}(u_2 - 6)
+\]
+and
+\[
+V^\star = 4 - \begin{bmatrix}
+1 & 2
+\end{bmatrix} \begin{bmatrix}
+2 & 0 \\
+0 & 3
+\end{bmatrix}^{-1} \begin{bmatrix}
+1 \\ 2
+\end{bmatrix} = \frac{13}{6}.
+\]
+Therefore, $y_3 \mid y_1 = u_1, y_2 = u_2 \sim N\big{(}7 + \frac{1}{2}(u_1 - 5) + \frac{2}{3}(u_2 - 6), 13/6\big{)}$.
+\end{itemize}
+\begin{itemize}
+\item[(d)]  First, we must obtain the joint distribution of $y_1$ and $y_3$.  Define the matrix
+\[
+B = \begin{bmatrix}
+1 & 0 & 0 \\
+0 & 0 & 1
+\end{bmatrix}.
+\]
+Then, by problem 3, 
+\[
+BY = \begin{bmatrix}
+y_1 \\ y_3
+\end{bmatrix} \sim N\left(\begin{bmatrix}
+5 \\ 7
+\end{bmatrix}, \begin{bmatrix}
+2 & 1 \\
+1 & 4
+\end{bmatrix}\right).
+\]
+Let $Y_1 = \begin{bmatrix}
+y_3
+\end{bmatrix}$ and $Y_2 = \begin{bmatrix}
+y_1
+\end{bmatrix}$.  Then, $Y_1$ given $Y_2 = u_1$ follows a Normal distribution with
+\[
+\mu^\star = 7 + 1(2)^{-1}(u_1 - 5) = 7 + \frac{1}{2}(u_1 - 5)
+\]
+and
+\[
+V^\star = 4 - 1(2)^{-1}1 = \frac{7}{2}.
+\]
+Therefore, $y_3 \mid y_1 = u_1 \sim N\big{(}7+\frac{1}{2}(u_1 - 5), \frac{7}{2}\big{)}$.
+\end{itemize}
+\begin{itemize}
+\item[(e)]  Let $Y_1$ and $Y_2$ be the vectors
+\[
+Y_1 = \begin{bmatrix}
+y_1 \\ y_2
+\end{bmatrix} \hspace{5mm}\text{and}\hspace{5mm} Y_2 = \begin{bmatrix}
+y_3
+\end{bmatrix}.
+\]
+Then, we have that $Y_1$ given $Y_2 = u_3$ follows a Normal distribution with
+\[
+\mu^\star = \begin{bmatrix}
+5 \\ 6
+\end{bmatrix} + \begin{bmatrix}
+1 \\ 2
+\end{bmatrix}(4)^{-1}(u_3 - 7) = \begin{bmatrix}
+\frac{1}{4}u_3 + \frac{13}{4} \\
+\frac{1}{2}u_3 + \frac{5}{2}
+\end{bmatrix}
+\]
+and
+\[
+V^\star = \begin{bmatrix}
+2 & 0 \\
+0 & 3
+\end{bmatrix} - \begin{bmatrix}
+1 \\ 2
+\end{bmatrix}(4)^{-1}\begin{bmatrix}
+1 & 2
+\end{bmatrix} = \begin{bmatrix}
+7/4 & -1/2 \\
+-1/2 & 2
+\end{bmatrix}.
+\]
+Therefore, $y_1,y_2 \mid y_3 = u_3 \sim N(\mu^\star, V^\star)$.
+\end{itemize}
+\begin{itemize}
+\item[(f)]  Recall the formula for correlation
+\[
+\rho_{ij} = \frac{\sigma_{ij}}{\sqrt{\sigma^2_i\sigma^2_j}}.
+\]
+Therefore, we see
+\begin{align*}
+\rho_{12} &= \frac{v_{12}}{\sqrt{v_{11}v_{22}}} = \frac{0}{\sqrt{2\cdot 3}} = 0 \\
+\rho_{13} &= \frac{v_{13}}{\sqrt{v_{11}v_{33}}} = \frac{1}{\sqrt{2\cdot 4}} = \frac{1}{\sqrt{8}} \\
+\rho_{23} &= \frac{v_{23}}{\sqrt{v_{22}v_{33}}} = \frac{2}{\sqrt{3\cdot 4}} = \frac{2}{\sqrt{12}}.
+\end{align*}
+\end{itemize}
+\begin{itemize}
+\item[(g)]  Since $Y\sim N(\mu, V)$, then
+\[
+Y \overset{d}{=} AZ + \mu.
+\]
+Therefore, we have
+\[
+BY + \mu^\star \overset{d}{=} BAZ + B\mu + \mu^\star.
+\]
+This implies that $BY + \mu^\star \sim N(B\mu + \mu^\star, BVB')$, where
+\[
+B = \begin{bmatrix}
+2 & 1 & 0 \\
+1 & 1 & 1
+\end{bmatrix} \hspace{5mm}\text{and}\hspace{5mm}\mu^\star = \begin{bmatrix}
+-15 \\ -18
+\end{bmatrix}.
+\]
+Therefore, we have the distribution of $Z$ to be
+\[
+Z \sim N\left(\begin{bmatrix}
+1 \\ 0
+\end{bmatrix}, \begin{bmatrix}
+11 & 11 \\
+11 & 15
+\end{bmatrix}\right).
+\]
+\end{itemize}
+\item[(h)]  Recall that the characteristic function for the multvariate normal distribution is
+\[
+\Phi(t) = \exp\left\{it'\mu - \frac{1}{2}t'Vt\right\}.
+\]
+Let $t = (t_1,t_2,t_3)'$.  Then, we have that
+\begin{align*}
+\Phi_Y(t) = \exp\left\{it'\begin{bmatrix}
+5 \\ 6 \\ 7
+\end{bmatrix} - \frac{1}{2}t'\begin{bmatrix}
+2 & 0 & 1 \\
+0 & 3 & 2 \\
+1 & 2 & 4
+\end{bmatrix}t\right\}
+\end{align*}
+and
+\[
+\Phi_Z(t) = \exp\left\{it'\begin{bmatrix}
+1 \\ 0
+\end{bmatrix} - \frac{1}{2}t'\begin{bmatrix}
+11 & 11 \\
+11 & 15
+\end{bmatrix}t\right\}.
+\]
+\end{itemize}
+
+\section*{Problem 7:}
+The density of $Y = (y_1,y_2,y_3)'$ is
+\[
+(2\pi)^{-3/2}|V|^{-1/2}e^{-Q/2},
+\]
+where
+\[
+Q = 2y_1^2 + y_2^2 + y_3^2 + 2y_1y_2 - 8y_1 - 4y_2 + 8.
+\]
+Find $V^{-1}$ and $\mu$.
+\begin{itemize}
+\item[] {\bf Solution:}  This multivariate normal distribution can be written as
+\[
+(2\pi)^{-3/2}|V|^{-1/2}\exp\left\{-\frac{1}{2}(Y-\mu)'V^{-1}(Y-\mu)\right\}.
+\]
+This implies that
+\begin{align*}
+Q &= (Y-\mu)'V^{-1}(Y-\mu) \\
+&= Y'V^{-1}Y - 2\mu'V^{-1}Y + \mu'V^{-1}\mu \\
+&= 2y_1^2 + y_2^2 + y_3^2 + 2y_1y_2 - 8y_1 - 4y_2 + 8.
+\end{align*}
+Solving the above equality for $V^{-1}$ and $\mu$, we find
+\[
+V^{-1} = \begin{bmatrix}
+2 & 1 & 0 \\
+1 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix} \hspace{5mm}\text{and}\hspace{5mm} \mu = \begin{bmatrix}
+2 \\ 0 \\ 0
+\end{bmatrix}.
+\]
+\end{itemize}
+
+\section*{Problem 8:}
+Let $Y = (y_1,y_2,y_3)' \sim N(\mu,\sigma^2I)$.  Consider the quadratic forms defined by the matrices $M_1,M_2,$ and $M_3$ given below.
+\[
+M_1 = \frac{1}{3}J_3^3, \hspace{5mm}M_2 = \frac{1}{14}\begin{bmatrix}
+9 & -3 & -6 \\
+-3 & 1 & 2 \\
+-6 & 2 & 4
+\end{bmatrix}, \hspace{5mm}M_3 = \frac{1}{42}\begin{bmatrix}
+1 & -5 & 4 \\
+-5 & 25 & -20 \\
+4 & -20 & 16
+\end{bmatrix}.
+\]
+\begin{itemize}
+\item[(a)] Find the distribution of each $Y'M_iY$.
+\item[(b)] Show that the quadratic forms are pairwise independent.
+\item[(c)] Show that the quadratic forms are mutually independent.
+\end{itemize}
+\begin{itemize}
+\item[] {\bf Solution:}
+\begin{itemize}
+\item[(a)]  First we must show that $M_i$ is an o.p.m for $i=1,2,3$; i.e. $M_iM_i = M_i$ and $M_i' = M_i$.  It is easily seen that $M_i' = M_i$ for $i=1,2,3$.  Also, squaring each matrix will show that $M_i$ is idempotent for $i=1,2,3$.  Therefore, $M_i$ is an o.p.m for $i=1,2,3$.  Now since $Y\sim N(\mu,\sigma^2I)$ and $M_i$ is idempotent, we have
+\[
+Y'M_iY / \sigma^2 \sim \chi^2\big{(}tr(M_i), \mu' M_i\mu / (2\sigma^2)\big{)} = \chi^2\big{(}1, \mu'M_i\mu / (2\sigma^2)\big{)}
+\]
+for $i=1,2,3$.
+\item[(b)]  Recall that if $Y\sim N(\mu,\sigma^2I)$ and $BA = 0$, then $Y'AY$ and $Y'BY$ are independent.  Therefore, we just need to show that $M_iM_j = 0$ for $i\not= j$ to establish pairwise independence.  So, we have
+\begin{align*}
+M_1M_2 &= \frac{1}{3}\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{bmatrix}^3\frac{1}{14}\begin{bmatrix}
+9 & -3 & -6 \\
+-3 & 1 & 2 \\
+-6 & 2 & 4
+\end{bmatrix} = \begin{bmatrix}
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 0
+\end{bmatrix} \\
+M_1M_3 &= \frac{1}{3}\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{bmatrix}^3\frac{1}{42}\begin{bmatrix}
+1 & -5 & 4 \\
+-5 & 25 & -20 \\
+4 & -20 & 16
+\end{bmatrix} = \begin{bmatrix}
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 0
+\end{bmatrix} \\
+M_2M_3 &= \frac{1}{14}\begin{bmatrix}
+9 & -3 & -6 \\
+-3 & 1 & 2 \\
+-6 & 2 & 4
+\end{bmatrix}\frac{1}{42}\begin{bmatrix}
+1 & -5 & 4 \\
+-5 & 25 & -20 \\
+4 & -20 & 16
+\end{bmatrix} = \begin{bmatrix}
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 0
+\end{bmatrix}
+\end{align*}
+Therefore, we conclude that $Y'M_iY$ are pairwise independent.
+\item[(c)]  To establish mutual independence, we will first show that the $M_iY$'s are mutually independent.  To do this, note by problem 3 we have the distribution
+\begin{align*}
+\begin{bmatrix}
+M_1Y \\ M_2Y \\ M_3Y
+\end{bmatrix} = \begin{bmatrix}
+M_1 \\ M_2 \\ M_3
+\end{bmatrix}Y &\sim N\left(\begin{bmatrix}
+M_1 \\ M_2 \\ M_3
+\end{bmatrix}\mu, \sigma^2\begin{bmatrix}
+M_1 \\ M_2 \\ M_3
+\end{bmatrix} I \begin{bmatrix}
+M_1 \\ M_2 \\ M_3
+\end{bmatrix}'\right) \\
+&= N\left(\begin{bmatrix}
+M_1\mu \\ M_2\mu \\ M_3\mu 
+\end{bmatrix}, \sigma^2\begin{bmatrix}
+M_1M_1' & M_1M_2' & M_1M_3' \\
+M_2M_1' & M_2M_2' & M_2M_3' \\
+M_3M_1' & M_3M_2' & M_3M_3'
+\end{bmatrix}\right) \tag{1}.
+\end{align*}
+By part (b), we conclude the covariance matrix in distribution (1) becomes
+\[
+\begin{bmatrix}
+M_1Y \\ M_2Y \\ M_3Y
+\end{bmatrix} \sim N\left(\begin{bmatrix}
+M_1\mu \\ M_2\mu \\ M_3\mu 
+\end{bmatrix}, \sigma^2\begin{bmatrix}
+M_1 & 0 & 0 \\
+0 & M_2 & 0 \\
+0 & 0 & M_3
+\end{bmatrix}\right).
+\]
+Since the off diagonals of the covariance matrix in this joint distribution are all 0, the $M_iY$'s are mutually independent.  Now consider the function of $M_iY$, namely $(M_iY)'(M_iY) = Y'M_iY$.  Since the $M_iY$'s are mutually independent, any function of them should be as well.  Thus, the $Y'M_iY$'s are mutually independent.
+\end{itemize}
+\end{itemize}
+
+\end{document}

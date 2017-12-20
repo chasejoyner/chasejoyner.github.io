@@ -1,0 +1,146 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage,relsize}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+\newcommand{\XX}{\mathbf{X}^T\mathbf{X}}
+
+\title{Chase Joyner}
+\author{802 Homework 4}
+\date{April 3, 2017}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 11.2}
+As used in the proof to Theorem 11.2b, show that
+\[
+\int_0^\infty t^ae^{-bt}dt = b^{-(a+1)}\Gamma(a+1).
+\]
+\begin{itemize}
+\item[] \textbf{Solution:}  Let $u = bt$.  Then, by this change of variable we have
+\begin{align*}
+\int_0^\infty t^ae^{-bt}dt &= \frac{1}{b}\int_0^\infty \left(\frac{u}{b}\right)^ae^{-u}du = b^{-(a+1)}\int_0^\infty u^{a+1-1}e^{-u}du = b^{-(a+1)}\Gamma(a+1),
+\end{align*}
+where we obtain the last equality using the known Gamma function.
+\end{itemize}
+
+\section*{Problem 11.3}
+\begin{itemize}
+\item[(a)] Show that $(\textbf{I} + \textbf{X}\textbf{V}\textbf{X}')^{-1} = \textbf{I} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}'.$
+\begin{itemize}
+\item[] \textbf{Solution:}  Notice that
+\begin{align*}
+&(\textbf{I} + \textbf{X}\textbf{V}\textbf{X}')\times (\textbf{I} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}') \\
+&= \textbf{I} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}' + \textbf{X}\textbf{V}\textbf{X}' - \textbf{X}\textbf{V}\textbf{X}'\textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}' \\
+ &= \textbf{I} + \mathbf{X}\mathbf{V}\left[\textbf{V}^{-1}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1} + \textbf{I} -  \textbf{X}'\textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\right] \mathbf{X}' \\
+ &= \textbf{I} + \mathbf{X}\mathbf{V}\left[\textbf{I} - (\mathbf{V}^{-1} + \mathbf{X}'\mathbf{X})(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\right] \mathbf{X}' \\
+ &= \mathbf{I} + \mathbf{X}\textbf{V}[\mathbf{I}-\textbf{I}]\mathbf{X}' = \mathbf{I}.
+\end{align*}
+The exact argument above can also be used to show that
+\[
+(\textbf{I} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}')\times (\textbf{I} + \textbf{X}\textbf{V}\textbf{X}') = \mathbf{I}.
+\]
+This shows the result.
+\end{itemize}
+
+\newpage
+\item[(b)] Show that $(\textbf{I} + \textbf{X}\textbf{V}\textbf{X}')^{-1}\textbf{X} = \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1}.$
+\begin{itemize}
+\item[] \textbf{Solution:}  Considering the difference and part (a), we find
+\begin{align*}
+&(\textbf{I} + \textbf{X}\textbf{V}\textbf{X}')^{-1}\textbf{X} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1} \\
+&= \left[\textbf{I} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}'\right]\mathbf{X} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1} \\
+&= \textbf{X} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}'\textbf{X} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1} \\
+&= \textbf{X} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}(\textbf{X}'\textbf{X} + \textbf{V}^{-1}) \\
+&= \textbf{X} - \textbf{X} = \textbf{0}
+\end{align*}
+which shows the result.%
+\end{itemize}
+
+\item[(c)] Show that $\textbf{V}^{-1} - \textbf{V}^{-1}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1} = \textbf{X}'(\textbf{I} + \textbf{X}\textbf{V}\textbf{X}')^{-1}\textbf{X}$.
+\begin{itemize}
+\item[] \textbf{Solution:}  By equation (2.54) in the text, we obtain
+\begin{align*}
+&\textbf{V}^{-1} - \textbf{V}^{-1}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1} \\
+&= \left[\textbf{V} + (\textbf{X}'\textbf{X})^{-1}(\textbf{X}'\textbf{X})(\textbf{X}'\textbf{X})^{-1}\right]^{-1} 
+\\
+&= \left[(\textbf{X}'\textbf{X})^{-1} + \textbf{V}\right]^{-1}.
+\end{align*}
+Now, by (2.54) again, 
+\[
+\left[(\textbf{X}'\textbf{X})^{-1} + \textbf{V}\right]^{-1} = \textbf{X}'\textbf{X} - \textbf{X}'\textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}'\textbf{X}
+\]
+and therefore we have that
+\begin{align*}
+&\textbf{V}^{-1} - \textbf{V}^{-1}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{V}^{-1} \\
+&= \textbf{X}'\textbf{X} - \textbf{X}'\textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}'\textbf{X} \\
+&= \textbf{X}'\left[\textbf{I} - \textbf{X}(\textbf{X}'\textbf{X} + \textbf{V}^{-1})^{-1}\textbf{X}'\right]\textbf{X} \\
+&= \textbf{X}'(\textbf{I} + \textbf{X}\textbf{V}\textbf{X}')^{-1}\textbf{X}
+\end{align*}
+where the last equality is from part (a).
+\end{itemize}
+\end{itemize}
+
+\newpage
+\section*{Problem 5.20}
+\begin{itemize}
+\item[(a)] We can see that the $t$ distribution is a mixture of normals using the following argument:
+\[
+P(T_\nu \leq t) = P\left(\frac{Z}{\sqrt{\chi^2_\nu / \nu}}\leq t\right) = \int_0^\infty P(Z \leq t\sqrt{x}/\sqrt{\nu})P(\chi^2_\nu = x)dx,
+\]
+where $T_\nu$ is a $t$ random variable with $\nu$ degrees of freedom.  Using the Fundamental Theorem of Calculus and interpreting $P(\chi^2_\nu = x)$ as a pdf, we obtain
+\[
+f_{T_\nu}(t) = \int_0^\infty \frac{1}{\sqrt{2\pi}}e^{-t^2x/2\nu}\frac{\sqrt{x}}{\sqrt{\nu}}\frac{1}{\Gamma(\nu/2)2^{\nu/2}}x^{\nu/2-1}e^{-x/2}dx,
+\]
+a scale mixture of normals.  Verify this formula by direct integration.
+\begin{itemize}
+\item[] \textbf{Solution:}  Notice that
+\begin{align*}
+&\int_0^\infty \frac{1}{\sqrt{2\pi}}e^{-t^2x/2\nu}\frac{\sqrt{x}}{\sqrt{\nu}}\frac{1}{\Gamma(\nu/2)2^{\nu/2}}x^{\nu/2+1/2-1}e^{-x/2}dx \\
+&= \frac{1}{\sqrt{2\pi}}\frac{1}{\sqrt{\nu}\hspace{1mm}\Gamma(\nu/2)2^{\nu/2}}\int_0^\infty x^{(\nu+1)/2-1}e^{ -t^2x/2\nu - x/2}dx \\
+&= \frac{1}{\sqrt{2\pi}}\frac{1}{\sqrt{\nu}\hspace{1mm}\Gamma(\nu/2)2^{\nu/2}}\int_0^\infty x^{(\nu+1)/2-1}e^{ -x(t^2/2\nu + 1/2)}dx \\
+&= \frac{1}{\sqrt{2\pi}}\frac{1}{\sqrt{\nu}\hspace{1mm}\Gamma((\nu/2)2^{\nu/2}}\cdot  \Gamma\big{(}(\nu+1)/2\big{)}\frac{1}{(t^2/2\nu + 1/2)^{(\nu+1)/2}} \\
+&= \frac{1}{\sqrt{2\pi}}\frac{ \Gamma\big{(}(\nu+1)/2\big{)}}{\sqrt{\nu}\hspace{1mm}\Gamma((\nu/2)2^{\nu/2}} \left(\frac{2\nu}{t^2+\nu}\right)^{(\nu+1)/2} \\
+&= \frac{1}{\sqrt{\nu\pi}}\frac{ \Gamma\big{(}(\nu+1)/2\big{)}}{\Gamma((\nu/2)2^{\nu/2}} \left(\frac{1}{t^2+\nu}\right)^{(\nu+1)/2}
+\end{align*}
+which is the pdf of a $t_\nu$ random variable.  This shows the result.
+\end{itemize}
+
+\item[(b)] A similar formula holds for the $F$ distribution; that is, it can be written as a mixture of chi squareds.  If $F_{1,\nu}$ is an $F$ random variable with 1 and $\nu$ degrees of freedom, then we can write
+\[
+P(F_{1,\nu} \leq \nu t) = \int_0^\infty P(\chi^2_1\leq ty)f_\nu(y)dy,
+\]
+where $f_\nu(y)$ is a $\chi^2_\nu$ pdf.  Use the Fundamental Theorem of Calculus to obtain an integral expression for the pdf of $F_{1,\nu}$, and show that the integral equals the pdf.
+\begin{itemize}
+\item[] \textbf{Solution:}  Taking the derivative of both sides and interchanging the derivative with the integral, we have
+\begin{align*}
+\nu f_{1,\nu}(\nu t) &= \frac{d}{dt} \int_0^\infty P(\chi^2_1\leq ty)f_\nu(y)dy =  \int_0^\infty \frac{d}{dt}
+P(\chi^2_1\leq ty)f_\nu(y)dy \\
+&= \int_0^\infty yf_1(ty)f_\nu(y)dy \\
+&= \int_0^\infty y \frac{1}{\sqrt{2}\hspace{1mm}\Gamma(1/2)} (ty)^{-1/2}e^{-ty/2} \cdot \frac{1}{2^{\nu/2}\Gamma(\nu/2)}y^{\nu/2-1}e^{-y/2}dy \\
+&= \frac{t^{-1/2}}{2^{(\nu+1)/2}\Gamma(1/2)\Gamma(\nu/2)} \int_0^\infty y^{(\nu+1)/2 - 1}e^{-(t+1)y/2}dy \\
+&= \frac{t^{-1/2}}{2^{(\nu+1)/2}\Gamma(1/2)\Gamma(\nu/2)}\cdot \frac{\Gamma\big{(}(\nu+1)/2\big{)}}{\big{[}(t+1)/2\big{]}^{(\nu+1)/2}} \\
+&= \frac{t^{-1/2}}{\Gamma(1/2)\Gamma(\nu/2)}\cdot\frac{\Gamma\big{(}(\nu+1)/2\big{)}}{(t+1)^{(\nu+1)/2}}.
+\end{align*}
+This implies that 
+\[
+f_{1,\nu}(\nu t) = \frac{t^{-1/2}}{\nu\Gamma(1/2)\Gamma(\nu/2)}\cdot\frac{\Gamma\big{(}(\nu+1)/2\big{)}}{(t+1)^{(\nu+1)/2}}.
+\]
+For clarity, consider $x = \nu t$ and so the above becomes
+\begin{align*}
+f_{1,\nu}(\nu t) &= \frac{\Gamma\big{(}(\nu+1)/2\big{)}}{\nu\Gamma(1/2)\Gamma(\nu/2)}\frac{(x/\nu)^{-1/2}}{(1+x/\nu)^{(\nu+1)/2}} \\
+&= \frac{\Gamma\big{(}(\nu+1)/2\big{)}\nu^{\nu/2}}{\Gamma(1/2)\Gamma(\nu/2)}\frac{x^{1/2 - 1}}{(\nu + x)^{(1+\nu)/2}}
+\end{align*}
+and the RHS above is indeed the pdf of an $F_{1,\nu}$ random variable.
+\end{itemize}
+\end{itemize}
+
+
+
+\end{document}

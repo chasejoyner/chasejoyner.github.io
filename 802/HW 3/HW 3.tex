@@ -1,0 +1,141 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage,relsize}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+\newcommand{\XX}{\mathbf{X}^T\mathbf{X}}
+
+\title{Chase Joyner}
+\author{802 Homework 3}
+\date{March 6, 2017}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+Show that the matrix $\mathbf{A}$ given by
+\[
+\mathbf{A} = \begin{bmatrix}
+\mathbf{X}^T\mathbf{X} & \mathbf{T}^T \\
+\mathbf{T} & \mathbf{0}
+\end{bmatrix}
+\]
+is a non-singular matrix, where $\mathbf{X}$ is the design matrix for a non-full rank linear model and $\mathbf{T}$ is a corresponding matrix such that $\mathbf{T}\bm\beta = \mathbf{0}$ is a side condition.
+\begin{itemize}
+\item[] \textbf{Solution:}  Assume that $\mathbf{X}\in\mathbb{R}^{n\times p}$ with $\text{rank}(X) = k<p\leq n$. Then, since $\mathbf{T}\bm\beta = \mathbf{0}$ is a side condition, by definition we have $\text{rank}(\mathbf{T}) = p - k$ the following two properties 
+\begin{align*}
+1) &\hspace{5mm} \text{rank}\begin{pmatrix}
+\mathbf{X} \\ \mathbf{T}
+\end{pmatrix} = p \\
+2) &\hspace{5mm} \text{rank}\begin{pmatrix}
+\mathbf{X} \\ \mathbf{T}
+\end{pmatrix} = \text{rank}(\mathbf{X}) + \text{rank}(\mathbf{T})
+\end{align*}
+which implies that the rows of $\mathbf{T}$ and $\mathbf{X}$ are linearly independent.  Therefore, the columns of $\mathbf{T}^T$ and $\mathbf{X}^T$ are linearly independent.  Since $C(\mathbf{X}^T) = C(\mathbf{X}^T\mathbf{X})$, the columns of $\mathbf{T}^T$ and $\mathbf{X}^T\mathbf{X}$ are linearly independent.  Thus, $\mathbf{A}$ is invertible.
+\end{itemize}
+
+\section*{Problem 2}
+Define $\mathbf{H}:= \mathbf{X}^T\mathbf{X} + \mathbf{T}^T\mathbf{T}$.  Show that the inverse of $\mathbf{A}$ in Problem 1 is given by
+\[
+\mathbf{A}^{-1} = \begin{bmatrix}
+\mathbf{H}^{-1}\XX\mathbf{H}^{-1} & \mathbf{H}^{-1}\mathbf{T}^T \\
+\mathbf{T}\mathbf{H}^{-1} & \mathbf{0}
+\end{bmatrix}.
+\]
+\begin{itemize}
+\item[] \textbf{Solution:}  Was out sick late last week, couldn't seek help on this one =(.
+\end{itemize}
+
+\section*{Problem 3}
+In the non-full rank linear model $\mathbf{y} = \mathbf{X}\bm\beta + \bm\epsilon$, $\bm\epsilon\sim N(\mathbf{0},\sigma^2\mathbf{I})$, let $\mathbf{C}\in\R^{m\times p}$ be a full-row-rank matrix such that $\mathbf{C}\bm\beta$ is estimable.  Define $SSH = \big{(}\mathbf{C}\widehat{\bm\beta}\big{)}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1}\big{(}\mathbf{C}\widehat{\bm\beta}\big{)}$ and $SSE = \mathbf{y}^T\big{(}\mathbf{I} - \mathbf{X}\mathbf{G}\mathbf{X}^T\big{)}\mathbf{y}$, where $\mathbf{G}$ is a generalized inverse of $\mathbf{X}^T\mathbf{X}$.  Show that $SSH$ and $SSE$ are (statistically) independent.
+\begin{itemize}
+\item[] \textbf{Solution:} First notice that we can express $\widehat{\bm\beta}$ as
+\[
+\widehat{\bm\beta} = \mathbf{G}\mathbf{X}^T\mathbf{y}.
+\]
+Therefore, we can rewrite $SSH$ in the following way:
+\begin{align*}
+SSH &= \big{(}\mathbf{C}\widehat{\bm\beta}\big{)}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1}\big{(}\mathbf{C}\widehat{\bm\beta}\big{)} = \mathbf{y}^T\mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\mathbf{G}\mathbf{X}^T\mathbf{y} \equiv \mathbf{y}^T\mathbf{A}\mathbf{y}
+\end{align*}
+where $\mathbf{A}$ is the matrix given by
+\[
+\mathbf{A} = \mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\mathbf{G}\mathbf{X}^T.
+\]
+Also, denote $\mathbf{B} = \mathbf{I} - \mathbf{X}\mathbf{G}\mathbf{X}^T$ and so $SSE = \mathbf{y}^T\mathbf{B}\mathbf{y}$.  To show that $SSH$ and $SSE$ are independent, it suffices to show that $\mathbf{A}\mathbf{B} = \mathbf{0}$ by a result of quadratic forms of normal random variables.  Indeed,
+\begin{align*}
+\mathbf{A}\mathbf{B} &= \mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\mathbf{G}\mathbf{X}^T \Big{(}\mathbf{I} - \mathbf{X}\mathbf{G}\mathbf{X}^T\Big{)} = \mathbf{A} - \mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\mathbf{G}\mathbf{X}^T\mathbf{X}\mathbf{G}\mathbf{X}^T \\
+&= \mathbf{A} - \mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\big{(}\mathbf{X}^T\mathbf{X}\big{)}^{-} \mathbf{X}^T\mathbf{X}\big{(}\mathbf{X}^T\mathbf{X}\big{)}^{-}\mathbf{X}^T \\
+&= \mathbf{A} - \mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\big{(}\mathbf{X}^T\mathbf{X}\big{)}^{-} \mathbf{X}^T \\
+&= \mathbf{A} - \mathbf{X}\mathbf{G}^T\mathbf{C}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1} \mathbf{C}\mathbf{G} \mathbf{X}^T = \mathbf{A} - \mathbf{A} = \mathbf{0}.
+\end{align*}
+Therefore, $SSH$ and $SSE$ are independent.
+\end{itemize}
+
+\section*{Problem 4}
+For the non-full rank version of the Gauss-Markov model
+\[
+\mathbf{y} = \mathbf{X}\bm\beta + \bm\epsilon,
+\]
+derive the $F$-test for testing $H_0\colon\mathbf{C}\bm\beta = \mathbf{t}$, where $\mathbf{C}$ is a $q\times p$ matrix of rank $q$, $\mathbf{t}$ is a specified vector of constants, and the vector of parametric functions $\mathbf{C}\bm\beta$ is estimable.
+\begin{itemize}
+\item[] \textbf{Solution:}  Consider the equivalent test $H_0\colon \mathbf{C}\bm\beta - \mathbf{t} = \mathbf{0}$ and now
+\begin{align*}
+SSH &= \big{(}\mathbf{C}\widehat{\bm\beta} - \mathbf{t}\big{)}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1}\big{(}\mathbf{C}\widehat{\bm\beta}  - \mathbf{t}\big{)},
+\end{align*}
+where $\mathbf{G}$ is a generalized inverse of $\mathbf{X}^T\mathbf{X}$ as before.  Notice that 
+\begin{align*}
+\mathbf{C}\widehat{\bm\beta} - \mathbf{t} &= \mathbf{C}\mathbf{G}\mathbf{X}^T\mathbf{y} - \mathbf{t} \sim N(\bm\mu, \bm\Sigma)
+\end{align*}
+where $\mu = \mathbf{C}\bm\beta - \mathbf{t}$ and $\bm\Sigma = \sigma^2\mathbf{C}\mathbf{G}\mathbf{C}^T$.  Therefore, it follows that
+\[
+\frac{SSH}{q} \sim \chi^2_q(\lambda)
+\]
+where the noncentrality parameter $\lambda$ is given by
+\[
+\lambda = \big{(}\mathbf{C}\bm\beta - \mathbf{t}\big{)}^T\big{(}\mathbf{C}\mathbf{G}\mathbf{C}^T\big{)}^{-1}\big{(}\mathbf{C}\bm\beta - \mathbf{t}\big{)}
+\]
+and is zero under the null hypothesis.  Recall $SSE$ and $\widehat{\bm\beta}$ are independent.  Therefore, since this $SSH$ is just a function of $\widehat{\bm\beta}$, it is independent of $SSE$.  Also recalling that
+\[
+\frac{SSE}{n-k-1}\sim\chi^2_{n-k-1}
+\] 
+it now follows that we can test the hypothesis using the $F$ statistic
+\[
+F = \frac{SSH/q}{SSE/(n-k-1)} \sim F_{q,n-k-1}.
+\]
+\end{itemize}
+
+\section*{Problem 5}
+Consider the effects version of the one-way layout model given by
+\[
+y_{ij} = \mu + \alpha_i + \epsilon_{ij}, \hspace{5mm} j=1,...,n_i, \hspace{2mm} i=1,...,a,
+\]
+with $\sum_{i=1}^a n_i > a$.  Explain which of the following linear parametric functions are estimable.
+\begin{itemize}
+\item[(a)] $\mu + \alpha_1$
+\item[(b)] $\mu$
+\item[(c)] $\sum_{i=2}^a \alpha_i$
+\item[(d)] $\alpha_2 - \alpha_a$
+\end{itemize}
+\begin{itemize}
+\item[] \textbf{Solution:}  First, we should notice that the design matrix here can be written as
+\[
+\mathbf{X} = \begin{pmatrix}
+\mathbf{x}_1 \\ \vdots \\ \mathbf{x}_a
+\end{pmatrix}
+\]
+where $\mathbf{x}_i$ is a row vector of all zeros, except for a 1 in the first index (for $\mu$) and also index $i+1$ (for $\alpha_i$).
+\begin{itemize}
+\item[(a)]is estimable since $\lambda = (1,1,0,...0)^T\in C(\mathbf{X}^T)$, in fact $\lambda = \mathbf{x}_1^T$.
+\item[(b)] is not estimable since $\lambda = (1,0,...,0)^T\not\in C(\mathbf{X}^T)$.  To see this, try taking any linear combination of the rows of $\mathbf{X}$ and you will always have a 1 remaining after the first index of the resulting vector.
+\item[(c)] is not estimable since $\lambda = (0,0,1,,...,1)^T\not\in C(\mathbf{X}^T)$.  To see this, try taking any linear combination of the rows of $\mathbf{X}$, but we can only obtain a vector like $(a,0,1,...,1)^T$, not $\lambda$.
+\item[(d)] is estimable since it is a contrast.
+\end{itemize}
+\end{itemize}
+
+
+\end{document}

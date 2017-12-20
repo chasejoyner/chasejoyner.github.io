@@ -8,7 +8,8 @@ html
 	width: 900px;
 	margin: 0 auto;
 	max-width: 100%;
-	margin-top: 2%;
+	margin-top: 50px;
+	margin-bottom: 50px;
 	text-align: center;
 	font-family: Verdana;
 	font-size: 14pt;
@@ -55,7 +56,7 @@ html
 #wrapper a
 {
 	text-decoration: none;
-	color: #E54C00;
+	color: #CE4400;
 	font-family: Arial;
 
 }

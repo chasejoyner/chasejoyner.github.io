@@ -1,0 +1,105 @@
+################################################################
+################################################################
+#####
+#####	Here we compare the convergence rates of two MH proposals
+#####
+################################################################
+################################################################
+
+library(mvtnorm)
+library(coda)
+
+## Preliminaries ##
+n = 250
+p = 1
+sims = 1000
+a = rep(0, p)	## prior mean
+R = 100*diag(p)	## prior covariance
+IR = solve(R)
+beta.true = c(4)
+X = matrix(rnorm(n*p, 0, 1), ncol = p, nrow = n)
+## Standardize matrix ##
+X = t((t(X) - apply(X,2,mean)) / apply(X,2,sd))
+
+## Create link function ##
+link = function(u){
+	val = exp(u) / (1 + exp(u))
+	return(val)
+}
+
+## Create log posterior function ##
+post = function(u){
+	probs.t = link(X %*% u)
+	val = -(1/2) * t(u - a) %*% IR %*% (u - a) + sum(Y * log(probs.t / (1 - probs.t)) - log(1 / (1 - probs.t)))
+	return(val)
+}
+
+## Generate data ##
+probs = link(X %*% beta.true)
+Y = rbinom(n, 1, probs)
+
+
+
+##### Method two -- BIWLS #####
+beta = 0   	## starting value
+accept.biwls = 0
+Beta.biwls = matrix(-99, ncol = sims, nrow = p)
+for(t in 1:sims){
+	probs.t = as.vector(link(X %*% beta))
+	newY = X %*% beta + (Y - probs.t) / (probs.t * (1 - probs.t))
+	W = diag(probs.t * (1 - probs.t))
+	C = solve(IR + t(X) %*% W %*% X)
+	m = C %*% (IR %*% a + t(X) %*% W %*% newY)
+	beta.s = as.vector(rmvnorm(1, m, C))
+	probs.t2 = as.vector(link(X %*% beta.s))
+	newY2 = X %*% beta.s + (Y - probs.t2) / (probs.t2 * (1 - probs.t2))
+	W2 = diag(probs.t2 * (1 - probs.t2))
+	C2 = solve(IR + t(X) %*% W2 %*% X)
+	m2 = C2 %*% (IR %*% a + t(X) %*% W2 %*% newY2)
+	r = post(beta.s) - post(beta) + dmvnorm(beta, m2, C2, log = TRUE) - dmvnorm(beta.s, m, C, log = TRUE)	## need to fix this
+	logu = log(runif(1))
+	if(logu < r){
+		beta = beta.s
+		probs = link(X %*% beta)
+		accept.biwls = accept.biwls + 1
+	}
+	Beta.biwls[,t] = beta
+	plot(Beta.biwls[,1:t])
+}
+
+
+accept.biwls / sims
+mean(Beta.biwls[(sims/2):sims])
+
+
+
+
+
+
+
+##### Method one -- naive proposal #####
+beta = a		## starting value
+S = (1/100)*diag(p)	## tuning covariance
+accept.naive = 0
+Beta.naive = matrix(-99, ncol = sims, nrow = p)
+for(t in 1:sims){
+	beta.s = as.vector(rmvnorm(1, beta, S))
+	probs.s = as.vector(link(X %*% beta.s))
+	r = post(beta.s) - post(beta)
+	#r = sum(dbinom(Y, 1, probs.s, log = TRUE)) + dmvnorm(beta.s, a, R, log = TRUE) - sum(dbinom(Y, 1, probs, log = TRUE)) - dmvnorm(beta, a, R, log = TRUE) 
+	logu = log(runif(1))
+	if(logu < r){
+		beta = beta.s
+		probs = as.vector(link(X %*% beta))
+		accept.naive = accept.naive + 1
+	}
+	Beta.naive[,t] = beta
+	plot(Beta.naive[1,1:t])
+}
+accept.naive / sims
+plot(as.mcmc(Beta.naive[1,]))
+
+
+
+
+

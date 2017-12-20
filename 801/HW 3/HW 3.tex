@@ -1,0 +1,441 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+
+\title{Chase Joyner}
+\author{801 Homework 3}
+\date{September 29, 2015}
+
+\begin{document}
+\maketitle
+\section*{Problem 1:}
+Let $y_{11},y_{12},...,y_{1r}$ be $N(\mu_1,\sigma^2)$ and $y_{21},y_{22},...,y_{2s}$ be $N(\mu_2,\sigma^2)$ with all $y_{ij}$'s independent.  Write this as a linear model.  Find estimates of $\mu_1,\mu_2,\mu_1-\mu_2$, and $\sigma^2$.  Using Appendix E, and Exercise 2.1, form an $\alpha = .01$ test for $H_0\colon \mu_1 = \mu_2$.  Similarly, form 95$\%$ confidence intervals for $\mu_1-\mu_2$ and $\mu_1$.  What is the test for $H_0\colon\mu_1 = \mu_2 + \Delta$, where $\Delta$ is some known fixed quantity?  How do these results compare with the usual analysis for two independent samples?
+\begin{itemize}
+\item[] {\bf Solution:}  Writing this as linear model, we have
+\[
+Y = X\beta + \epsilon,
+\]
+where
+\[
+Y = \begin{bmatrix}
+y_{11} \\ y_{12} \\ \vdots \\ y_{1r} \\ y_{21} \\ \vdots \\ y_{2s}
+\end{bmatrix}_{(r+s)\times 2},\hspace{5mm} X = \begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+\vdots & \vdots \\
+1 & 0 \\ 
+0 & 1 \\
+\vdots & \vdots \\
+0 & 1
+\end{bmatrix}_{(r+s)\times 2}, \hspace{5mm} \beta = \begin{bmatrix}
+\mu_1 \\ \mu_2
+\end{bmatrix}, \hspace{5mm}\epsilon = \begin{bmatrix}
+\epsilon_1 \\ \epsilon_2 \\ \vdots \\ \epsilon_{r+s}
+\end{bmatrix},
+\]
+and $\epsilon \sim N_{r+s}(0,\sigma^2I)$.  We now find estimates of $\mu_1,\mu_2,$ and $\mu_1 - \mu_2$.  First, note that the o.p.m $M$ onto $C(X)$ is
+\[
+M = X(X'X)^-X' = \begin{bmatrix}
+{\bf \frac{1}{r}}_{r\times r} & {\bf 0}_{r\times s} \\
+{\bf 0}_{s\times r} & {\bf \frac{1}{s}}_{s\times s}
+\end{bmatrix},
+\]
+where ${\bf \frac{1}{r}}_{r\times r}$ represents an $r\times r$ matrix of all entries $\frac{1}{r}$ and similar idea for ${\bf \frac{1}{s}}_{s\times s}$.  Also notice that if $\rho'$ is the matrix
+\[
+\rho' = \begin{bmatrix}
+1 & 0 & \cdots & 0 & 0 & 0 & \cdots & 0 \\
+0 & 0 & \cdots & 0 & 1 & 0 & \cdots & 0 \\
+1 & 0 & \cdots & 0 & -1 & 0 &\cdots & 0
+\end{bmatrix}_{3\times(r+s)},
+\]
+then
+\begin{align*}
+\rho' X\beta = \begin{bmatrix}
+\mu_1 \\ \mu_2 \\ \mu_1 - \mu_2
+\end{bmatrix}.
+\end{align*}
+By Corollary 2.2.3, the LSE of $\rho' X\beta$ is
+\[
+\rho'MY = \begin{bmatrix}
+\frac{1}{r}  & \cdots & \frac{1}{r} & 0 & \cdots & 0 \\
+0 & \cdots & 0 & \frac{1}{s} & \cdots & \frac{1}{s} \\
+\frac{1}{r} & \cdots & \frac{1}{r} & -\frac{1}{s} & \cdots & -\frac{1}{s}
+\end{bmatrix}Y = \begin{bmatrix}
+\frac{1}{r}\sum_{i=1}^r y_{1i} \\
+\frac{1}{s}\sum_{i=1}^s y_{2i} \\
+ \frac{1}{r}\sum_{i=1}^r y_{1i} - \frac{1}{s}\sum_{i=1}^s y_{2i}
+\end{bmatrix} = \begin{bmatrix}
+\overline{y}_1 \\ \overline{y}_2 \\ \overline{y}_1 - \overline{y}_2
+\end{bmatrix}.
+\]
+Therefore, an estimate of $\mu_1$ is $\widehat{\mu}_1 = \overline{y}_1$, an estimate of $\mu_2$ is $\widehat{\mu}_2 = \overline{y}_{2}$, and an estimate of $\mu_1 - \mu_2$ is $\overline{y}_1 - \overline{y}_2$.  Now we find an estimate of $\sigma^2$.  Since $r(X) = 2$ and Cov$(\epsilon) = \sigma^2I$, then by theorem 2.2.6, 
+\[
+MSE = \frac{Y'(I-M)Y}{(r+s)-2} = \frac{\sum_{i=1}^r(y_{1i}-\overline{y}_1)^2+\sum_{i=1}^s(y_{2i}-\overline{y}_2)^2}{(r+s)-2}
+\]
+is an estimate of $\sigma^2$.  Now we form an $\alpha = .01$ test for $H_0\colon \mu_1 = \mu_2$.  First, rewrite the null hypothesis as $H_0\colon \mu_1 - \mu_2 = 0$ and note by exercise 2.1 and Appendix E
+\[
+\frac{\lambda'\widehat{\beta} - \lambda'\beta}{\sqrt{MSE\lambda'(X'X)^-\lambda}} \sim t\left(1-\alpha/2, dfE\right).
+\]
+Now if $\lambda' = \begin{bmatrix}
+1 & -1
+\end{bmatrix}$, then under the null hypothesis,
+\[
+T = \frac{\overline{y}_1-\overline{y}_2 - 0}{\sqrt{MSE\left(\frac{1}{r}+\frac{1}{s}\right)}}
+\]
+should be an observation from $t(1-\alpha / 2, r+s-2)$.  Therefore, reject $H_0$ if $|T| \geq t(.995, (r+s)-2)$.  Also by Appendix E, a 95$\%$ confidence interval for $\mu_1-\mu_2$ is
+\[
+\left[\overline{y}_1-\overline{y}_2\pm t(.975, (r+s)-2)\sqrt{MSE\left(\frac{1}{r}+\frac{1}{s}\right)} \right].
+\]
+Also a 95$\%$ confidence interval for $\mu_1$ is
+\[
+\left[\overline{y}_1 \pm t(.975,(r+s)-2)\sqrt{MSE\cdot\frac{1}{r}} \right].
+\]
+Lastly, we develop the test for $H_0\colon \mu_1 = \mu_2 + \Delta$.  Similarly, we construct the statistic
+\[
+T = \frac{\overline{y}_1 - \overline{y}_2 - \Delta}{\sqrt{MSE\left(\frac{1}{r}+\frac{1}{s}\right)}}
+\]
+where
+\[
+MSE = \frac{\sum_{i=1}^r(y_{1i}-\overline{y}_1)^2+\sum_{i=1}^s(y_{2i}-\overline{y}_2)^2}{r+s-2} = \frac{(r-1)s_1^2 + (s-1)s^2_2}{r+s-2}.
+\]
+Reject $H_0$ if $|T| \geq t(1-\alpha/2, (r+s)-2)$.  Therefore, these results are the same as the usual analysis for two independent samples.
+\end{itemize}
+
+\section*{Problem 2:}
+Let $y_1,y_2,...,y_n$ be independent $N(\mu,\sigma^2)$.  Write a linear model for these data.  For the rest of the problem, use the results of Chapter 2, Appendix E, and Exercise 2.1.  Form an $\alpha = 0.01$ test for $H_0\colon \mu = \mu_0$, where $\mu_0$ is some known fixed number and form a 95$\%$ confidence interval for $\mu$.  How do these results compare with the usual analysis for one sample?
+\begin{itemize}
+\item[] {\bf Solution:}  Writing this as a linear model, we have
+\[
+Y = X\beta + \epsilon,
+\]
+where
+\[
+Y = \begin{bmatrix}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{bmatrix}, \hspace{5mm} X = \begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix}_{n\times 1}, \hspace{5mm} \beta = \begin{bmatrix}
+\mu
+\end{bmatrix}, \hspace{5mm} \epsilon = \begin{bmatrix}
+\epsilon_1 \\ \epsilon_2 \\ \vdots \\ \epsilon_n
+\end{bmatrix},
+\]
+and $\epsilon \sim N_{n}(0,\sigma^2I)$.  We showed in problem 1 that an estimate of $\mu$ is $\widehat{\mu} = \overline{y}$.  Note that the projection matrix is
+\[
+M = X(X'X)^-X' = \begin{bmatrix}
+{\bf \frac{1}{n}}
+\end{bmatrix}_{n\times n},
+\]
+i.e. $M$ is an $n\times n$ matrix of all entries $\frac{1}{n}$, and so the $MSE$ becomes
+\[
+MSE = \frac{Y'(I-M)Y}{n-1} = \frac{\sum_{i=1}^n(y_i-\overline{y})^2}{n-1} = s^2.
+\]
+Then, taking $\lambda' = 1$, we know that under the null hypothesis
+\[
+T = \frac{\overline{y} - \mu_0}{\sqrt{MSE(\frac{1}{n})}} = \frac{\overline{y}-\mu_0}{\sqrt{s^2/n}}
+\]
+should be an observation from $t(.995,n-1)$.
+Therefore, reject $H_0$ if $|T| \geq t(.995,n-1)$.  A 95$\%$ confidence interval for $\mu$ is
+\[
+\left[\overline{y}\pm t(.975,n-1)\sqrt{MSE\cdot\frac{1}{n}} \right].
+\]
+These results coincide with the usual analysis for one sample.
+\end{itemize}
+
+\newpage
+\section*{Problem 3:}
+\begin{itemize}
+\item[(a)] Show that $AVA' = AV = VA'$.
+\item[(b)] Show that $A'V^{-1}A = A'V^{-1} = V^{-1}A$.
+\item[(c)] Show that $A$ is the same for any choice of $(X'V^{-1}X)^-$.
+\end{itemize}
+\begin{itemize}
+\item[] {\bf Solution:}  For this problem, $A = X(X'V^{-1}X)^-X'V^{-1}$, where $V$ is a covariance matrix and hence is symmetric.
+\begin{itemize}
+\item[(a)]  It is clear that $AV = VA'$ because
+\[
+AV = X(X'V^{-1}X)^-X'
+\]
+and
+\[
+VA' = V(V^{-1} X(X'V^{-1}X)^-X') = X(X'V^{-1}X)^-X' = AV.
+\]
+Now,
+\begin{align*}
+AVA' &= \Big{(}X(X'V^{-1}X)^-X'V^{-1}\Big{)}V\Big{(}X(X'V^{-1}X)^-X'V^{-1}\Big{)}' \\
+&= X(X'V^{-1}X)^-(X'V^{-1}X)(X'V^{-1}X)^-X' \\
+&= X(X'V^{-1}X)^-X' \\
+&= AV = VA'.
+\end{align*}
+Therefore, $AVA' = AV = VA'$.
+\item[(b)]  It is clear that $A'V^{-1} = V^{-1}A$ because
+\[
+A'V^{-1} = V^{-1}X(X'V^{-1}X)^-X'V^{-1}
+\]
+and
+\[
+V^{-1}A = V^{-1}X(X'V^{-1}X)^-X'V^{-1} = A'V^{-1}.
+\]
+Now,
+\begin{align*}
+A'V^{-1}A &= \Big{(}X(X'V^{-1}X)^-X'V^{-1}\Big{)}'V^{-1}\Big{(}X(X'V^{-1}X)^-X'V^{-1}\Big{)} \\
+&= V^{-1}X(X'V^{-1}X)^-(X'V^{-1}X)(X'V^{-1}X)^-X'V^{-1} \\
+&= V^{-1}X(X'V^{-1}X)^-X'V^{-1} \\
+&= A'V^{-1} = V^{-1}A.
+\end{align*}
+Therefore, $A'V^{-1}A = A'V^{-1} = V^{-1}A$.
+\newpage
+\item[(c)]  Note that since $V$ is positive definite, we can write $V^{-1} = Q'Q$ for some $Q$.  Then, 
+\[
+X'V^{-1}X = X'Q'QX = (QX)'(QX) := (X^{\star})' X^\star.
+\]
+Now assume that $G$ and $H$ are generalized inverses of $(X'V^{-1}X)$, i.e. of $(X^{\star})' X^\star$.  Then, by Lemma B.43,
+\begin{align*}
+X^\star G (X^\star)' &= X^\star H (X^\star)' \\
+QXGX'Q' &= QXHX'Q' \\
+QXGX'Q'Q &= QXHX'Q'Q \\
+QXGX'V^{-1} &= QXHX'V^{-1} \\
+Q'QXGX'V^{-1} &= Q'QXHX'V^{-1} \\
+V^{-1}XGX'V^{-1} &= V^{-1}XHX'V^{-1} \\
+XGX'V^{-1} &= XHX'V^{-1}.
+\end{align*}
+Now, recall that $A = X(X'V^{-1}X)^-X'V^{-1}$.  Then, we have $A = XGX'V^{-1} = XHX'V^{-1}$.  Therefore, $A$ is the same for any choice of $(X'V^{-1}X)^-$.
+\end{itemize}
+\end{itemize}
+
+\section*{Problem 4:}
+Consider the model
+\[
+Y = X\beta + b + e, \hspace{5mm} E(e) = 0, \hspace{5mm} \text{Cov}(e) = \sigma^2I,
+\]
+where $b$ is a known vector.  Show that Proposition 2.1.9:  A linear estimate $a_0 + a'Y$ is unbiased for $\lambda'\beta$ if and only if $a_0 = 0$ and $a'X = \lambda'$. is not valid for this model by producing a linear unbiased estimate of $\rho'X\beta$, say $a_0 + a'Y$, for which $a_0 \not= 0$.  Hint:  Modify $\rho'MY$.
+\begin{itemize}
+\item[] {\bf Solution:}  We know that
+\[
+E(a_0+a'Y) = a_0 + a'E(Y) = a_0 + a'(X\beta + b).
+\]
+Then, take $a_0 = -a'b$ and $a' = \rho'$.  This gives that
+\[
+E(a_0+a'Y) = a_0 + a'X\beta + a'b = a'X\beta = \rho'X\beta,
+\]
+that is to say that $a_0+a'Y$ is unbiased for $\rho'X\beta$, but $a_0 \not= 0$.  Therefore, proposition 2.1.9 is not valid.
+\end{itemize}
+
+\newpage
+\section*{Problem 5:}
+Consider the model $y_i = \beta_1x_{i1} + \beta_2x_{i2} + e_i$, where $e_i \overset{iid}{\sim} N(0,\sigma^2)$.  Use the data given below to answer (a) through (d).
+\begin{itemize}
+\item[(a)] Estimate $\beta_1,\beta_2,$ and $\sigma^2$.
+\item[(b)] Give 95$\%$ confidence intervals for $\beta_1$ and $\beta_1 + \beta_2$.
+\item[(c)] Perform an $\alpha = .01$ test for $H_0\colon \beta_2 = 3$.
+\item[(d)] Find an appropriate $P$ value for the test of $H_0\colon \beta_1 - \beta_2 = 0$.
+\end{itemize}
+\begin{itemize}
+\item[] {\bf Solution:}  First, note that by the data given, we have
+\[
+Y = \begin{bmatrix}
+82 \\ 79 \\ 74 \\ 83 \\ 80 \\ 81 \\ 84 \\ 81
+\end{bmatrix},\hspace{5mm} X = \begin{bmatrix}
+10 & 15 \\
+9 & 14 \\
+9 & 13 \\
+11 & 15 \\
+11 & 14 \\
+10 & 14 \\
+10 & 16 \\
+12 & 13 
+\end{bmatrix}.
+\]
+\begin{itemize}
+\item[(a)] Let $\beta = (\beta_1,\beta_2)'$.  Then, we know the LSE of $\beta$ is
+\[
+\widehat{\beta} = (X'X)^-X'Y = \begin{bmatrix}
+2.65 \\ 3.74
+\end{bmatrix}.
+\]
+Also, we know the LSE of $\sigma^2$ is
+\[
+MSE = \frac{Y'(I-M)Y}{n-r},
+\]
+where $M = X(X'X)^-X'$ and $r = r(X)$.  Therefore,
+\[
+\widehat{\sigma}^2 = MSE = \frac{Y'(I-M)Y}{8-2} = 4.70.
+\]
+Therefore, our estimates are $\widehat{\beta_1} = 2.65$, $\widehat{\beta_2} = 3.74$, and $\widehat{\sigma}^2 = 4.70$.
+\item[(b)] Let $\lambda_1 = (1,0)$ and $\lambda_2 = (1,1)'$.  Note that
+\[
+(X'X)^- = \frac{1}{19712}\begin{bmatrix}
+1632 & -1168 \\
+-1168 & 848
+\end{bmatrix}.
+\]
+Then, a 95$\%$ confidence interval for $\beta_1$ is
+\[
+\left[\widehat{\beta}_1 \pm t(.975,8-2)\sqrt{MSE\cdot\lambda_1'(X'X)^-\lambda_1} \right] = \left[1.124,4.176\right].
+\]
+Also, a 95$\%$ confidence interval for $\beta_1 + \beta_2$ is
+\[
+\left[\widehat{\beta}_1+\widehat{\beta}_2 \pm t(.975,8-2)\sqrt{MSE\cdot\lambda_2'(X'X)^-\lambda_2} \right] = \left[5.937,6.843\right].
+\]
+\item[(c)]  Take $\lambda = (0,1)'$.  Then, we calculate the test statistic
+\[
+T = \frac{\widehat{\beta}_2 - 3}{\sqrt{MSE\cdot\lambda'(X'X)^-\lambda}} = \frac{3.74 - 3}{\sqrt{4.70\cdot \frac{848}{19712}}} = 1.646.
+\]
+Since $|T| \not\geq t(.995,6) = 3.707$, we fail to reject $H_0$.
+\item[(d)]  Take $\lambda = (1,-1)$.  Then, we calculate the test statistic
+\[
+T = \frac{\widehat{\beta_1}-\widehat{\beta}_2 - 0}{\sqrt{MSE\cdot \lambda'(X'X)^-\lambda}} = \frac{-1.09}{\sqrt{4.70\cdot \frac{4816}{19712}}} = -1.017.
+\]
+Then, the $P$ value is $P = P(|T| \geq 1.017) = 2P(T<-1.017) = 0.348$.
+\end{itemize}
+\end{itemize}
+
+\section*{Problem 6:}
+Consider the model
+\[
+y_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2}+\beta_{11}x_{i1}^2 + \beta_{22}x_{i2}^2 + \beta_{12}x_{i1}x_{i2} + e_i,
+\]
+where the predictor variables take on the values given.  Show that $\beta_0,\beta_1,\beta_2,\beta_{11}+\beta_{22}$, and $\beta_{12}$ are estimable and find (nonmatrix) algebraic forms for the estimates of these parameters.  Find the MSE and the standard errors of the estimates.
+\begin{itemize}
+\item[] {\bf Solution:}  For this model, we have
+\[
+Y = \begin{bmatrix}
+y_1 \\ y_2 \\ y_3 \\ y_4 \\ y_5 \\ y_6 \\ y_7
+\end{bmatrix},\hspace{5mm} X = \begin{bmatrix}
+1 & 1 & 1 & 1 & 1 & 1\\
+1 & 1 & -1 & 1 & 1 & -1\\
+1 & -1 & 1 & 1 & 1 & -1\\
+1 & -1 & -1 & 1 & 1 & 1\\
+1 & 0 & 0 & 0 & 0 & 0\\
+1 & 0 & 0 & 0 & 0 & 0\\
+1 & 0& 0 & 0 & 0 & 0\\
+\end{bmatrix}, \hspace{5mm} \beta = \begin{bmatrix}
+\beta_0 \\ \beta_1 \\ \beta_2 \\ \beta_{11} \\ \beta_{22} \\ \beta_{12}
+\end{bmatrix}.
+\]
+It will be useful to identify a basis for $C(X')$. Notice that the row reduced form of $X$ is
+\[R = 
+\begin{bmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 1 & 0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 1 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 
+\end{bmatrix}.
+\]
+Then, a basis for $C(X')$ are the first five rows of $R$.  Denote these rows as $r_1,r_2,r_3,r_4,$ and $r_5$, respectively.\\
+Take $\Lambda_0 = \begin{bmatrix}
+1 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}'$.  Then,
+\[
+\Lambda_0'\beta = \beta_0
+\]
+and $\Lambda_0 = r_1 - r_2 - r_3 - r_4$.  Therefore, $\Lambda_0 \in C(X')$ and so $\beta_0$ is estimable.\\
+Take $\Lambda_1 = \begin{bmatrix}
+0 & 1 & 0 & 0 & 0 & 0
+\end{bmatrix}'$.  Then,
+\[
+\Lambda_1'\beta = \beta_1
+\]
+and $\Lambda_1 = r_2 - r_5.$  Therefore, $\Lambda_1\in C(X')$ and so $\beta_1$ is estimable.\\
+Take $\Lambda_2 = \begin{bmatrix}
+0 & 0 & 1 & 0 & 0 & 0
+\end{bmatrix}'$.  Then,
+\[
+\Lambda_2'\beta = \beta_2
+\]
+and $\Lambda_2 = r_3$.  Therefore, $\Lambda_2\in C(X')$ and so $\beta_2$ is estimable. \\
+Take $\Lambda_{3} = \begin{bmatrix}
+0 & 0 & 0 & 1 & 1 & 0
+\end{bmatrix}'$.  Then,
+\[
+\Lambda_3'\beta = \beta_{11} + \beta_{22}
+\]
+and $\Lambda_3 = r_4$.  Therefore, $\Lambda_3\in C(X')$ and so $\beta_{11} + \beta_{22}$ is estimable. \\
+Lastly, take $\Lambda_4 = \begin{bmatrix}
+0 &0 &0 &0 &0 &1
+\end{bmatrix}'$.  Then,
+\[
+\Lambda_4'\beta = \beta_{12}
+\]
+and $\Lambda_4 = r_5$.  Therefore, $\Lambda_4\in C(X')$ and so $\beta_{12}$ is estimable.  To calcualte the estimates, we first calculate a generalized inverse to be
+\[
+(X'X)^- = \frac{1}{48}\begin{bmatrix}
+16 & 0 & 0 & -8 & -8 & 0 \\
+0 & 12 & 0 & 0 & 0 & 0 \\
+0 & 0 & 12 & 0 & 0 & 0 \\
+-8 & 0 & 0 & 7 & 7 & 0 \\
+-8 & 0 & 0 & 7 & 7 & 0 \\
+0 & 0 & 0 & 0 & 0 & 12
+\end{bmatrix}.
+\]
+Then, the estimates can be found by using the normal equations, which gives
+\[
+\widehat{\beta} = (X'X)^-X'Y = \begin{bmatrix}
+\frac{1}{3}(y_5+y_6+y_7) \\
+\frac{1}{4}(y_1+y_2-y_3-y_4) \\
+\frac{1}{4}(y_1-y_2+y_3-y_4) \\
+\frac{1}{8}(y_1+y_2+y_3+y_4) - \frac{1}{6}(y_5+y_6+y_7) \\
+\frac{1}{8}(y_1+y_2+y_3+y_4) - \frac{1}{6}(y_5+y_6+y_7) \\
+\frac{1}{4}(y_1-y_2-y_3+y_4)
+\end{bmatrix} = \begin{bmatrix}
+\widehat{\beta}_0 \\
+\widehat{\beta}_1 \\
+\widehat{\beta}_2 \\
+\widehat{\beta}_{11} \\
+\widehat{\beta}_{22} \\
+\widehat{\beta}_{12} \\
+\end{bmatrix}.
+\]
+Then, we have the estimate of $\widehat{\beta}_{11} + \widehat{\beta}_{22} =  \frac{1}{4}(y_1+y_2+y_3+y_4) - \frac{1}{3}(y_5+y_6+y_7)$. \\
+To find the MSE, we must first find $(I-M)$.
+We calculate $M$ to be
+\[
+M = X(X'X)^-X' = \begin{bmatrix}
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \\
+0 & 0 & 0 & 0 & \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \\0 & 0 & 0 & 0 & \frac{1}{3} & \frac{1}{3} & \frac{1}{3}
+\end{bmatrix}.
+\]
+Then, we get $(I-M)$ to be
+\[
+I-M = \begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & \frac{2}{3} & -\frac{1}{3} & -\frac{1}{3} \\
+0 & 0 & 0 & 0 & -\frac{1}{3} & \frac{2}{3} & -\frac{1}{3} \\0 & 0 & 0 & 0 & -\frac{1}{3} & -\frac{1}{3} & \frac{2}{3}
+\end{bmatrix}.
+\]
+Therefore, we have that MSE is
+\[
+MSE = \frac{Y'(I-M)Y}{7-5} = \frac{1}{3}(y_5^2 - y_5y_6 - y_5y_7 + y_6^2 - y_6y_7 + y_7^2).
+\]
+Lastly, we can calculate the SE of these estimates by
+\[
+SE = \sqrt{MSE\lambda'(X'X)^-\lambda}.
+\]
+Using the lambdas when showing estimability, we have
+\begin{align*}
+SE\left(\widehat{\beta}_0\right) &= \sqrt{MSE\cdot\Lambda_0'(X'X)^-\Lambda_0} = \sqrt{MSE\cdot\frac{1}{3}} \\
+SE\left(\widehat{\beta}_1\right) &= \sqrt{MSE\cdot\Lambda_1'(X'X)^-\Lambda_1} = \sqrt{MSE\cdot \frac{1}{4}} \\
+SE\left(\widehat{\beta}_2\right) &= \sqrt{MSE\cdot\Lambda_2'(X'X)^-\Lambda_2} = \sqrt{MSE\cdot\frac{1}{4}} \\
+SE\left(\widehat{\beta}_{11}+\widehat{\beta}_{22}\right) &= \sqrt{MSE\cdot\Lambda_3'(X'X)^-\Lambda_3} = \sqrt{MSE\cdot\frac{7}{12}}\\
+SE\left(\widehat{\beta}_{12}\right) &= \sqrt{MSE\cdot\Lambda_4'(X'X)^-\Lambda_4} = \sqrt{MSE\cdot\frac{1}{4}}. \\
+\end{align*}
+\end{itemize}
+
+\end{document}

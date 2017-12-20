@@ -1,0 +1,385 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage,relsize}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+\newcommand{\XX}{(\mathbf{X}'\mathbf{X})}
+
+\title{Chase Joyner}
+\author{802 Homework 2}
+\date{February 8, 2017}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1:}
+Show that an alternative expression for $h_{ii}$ in Theorem 9.2(iii) is the following:
+\[
+h_{ii} = \frac{1}{n} + ({\bf x}_{1i} - \overline{\mathbf{x}}_1)'({\bf x}_{1i} - \overline{\mathbf{x}}_1)\sum_{r=1}^k\frac{1}{\lambda_r}\cos^2\theta_{ir},
+\]
+where $\theta_{ir}$ is the angle between ${\bf x}_{1i}$ and ${\bf a}_r$, the $r$th eigenvector of $\mathbf{X}'_c\mathbf{X}_c$.  Thus $h_{ii}$ is large if $({\bf x}_{1i} - \overline{\mathbf{x}}_1)'({\bf x}_{1i} - \overline{\mathbf{x}}_1)$ is large or if $\theta_{ir}$ is small for some $r$.
+\begin{itemize}
+\item[] \textbf{Solution:}  First recall the expression for $h_{ii}$ is given by
+\[
+h_{ii} = \frac{1}{n} + (\mathbf{x}_{1i} - \overline{\mathbf{x}}_1)'(\mathbf{X}_c'\mathbf{X}_c)^{-1}(\mathbf{x}_{1i} - \overline{\mathbf{x}}_1).
+\]
+By equations (2.101) and (2.104) in the textbook, we can write
+\[
+(\mathbf{X}_c'\mathbf{X}_c)^{-1} = \sum_{r=1}^k \frac{1}{\lambda_r}\mathbf{a}_r\mathbf{a}_r'.
+\]
+Therefore, plugging this in, we have
+\begin{align*}
+h_{ii} &= \frac{1}{n} + ({\bf x}_{1i} - \overline{\mathbf{x}}_1)'\left(\sum_{r=1}^k \frac{1}{\lambda_r}\mathbf{a}_r\mathbf{a}_r'\right)({\bf x}_{1i} - \overline{\mathbf{x}}_1) \\
+&= \frac{1}{n} + \sum_{r=1}^k \frac{1}{\lambda_r}\left[(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'\mathbf{a}_r\right]\left[\mathbf{a}_r'(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)\right] \\
+&= \frac{1}{n} + \sum_{r=1}^k \frac{1}{\lambda_r}\left[(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'\mathbf{a}_r\right]^2.
+\end{align*}
+Now, by the law of cosines, we know that if $\theta$ is the angle between vectors $\mathbf{a}$ and $\mathbf{b}$, then
+\[
+\cos\theta = \frac{a\cdot b}{|a||b|} = \frac{a'b}{\sqrt{a'a}\sqrt{b'b}}.
+\]
+Therefore, we have for our purposes that
+\[
+\cos\theta_{ir} = \frac{(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'\mathbf{a}_r}{\sqrt{(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)\mathbf{a}_r'\mathbf{a}_r}}.
+\]
+Squaring both sides, we obtain
+\[
+\cos^2\theta_{ir} = \frac{\left[(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'\mathbf{a}_r\right]^2}{(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)\mathbf{a}_r'\mathbf{a}_r}
+\]
+and hence
+\[
+(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)\mathbf{a}_r'\mathbf{a}_r\cos^2\theta_{ir} = \left[(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'\mathbf{a}_r\right]^2.
+\]
+Noting that $\mathbf{a}_r'\mathbf{a}_r = 1$ since it is the eigenvector of a centered matrix, plugging into our simplified version of $h_{ii}$, we get that
+\begin{align*}
+h_{ii} &= \frac{1}{n} + \sum_{r=1}^k \frac{1}{\lambda_r}\left[(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'\mathbf{a}_r\right]^2 \\
+&= \frac{1}{n} + (\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)'(\mathbf{x}_{1i}-\overline{\mathbf{x}}_1)\sum_{r=1}^k \frac{1}{\lambda_r} \cos^2\theta_{ir}
+\end{align*}
+which proves the result.
+\end{itemize}
+
+\section*{Problem 2:}
+Show that $\frac{1}{n}\leq h_{ii} + \widehat{\varepsilon}_i^2 / \widehat{\bm\varepsilon}'\widehat{\bm\varepsilon} \leq 1$ as in (9.24).  The following steps are suggested:
+\begin{itemize}
+\item[(a)] Let $\mathbf{H}^\star$ be the hat matrix corresponding to the augmented matrix $(\mathbf{X},\mathbf{y})$.  Then
+\begin{align*}
+\mathbf{H}^\star &= (\mathbf{X},\mathbf{y})\left[(\mathbf{X},\mathbf{y})'(\mathbf{X},\mathbf{y})\right]^{-1}(\mathbf{X},\mathbf{y})' \\
+&= (\mathbf{X},\mathbf{y})\left(\begin{matrix}
+\mathbf{X}'\mathbf{X} & \mathbf{X}'\mathbf{y} \\
+\mathbf{y}'\mathbf{X} & \mathbf{y}'\mathbf{y}
+\end{matrix}\right)^{-1}
+\left(\begin{matrix}
+\mathbf{X}' \\ \mathbf{y}'
+\end{matrix}\right).
+\end{align*}
+Use the inverse of a partitioned matrix in (2.50) with $\mathbf{A}_{11} = \mathbf{X}'\mathbf{X}$, $\mathbf{a}_{12} = \mathbf{X}'\mathbf{y}$, $\mathbf{a}_{21} = \mathbf{y}'\mathbf{X}$, and $a_{22} = \mathbf{y}'\mathbf{y}$ to obtain
+\begin{align*}
+\mathbf{H}^\star &= \mathbf{H} + \frac{1}{b}\left[\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}\mathbf{y}'\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}' - \mathbf{y}\mathbf{y}'\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}' - \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}\mathbf{y}' + \mathbf{y}\mathbf{y}'\right] \\
+&= \mathbf{H} + \frac{1}{b}\left[\mathbf{H}\mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{H}\mathbf{y}\mathbf{y}' + \mathbf{y}\mathbf{y}'\right],
+\end{align*}
+where $b = \mathbf{y}'\mathbf{y} - \mathbf{y}'\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$.
+\begin{itemize}
+\item[] \textbf{Solution:} Using (2.50) and the partitions defined above, we have
+\begin{align*}
+\mathbf{H}^\star &= \frac{1}{b}(\mathbf{X},\mathbf{y})\left(\begin{matrix}
+b\mathbf{A}_{11}^{-1} + \mathbf{A}_{11}^{-1}\mathbf{a}_{12}\mathbf{a}_{21}\mathbf{A}_{11}^{-1} & -\mathbf{A}_{11}^{-1}\mathbf{a}_{12} \\
+-\mathbf{a}_{21}\mathbf{A}_{11}^{-1} & 1
+\end{matrix}\right)\left(\begin{matrix}
+\mathbf{X}' \\ \mathbf{y}'
+\end{matrix}\right)
+\end{align*}
+where $b = a_{22} - \mathbf{a}_{21}\mathbf{A}_{11}^{-1}\mathbf{a}_{12}$.  Multiplying further, we get
+\begin{align*}
+\mathbf{H}^\star &= \frac{1}{b}(\mathbf{X},\mathbf{y})\left(\begin{matrix}
+b\mathbf{A}_{11}^{-1}\mathbf{X}' + \mathbf{A}_{11}^{-1}\mathbf{a}_{12}\mathbf{a}_{21}\mathbf{A}_{11}^{-1}\mathbf{X}' - \mathbf{A}_{11}^{-1}\mathbf{a}_{12}\mathbf{y}' \\
+-\mathbf{a}_{21}\mathbf{A}_{11}^{-1}\mathbf{X}' + \mathbf{y}'
+\end{matrix}\right) \\
+&= \frac{1}{b}\left[b\mathbf{X}\mathbf{A}_{11}^{-1}\mathbf{X}' + \mathbf{X}\mathbf{A}_{11}^{-1}\mathbf{a}_{12}\mathbf{a}_{21}\mathbf{A}_{11}^{-1}\mathbf{X}' - \mathbf{X}\mathbf{A}_{11}^{-1}\mathbf{a}_{12}\mathbf{y}' - \mathbf{y}\mathbf{a}_{21}\mathbf{A}_{11}^{-1}\mathbf{X}' + \mathbf{y}\mathbf{y}'\right] \\
+&= \mathbf{H} + \frac{1}{b}\left[\mathbf{H}\mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{H}\mathbf{y}\mathbf{y}' - \mathbf{y}\mathbf{y}'\mathbf{H} + \mathbf{y}\mathbf{y'} \right].
+\end{align*}
+\end{itemize}
+
+\item[(b)] Show that the above expression factors into
+\[
+\mathbf{H}^\star = \mathbf{H} + \frac{(\mathbf{I}-\mathbf{H})\mathbf{y}\mathbf{y}'(\mathbf{I} - \mathbf{H})}{\mathbf{y}'(\mathbf{I} - \mathbf{H})\mathbf{y}} = \mathbf{H} + \frac{\widehat{\bm\varepsilon}\widehat{\bm\varepsilon}'}{\widehat{\bm\varepsilon}'\widehat{\bm\varepsilon}},
+\]
+which gives $h_{ii}^\star = h_{ii} + \widehat{\varepsilon}_i^2 / \widehat{\bm\varepsilon}'\widehat{\bm\varepsilon}$.
+\begin{itemize}
+\item[] \textbf{Solution:}  Clearly we can factor $b$ into
+\[
+b = \mathbf{y}'\mathbf{y} - \mathbf{y}'\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y} = \mathbf{y}'(\mathbf{I}-\mathbf{H})\mathbf{y}.
+\]
+Now, notice that
+\begin{align*}
+\mathbf{H}\mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{H}\mathbf{y}\mathbf{y}' + \mathbf{y}\mathbf{y}' &= (\mathbf{I}-\mathbf{H})\mathbf{y}\mathbf{y}' + \mathbf{H}\mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{y}\mathbf{y}'\mathbf{H} \\
+&= (\mathbf{I}-\mathbf{H})\mathbf{y}\mathbf{y}' - (\mathbf{I}-\mathbf{H})\mathbf{y}\mathbf{y}'\mathbf{H} \\
+&= (\mathbf{I}-\mathbf{H})(\mathbf{y}\mathbf{y}' - \mathbf{y}\mathbf{y}'\mathbf{H}) \\
+&=(\mathbf{I}-\mathbf{H})\mathbf{y}\mathbf{y}'(\mathbf{I}-\mathbf{H}).
+\end{align*}
+Therefore, we have
+\begin{align*}
+\mathbf{H}^\star &=  \mathbf{H} + \frac{1}{b}\left[\mathbf{H}\mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{y}\mathbf{y}'\mathbf{H} - \mathbf{H}\mathbf{y}\mathbf{y}' + \mathbf{y}\mathbf{y}'\right] \\
+&= \mathbf{H} + \frac{(\mathbf{I}-\mathbf{H})\mathbf{y}\mathbf{y}'(\mathbf{I} - \mathbf{H})}{\mathbf{y}'(\mathbf{I} - \mathbf{H})\mathbf{y}} = \mathbf{H} + \frac{\widehat{\bm\varepsilon}\widehat{\bm\varepsilon}'}{\widehat{\bm\varepsilon}'\widehat{\bm\varepsilon}}
+\end{align*}
+\end{itemize}
+
+\item[(c)] The proof is easily completed by noting that $\mathbf{H}^\star$ is a hat matrix and therefore $(1/n) \leq h_{ii}^\star \leq 1$ by Theorem 9.2(i).
+\begin{itemize}
+\item[] \textbf{Solution:}  By construction of $\mathbf{H}^\star$ in part (a), we notice it is a hat matrix and so by theorem 9.2,
+\[
+\frac{1}{n}\leq h_{ii}^\star \leq 1
+\]
+for all $i=1,...,n$.  Therefore, by part (b), we have
+\[
+\frac{1}{n} \leq h_{ii} + \widehat{\varepsilon}_i^2 / \widehat{\bm\varepsilon}'\widehat{\bm\varepsilon} \leq 1.
+\]
+This proves the overall result.
+\end{itemize}
+\end{itemize}
+
+\section*{Problem 3:}
+Show that $\widehat{\bm\beta}_{(i)} = \widehat{\bm\beta} - \widehat{\varepsilon}_i(\mathbf{X}'\mathbf{X}
+)^{-1}\mathbf{x}_i/(1-h_{ii})$ as in (9.29).  The following steps are suggested:
+\begin{itemize}
+\item[(a)] Show that $\mathbf{X}'\mathbf{X} = \mathbf{X}'_{(i)}\mathbf{X}_{(i)} + \mathbf{x}_i\mathbf{x}_i'$ and that $\mathbf{X}'\mathbf{y} = \mathbf{X}'_{(i)}\mathbf{y}_{(i)} + \mathbf{x}_iy_i$.
+\begin{itemize}
+\item[] \textbf{Solution:}  Suppose that $\mathbf{X}$ is $n\times k$ and define the row vectors
+\[
+\mathbf{x}'_{i} = (1,x_{i1},x_{i2},...,x_{ik})
+\]
+for $i=1,...,n$.  In this fashion, we can write
+\[
+\mathbf{X} = \left(\begin{matrix}
+\mathbf{x}'_1 \\ \mathbf{x}'_2 \\ \vdots \\ \mathbf{x}'_n
+\end{matrix}\right).
+\]
+Then, notice that
+\begin{align*}
+\mathbf{X}'\mathbf{X} &= \left(\begin{matrix}
+\mathbf{x}_1 & \mathbf{x}_2 & \cdots & \mathbf{x}_k
+\end{matrix}\right)\left(\begin{matrix}
+\mathbf{x}'_1 \\ \mathbf{x}'_2 \\ \vdots \\ \mathbf{x}'_k
+\end{matrix}\right) = \sum_{j=1}^k \mathbf{x}_j\mathbf{x}_j' = \sum_{\underset{j\not= i}{j=1}}^k \mathbf{x}_j\mathbf{x}_j' + \mathbf{x}_i\mathbf{x}_i' \\
+&= \mathbf{X}_{(i)}'\mathbf{X}_{(i)} + \mathbf{x}_i\mathbf{x}_i'.
+\end{align*}
+Similarly, we find that
+\begin{align*}
+\mathbf{X}'\mathbf{y} &= \left(\begin{matrix}
+\mathbf{x}_1 & \mathbf{x}_2 & \cdots & \mathbf{x}_k
+\end{matrix}\right) \left(\begin{matrix}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{matrix}\right) = \sum_{j=1}^k \mathbf{x}_j y_j = \sum_{\underset{j=1}{j\not= i}}^k \mathbf{x}_jy_j + \mathbf{x}_i y_i \\
+&= \mathbf{X}_{(i)}y_{(i)} + \mathbf{x}_iy_i.
+\end{align*}
+\end{itemize}
+\item[(b)] Show that $(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}_{(i)}'\mathbf{y}_{(i)} = \widehat{\bm\beta} - (\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_iy_i$.
+\begin{itemize}
+\item[] \textbf{Solution:} Recall that
+\[
+\widehat{\bm\beta} = \XX^{-1}\mathbf{X}'\mathbf{y}.
+\]
+Therefore, the result follows immediately from part (a), i.e.
+\begin{align*}
+\widehat{\bm\beta} &= \XX^{-1}\mathbf{X}'\mathbf{y} = \XX^{-1}\big{[}\mathbf{X}_{(i)}y_{(i)} + \mathbf{x}_iy_i\big{]} \\
+&= \XX^{-1}\mathbf{X}_{(i)}y_{(i)} + \XX^{-1}\mathbf{x}_iy_i.
+\end{align*}
+Subtracting over, we obtain the result.
+\end{itemize}
+\item[(c)] Using the following adaptation of (2.53),
+\[
+(\mathbf{B}-\mathbf{c}\mathbf{c}')^{-1} = \mathbf{B}^{-1} + \frac{\mathbf{B}^{-1}\mathbf{c}\mathbf{c}'\mathbf{B}^{-1}}{1-\mathbf{c}'\mathbf{B}^{-1}\mathbf{c}},
+\]
+show that
+\[
+\widehat{\bm\beta}_{(i)} = \left[\XX^{-1} + \frac{\XX^{-1}\mathbf{x}_i\mathbf{x}_i'\XX^{-1}}{1-h_{ii}}\right]\mathbf{X}'_{(i)}\mathbf{y}_{(i)}.
+\]
+\begin{itemize}
+\item[] \textbf{Solution:}  Note that $\widehat{\bm\beta}_{(i)}$ is the estimate excluding the $i$th observation.  Therefore, by part (a) and (2.53), we find
+\begin{align*}
+\widehat{\bm\beta}_{(i)} &= \big{(}\mathbf{X}'_{(i)}\mathbf{X}_{(i)}\big{)}^{-1}\mathbf{X}'_{(i)}\mathbf{y}_{(i)} = \big{(}\mathbf{X}'\mathbf{X}-\mathbf{x}_i\mathbf{x}_i'\big{)}^{-1}\mathbf{X}'_{(i)}\mathbf{y}_{(i)} \\
+&= \left[\XX^{-1} + \frac{\XX^{-1}\mathbf{x}_i\mathbf{x}_i'\XX^{-1}}{1-\mathbf{x}_i'\XX^{-1}\mathbf{x}_i}\right]\mathbf{X}'_{(i)}\mathbf{y}_{(i)}.
+\end{align*}
+Recalling that $\mathbf{H}=\mathbf{X}\XX^{-1}\mathbf{X}$, its $i$th diagonal element is $h_{ii} = \mathbf{x}_i'\XX^{-1}\mathbf{x}_i$.  Thus,
+\begin{align*}
+\widehat{\bm\beta}_{(i)} &= \left[\XX^{-1} + \frac{\XX^{-1}\mathbf{x}_i\mathbf{x}_i'\XX^{-1}}{1-h_{ii}}\right]\mathbf{X}'_{(i)}\mathbf{y}_{(i)}.
+\end{align*}
+\end{itemize}
+\item[(d)] Using the result of parts (b) and (c), show that
+\[
+\widehat{\bm\beta}_{(i)} = \widehat{\bm\beta} - \frac{\widehat{\varepsilon}_i}{1-h_{ii}}\XX^{-1}\mathbf{x}_i.
+\]
+\begin{itemize}
+\item[] \textbf{Solution:}  By parts (b) and (c), we have
+\begin{align*}
+\widehat{\bm\beta}_{(i)} &= \left[\XX^{-1} + \frac{\XX^{-1}\mathbf{x}_i\mathbf{x}_i'\XX^{-1}}{1-h_{ii}}\right]\mathbf{X}'_{(i)}\mathbf{y}_{(i)} \\
+&= \XX^{-1}\mathbf{X}'_{(i)}\mathbf{y}_{(i)} + \frac{\XX^{-1}\mathbf{x}_i\mathbf{x}_i'}{1-h_{ii}}\XX^{-1}\mathbf{X}'_{(i)}\mathbf{y}_{(i)} \\
+&= \widehat{\bm\beta} - (\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_iy_i + \frac{\XX^{-1}\mathbf{x}_i\mathbf{x}_i'}{1-h_{ii}}\left[\widehat{\bm\beta} - (\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_iy_i\right] \\
+&= \widehat{\bm\beta} - (\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_iy_i + \frac{\XX^{-1}\mathbf{x}_i}{1-h_{ii}}\left[\mathbf{x}_i'\widehat{\bm\beta} - \mathbf{x}_i'(\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_iy_i\right] \\
+&= \widehat{\bm\beta} - (\mathbf{X}'\mathbf{X})^{-1}\mathbf{x}_iy_i + \frac{\XX^{-1}\mathbf{x}_i}{1-h_{ii}}\left[\widehat{y}_i - h_{ii}y_i\right] \\
+&= \widehat{\bm\beta} - \frac{\widehat{y}_i - y_i}{1-h_{ii}}\XX^{-1}\mathbf{x}_i\\
+&= \widehat{\bm\beta} - \frac{\widehat{\varepsilon}_i}{1-h_{ii}}\XX^{-1}\mathbf{x}_i.
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+\section*{Problem 4:}
+Show that $\mathbf{S}$ in (10.14) can be found as $\mathbf{S} = \sum_{i=1}^n (\mathbf{v}_i - \overline{\mathbf{v}})(\mathbf{v}_i - \overline{\mathbf{v}})' / (n-1)$ as in (10.13).
+\begin{itemize}
+\item[] \textbf{Solution:} Here, $\mathbf{v}_i$ and $\overline{\mathbf{v}}$ denote
+\[
+\mathbf{v}_i = \left(\begin{matrix}
+y_i \\ \mathbf{x}_i
+\end{matrix}\right) \hspace{5mm} \text{and} \hspace{5mm} \overline{\mathbf{v}} = \begin{pmatrix}
+\overline{y} \\ \overline{\mathbf{x}}
+\end{pmatrix}.
+\]
+Then, notice that
+\begin{align*}
+&(\mathbf{v}_i - \overline{\mathbf{v}}) (\mathbf{v}_i - \overline{\mathbf{v}})' = \begin{pmatrix}
+y_i - \overline{y} \\ x_{i1} - \overline{x}_1 \\ \vdots \\ x_{ik} - \overline{x}_k 
+\end{pmatrix} \begin{pmatrix}
+y_i - \overline{y} & x_{i1} - \overline{x}_1 & \cdots & x_{ik} - \overline{x}_k
+\end{pmatrix} \\
+&= \begin{pmatrix}
+(y_i - \overline{y})(y_i - \overline{y}) & (y_i - \overline{y})(x_{i1} - \overline{x}_1) & \cdots\cdots & (y_i - \overline{y})(x_{ik} - \overline{x}_k) \\
+(x_{i1} - \overline{x}_1)(y_i - \overline{y}) & (x_{i1} - \overline{x}_1)(x_{i1} - \overline{x}_1)) & \cdots\cdots & (x_{i1} - \overline{x}_1)(x_{ik} - \overline{x}_k) \\
+\vdots & \vdots & \ddots & \vdots \\
+( x_{ik} - \overline{x}_k)(y_i - \overline{y}) & ( x_{ik} - \overline{x}_k)(x_{i1} - \overline{x}_1)& \cdots\cdots & ( x_{ik} - \overline{x}_k)( x_{ik} - \overline{x}_k)
+\end{pmatrix}.
+\end{align*}
+Summing up this matrix and dividing by $n-1$ gives the result.
+\end{itemize}
+
+\section*{Problem 5:}
+Show that Cov$(y,w) = \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\bm\sigma_{yx}$ and Var$(w) = \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\bm\sigma_{yx}$ as in (10.26), where $w = \mu_y + \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}(\mathbf{x} - \bm\mu_x)$.
+\begin{itemize}
+\item[] \textbf{Solution:}  This result is trivial since
+\begin{align*}
+\text{Cov}(y,w) = \text{Cov}\left(y, \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\mathbf{x}\right) = \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\text{Cov}(y,\mathbf{x}) = \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\bm\sigma_{yx}
+\end{align*}
+and also
+\begin{align*}
+\text{Var}(w) &= \text{Cov}(w,w) = \text{Cov}\left(\bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\mathbf{x},\bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\mathbf{x}\right) \\
+&= \bm\sigma_{yx}'\bm\Sigma^{-1}_{xx}\text{Cov}(\mathbf{x},\mathbf{x})\bm\Sigma_{xx}^{-1}\bm\sigma_{yx} \\
+&= \bm\sigma_{yx}'\bm\Sigma^{-1}_{xx}\bm\Sigma_{xx}\bm\Sigma_{xx}^{-1}\bm\sigma_{yx} \\
+&= \bm\sigma_{yx}'\bm\Sigma^{-1}_{xx}\bm\sigma_{yx}.
+\end{align*}
+\end{itemize}
+
+\section*{Problem 6:}
+Verify that $R^2$ can be expressed in terms of determinants as in (10.40) and (10.41).
+\begin{itemize}
+\item[] \textbf{Solution:}  First, by (2.72), a partitioned matrix such as
+\[
+\mathbf{A} = \begin{pmatrix}
+\mathbf{A}_{11} & \mathbf{A}_{12} \\
+\mathbf{A}_{21} & \mathbf{A}_{22}
+\end{pmatrix}
+\]
+has the determinant given by
+\[
+|\mathbf{A}| = |\mathbf{A}_{22}||\mathbf{A}_{11} - \mathbf{A}_{12}\mathbf{A}_{22}^{-1}\mathbf{A}_{21}|.
+\]
+Then, recalling that
+\[
+\mathbf{S} = \begin{pmatrix}
+s_{yy} & \mathbf{s}'_{yx} \\
+\mathbf{s}_{yx} & \mathbf{S}_{xx}
+\end{pmatrix}
+\]
+we have its determinant is given by
+\begin{align*}
+|\mathbf{S}| &= |\mathbf{S}_{xx}||s_{yy} - \mathbf{s}'_{yx}\mathbf{S}_{xx}^{-1}\mathbf{s}_{yx}| \\
+&= |\mathbf{S}_{xx}|(s_{yy} - \mathbf{s}'_{yx}\mathbf{S}_{xx}^{-1}\mathbf{s}_{yx}).
+\end{align*}
+Notice that we can reformulate this as
+\[
+\frac{\mathbf{s}'_{yx}\mathbf{S}_{xx}^{-1}\mathbf{s}_{yx}}{s_{yy}} = 1 - \frac{|\mathbf{S}|}{|\mathbf{S}_{xx}|s_{yy}}.
+\]
+Now, we see that can write $R^2$ as
+\[
+R^2 = \frac{\mathbf{s}_{yx}'\mathbf{S}_{xx}^{-1}\mathbf{s}_{yx}}{s_{yy}} =1 - \frac{|\mathbf{S}|}{|\mathbf{S}_{xx}|s_{yy}}.
+\]
+To show the second desired equality, we notice that
+\[
+\mathbf{S} = \mathbf{D}\mathbf{R}\mathbf{D}
+\]
+where $\mathbf{D}$ is the diagonal matrix with entries $\sqrt{s_{yy}},\sqrt{s_{11}},...,\sqrt{s_{kk}}$.  Also, we have
+\[
+\mathbf{S}_{xx} = \mathbf{D}_x\mathbf{R}_{xx}\mathbf{D}_x
+\]
+where $\mathbf{D}_x$ is the diagonal matrix with entries $\sqrt{s_{11}},...,\sqrt{s_{kk}}$.  Therefore, we see that we can write the above as
+\begin{align*}
+R^2 &= 1 - \frac{|\mathbf{S}|}{|\mathbf{S}_{xx}|s_{yy}} = 1 - \frac{|\mathbf{D}\mathbf{R}\mathbf{D}|}{|\mathbf{D}_x\mathbf{R}_{xx}\mathbf{D}_x|s_{yy}} = 1 - \frac{|\mathbf{D}|^2|\mathbf{R}|}{|\mathbf{D}_x|^2|\mathbf{R}_{xx}|s_{yy}}\\
+ &=1 - \frac{|\mathbf{D}|^2|\mathbf{R}|}{|\mathbf{D}|^2|\mathbf{R}_{xx}|} = 1 - \frac{|\mathbf{R}|}{|\mathbf{R}_{xx}|}
+\end{align*}
+since the determinant of a diagonal matrix is the product of the diagonal.
+
+\end{itemize}
+
+\section*{Problem 7:}
+Prove Theorem 10.7b.  The theorem states:  The linear function $t(\mathbf{x})$ that minimizes $E\Big{[}\big{(}y-t(\mathbf{x})\big{)}^2\Big{]}$ is given by $t(\mathbf{x}) = \beta_0 + \bm\beta_1'\mathbf{x}$, where
+\begin{align*}
+\beta_0 &= \mu_y - \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\bm\mu_x, \\
+\bm\beta_1 &= \bm\Sigma_{xx}^{-1}\bm\sigma_{yx}.
+\end{align*}
+\begin{itemize}
+\item[] \textbf{Solution:}  By (4.33), we have that
+\[
+E[y|\mathbf{x}] = \mu_y + \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}(\mathbf{x} - \bm\mu_x).
+\]
+Now, notice that 
+\begin{align*}
+t(\mathbf{x}) &= \beta_0 + \bm\beta_1'\mathbf{x} = \mu_y - \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\bm\mu_x + \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}\mathbf{x} \\
+&= \mu_y + \bm\sigma_{yx}'\bm\Sigma_{xx}^{-1}(\mathbf{x} - \bm\mu_x) \\
+&= E[y|\mathbf{x}].
+\end{align*}
+Then, the result follows from theorem 10.7.
+\end{itemize}
+
+\section*{Problem 8:}
+Prove Theorem 10.7c.  The theorem states:  If $(y_1,\mathbf{x}_1'),...,(y_n,\mathbf{x}_n')$ is a random sample with mean vector and covariance matrix
+\[
+\widehat{\bm\mu} = \left(\begin{matrix}
+\overline{y} \\ \overline{\mathbf{x}}
+\end{matrix}\right), \hspace{5mm} \mathbf{S} = \left(\begin{matrix}
+s_{yy} & \mathbf{s}_{yx}' \\
+\mathbf{s}_{yx} & \mathbf{S}_{xx}
+\end{matrix}\right),
+\]
+then the estimators $\widehat{\beta}_0$ and $\widehat{\bm\beta}_1$ that minimizes $\sum_{i=1}^n(y_i - \widehat{\beta}_0 - \widehat{\bm\beta}_1'\mathbf{x}_i)^2 / n$ are given by
+\begin{align*}
+\widehat{\beta}_0 &= \overline{y} - \mathbf{s}_{yx}'\mathbf{S}_{xx}^{-1}\overline{\mathbf{x}}, \\
+\widehat{\bm\beta}_1 &= \mathbf{S}_{xx}^{-1}\mathbf{s}_{yx}.
+\end{align*}
+\begin{itemize}
+\item[] \textbf{Solution:}  First, we calculate
+\begin{align*}
+\frac{d}{d\widehat{\bm\beta}_0'}\sum_{i=1}^n(y_i - \widehat{\beta}_0 - \widehat{\bm\beta}_1'\mathbf{x}_i)^2 / n &= -2\sum_{i=1}^n(y_i - \widehat{\beta}_0 - \widehat{\bm\beta}_1'\mathbf{x}_i) / n \\
+&= -2\overline{y} + 2\widehat{\beta}_0 + 2\widehat{\bm\beta}_1'\overline{\mathbf{x}} \overset{\text{set}}{=} 0
+\end{align*}
+which gives that $\widehat{\beta}_0 = \overline{y} - \widehat{\bm\beta}_1'\overline{\mathbf{x}}$.  Now, we calculate the second partial derivative to be
+\begin{align*}
+\frac{d}{d\widehat{\bm\beta}_1'}\sum_{i=1}^n(y_i - \widehat{\beta}_0 - \widehat{\bm\beta}_1'\mathbf{x}_i)^2 / n &= -\frac{2}{n}\sum_{i=1}^n(y_i - \widehat{\beta}_0 - \widehat{\bm\beta}_1'\mathbf{x}_i)\mathbf{x}_i' \\
+&= -\frac{2}{n}\sum_{i=1}^n\left[y_i\mathbf{x}_i' - \widehat{\beta}_0\mathbf{x}_i' - \widehat{\bm\beta}_1'\mathbf{x}_i\mathbf{x}_i' \right].
+\end{align*}
+Setting this equal to the vector $\mathbf{0}$, we find that
+\begin{align*}
+&-\frac{2}{n}\sum_{i=1}^n\left[y_i\mathbf{x}_i' - \widehat{\beta}_0\mathbf{x}_i' - \widehat{\bm\beta}_1'\mathbf{x}_i\mathbf{x}_i' \right] = \mathbf{0} \\
+\Longrightarrow\hspace{5mm}& \sum_{i=1}^ny_i\mathbf{x}_i' - \sum_{i=1}^n\widehat{\beta}_0\mathbf{x}_i' - \sum_{i=1}^n\widehat{\bm\beta}_1'\mathbf{x}_i\mathbf{x}_i' = \mathbf{0} \\
+\Longrightarrow\hspace{5mm} & \sum_{i=1}^ny_i\mathbf{x}_i' -n\overline{y}\overline{\mathbf{x}}' + n\widehat{\bm\beta}_1'\overline{\mathbf{x}}\overline{\mathbf{x}}' - \sum_{i=1}^n\widehat{\bm\beta}_1'\mathbf{x}_i\mathbf{x}_i' = \mathbf{0} \\
+\Longrightarrow \hspace{5mm} & \widehat{\bm\beta}_1' = \left(\sum_{i=1}^ny_i\mathbf{x}_i' -n\overline{y}\overline{\mathbf{x}}'\right)\left(\sum_{i=1}^n\mathbf{x}_i\mathbf{x}_i' - n\overline{\mathbf{x}}\overline{\mathbf{x}}'\right)^{-1} \\
+&\hspace{5mm}= \mathbf{s}_{yx}'\mathbf{S}_{xx}^{-1}.
+\end{align*}
+Therefore, we have that 
+\[
+\widehat{\bm\beta}_1 = \mathbf{S}_{xx}^{-1}\mathbf{s}_{yx}.
+\]
+Plugging back into the expression for $\widehat{\beta}_0$ above finishes the result.
+\end{itemize}
+
+\end{document}

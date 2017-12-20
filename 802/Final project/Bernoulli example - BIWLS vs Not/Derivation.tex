@@ -1,0 +1,67 @@
+\documentclass[12pt]{extarticle}
+\usepackage{amsmath,amssymb,bm,fullpage,relsize,graphicx}
+\usepackage{listings}
+\usepackage[margin=1in]{geometry}
+\linespread{1.5}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+
+
+\title{Derivation of BIWLS versus regular MH to compare convergence rate}
+\author{Chase Joyner}
+\date{March 28, 2017}
+
+\begin{document}
+\maketitle
+\noindent We assume the binary model
+\[
+Y_i \sim \text{ Bern}(p_i)
+\]
+for $i=1,...,n$.  The logit link is used and so we have the relation
+\[
+\log \frac{p_i}{1-p_i} = \mathbf{x}_i'\bm\beta.
+\]
+First notice that there is a one-to-one correspondence between $p_i$ and $\bm\beta$ and so for the sake of notation, we will write $p_i$ throughout for the likelihood term.  Also, we can write the data distribution as
+\begin{align*}
+f(y_i|\theta_i) &= p_i^{y_i}(1-p_i)^{1-y_i} = (1-p_i)\left(\frac{p_i}{1-p_i}\right)^{y_i} = \exp\left\{y_i\log\frac{p_i}{1-p_i} + \log(1-p_i)\right\} \\
+&= \exp\left\{y_i\log\frac{p_i}{1-p_i} - \log\frac{1}{1-p_i}\right\}
+\end{align*}
+and thus this is a member of the exponential family with
+\[
+\theta_i = \log \frac{p_i}{1-p_i}, \hspace{5mm} b(\theta_i) = \log\left(1 + e^{\theta_i}\right). 
+\]
+Now, we assume that $\bm\beta\sim N(\mathbf{a},\mathbf{R})$ and so the posterior distribution is
+\[
+f(\bm\beta|\mathbf{y}) \propto \exp\left\{-\frac{1}{2}(\bm\beta - \textbf{a})'\textbf{R}^{-1}(\bm\beta  - \textbf{a}) + \sum_{i=1}^n\left(y_i\log\frac{p_i}{1-p_i} - \log\frac{1}{1-p_i}\right) \right\}.
+\]
+We will consider the Metropolis-Hastings algorithm, but with two different normal proposal distributions.  The first is a naive approach where we use a normal distribution centered around the previous value of $\bm\beta$ with a tuning covariance matrix as the proposal distribution and the second is the BIWLS method.  We derive the necessary pieces for the BIWLS method below.  First, notice that $\mu_i = p_i$ for all $i$ and so
+\[
+g'(p_i) = \frac{d}{dp_i}\log\frac{p_i}{1-p_i} = \frac{1}{p_i(1-p_i)}.
+\]
+Therefore, the transformed observations has components
+\[
+\widetilde{y}_i(\bm\beta) = \mathbf{x}_i'\bm\beta + \frac{y_i-p_i}{p_i(1-p_i)}.
+\]
+Lastly, the second derivative of $b(\theta_i)$ wrt $\theta_i$ is
+\[
+b''(\theta_i) = \frac{e^{\theta_i}}{(1+e^{\theta_i})^2} = p_i(1-p_i)
+\]
+and therefore the inverse of the diagonal weight matrix has entries
+\[
+W^{-1}_{ii}(\bm\beta) = p_i(1-p_i)\cdot \frac{1}{\big{(}p_i(1-p_i)\big{)}^2} = \frac{1}{p_i(1-p_i)}.
+\]
+Thus, the diagonal weight matrix has entries given by
+\[
+W_{ii}(\bm\beta) = p_i(1-p_i).
+\]
+Now, we use the normal distribution with $\textbf{m}$ and $\textbf{C}$ given in the Gamerman paper.
+
+
+
+\end{document}

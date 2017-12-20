@@ -1,0 +1,195 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage,relsize}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+
+\title{Chase Joyner}
+\author{802 Homework 1}
+\date{January 20, 2017}
+
+\begin{document}
+\maketitle
+\noindent Consider the Gauss-Markov model
+\[
+\mathbf{y} = \mathbf{X}\bm\beta + \bm\epsilon, \hspace{2mm}\bm\epsilon\sim N\big{(}\mathbf{0},\sigma^2\mathbf{I}\big{)},
+\]
+where $\mathbf{X}\in \R^{n\times(k+1)}$ is of full-column rank (i.e., full rank with $k+1<n$) and both $\bm\beta$ and $\sigma^2$ are unknown.  Let $SSE$ denote the residual sum of squares from fitting this model.
+\begin{itemize}
+\item[1.] Derive the maximum likelihood estimator of $\bm\beta$ and $\sigma^2$.
+\begin{itemize}
+\item[] \textbf{Solution:}  The likelihood function is $N(\mathbf{X}\bm\beta,\sigma^2\mathbf{I})$, i.e.
+\[
+L\big{(}\bm\beta,\sigma^2\mid \mathbf{y}\big{)} \propto \big{(}\sigma^2\big{)}^{-\frac{n}{2}}\exp\left\{-\frac{1}{2\sigma^2}(\mathbf{y} - \mathbf{X}\bm\beta)'(\mathbf{y} - \mathbf{X}\bm\beta)\right\}.
+\]
+Then, the log likelihood function is 
+\begin{align*}
+\ell\big{(}\bm\beta,\sigma^2\mid\mathbf{y}\big{)} &\propto -\frac{n}{2}\log\sigma^2 - \frac{1}{2\sigma^2}(\mathbf{y} - \mathbf{X}\bm\beta)'(\mathbf{y} - \mathbf{X}\bm\beta) \\
+&\propto -\frac{n}{2}\log\sigma^2 - \frac{1}{2\sigma^2}\Big{[}\mathbf{y}'\mathbf{y} - 2\bm\beta'\mathbf{X}'\mathbf{y} + \bm\beta'\mathbf{X}'\mathbf{X}\bm\beta\Big{]}
+\end{align*}
+Differentiating the log likelihood function above, we have
+\begin{align*}
+\frac{d\ell}{d\bm\beta} &= \frac{1}{\sigma^2}\mathbf{X}'\mathbf{y} - \frac{1}{\sigma^2}\mathbf{X}'\mathbf{X}\bm\beta \\
+\frac{d\ell}{d\sigma^2} &= -\frac{n}{2}\frac{1}{\sigma^2} + \frac{1}{2\big{(}\sigma^2\big{)}^2}(\mathbf{y} - \mathbf{X}\bm\beta)'(\mathbf{y} - \mathbf{X}\bm\beta).
+\end{align*}
+Setting these partial derivatives equal to zero and solving, the MLEs are
+\begin{align*}
+\widehat{\bm\beta} &= \big{(}\mathbf{X}'\mathbf{X}\big{)}^{-1}\mathbf{X}'\mathbf{y} \\
+\widehat{\sigma^2} &= \frac{1}{n}\left(\mathbf{y}-\mathbf{X}\widehat{\bm\beta}\right)'\left(\mathbf{y}-\mathbf{X}\widehat{\bm\beta}\right) = \frac{SSE}{n}.
+\end{align*}
+\end{itemize}
+
+\newpage
+
+\item[2.] Check whether or not the MLE of $\sigma^2$ is unbiased.  If not, modify the MLE to get an unbiased estimator of $\sigma^2$.
+\begin{itemize}
+\item[] \textbf{Solution:}  We will show the MLE of $\sigma^2$ is biased.  First, notice that
+\[
+SSE = \left(\mathbf{y}-\mathbf{X}\widehat{\bm\beta}\right)'\left(\mathbf{y}-\mathbf{X}\widehat{\bm\beta}\right) = \mathbf{y'}\mathbf{y} - \widehat{\bm\beta}'\mathbf{X}'\mathbf{y} = \mathbf{y'}\Big{(}\mathbf{I} - \mathbf{X}(\mathbf{X'}\mathbf{X})^{-1}\mathbf{X}'\Big{)}\mathbf{y}.
+\]
+Therefore, by a known result, we have that
+\begin{align*}
+E[SSE] &= \text{tr}\left[\Big{(}\mathbf{I} - \mathbf{X}(\mathbf{X'}\mathbf{X})^{-1}\mathbf{X}'\Big{)}\sigma^2\mathbf{I}\right] + \bm\beta'\mathbf{X}'\Big{(}\mathbf{I} - \mathbf{X}(\mathbf{X'}\mathbf{X})^{-1}\mathbf{X}'\Big{)}\mathbf{X}\bm\beta \\
+&= \sigma^2\text{tr}(\mathbf{I}) - \sigma^2\text{tr}\big{(}\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\big{)} + 0 \\
+&= \sigma^2 \cdot n - \sigma^2 \cdot \text{rank} (\mathbf{X}) \tag{1} \\
+&= \sigma^2\cdot n - \sigma^2 \cdot (k+1) \\
+&= \sigma^2 (n - k - 1),
+\end{align*}
+where (1) follows since $\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'$ is a projection matrix onto $C(\mathbf{X})$.  Thus, we have
+\[
+E\Big{[}\widehat{\sigma^2}\Big{]} = E\left[\frac{SSE}{n}\right] = \frac{1}{n}E[SSE] = \frac{n-k-1}{n}\sigma^2
+\]
+and hence the MLE is biased.  Notice that if we change the MLE to
+\[
+\widehat{\sigma^2} = \frac{1}{n-k-1}SSE
+\]
+then it will be an unbiased estimator of $\sigma^2$.
+\end{itemize}
+
+\item[3.] Derive the distribution of $SSE/\sigma^2$.
+\begin{itemize}
+\item[] \textbf{Solution:}  Notice that $\mathbf{y} \sim N(\mathbf{X}\bm\beta,\sigma^2\mathbf{I})$.  Also, let
+\[
+\mathbf{A} = \big{(}\mathbf{I} - \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\big{)}
+\]
+and so from the first argument in part 2., we have
+\[
+\frac{SSE}{\sigma^2} = \frac{1}{\sigma^2}\mathbf{y}'\mathbf{A}\mathbf{y}.
+\]
+Next, we show $\mathbf{A}$ is idempotent.  Notice that
+\begin{align*}
+\mathbf{A}\mathbf{A} &= \Big{(}\mathbf{I} - \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\Big{)}\Big{(}\mathbf{I} - \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\Big{)} \\
+&= \mathbf{I} - 2\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}' + \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}' \\
+&= \mathbf{I} - \mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}' \\
+&= \mathbf{A}.
+\end{align*}
+Thus, $\mathbf{A}$ is idempontent and has rank $n-k-1$.  Lastly, the noncentrality parameter is
+\[
+\frac{1}{2\sigma^2}\bm\beta'\mathbf{X}'\mathbf{A}\mathbf{X}\bm\beta = 0
+\]
+and so the distribution of $SSE/\sigma^2$ is
+\[
+\frac{SSE}{\sigma^2} \sim \chi^2_{n-k-1}.
+\]
+\end{itemize}
+
+\item[4.] Partition the design matrix $\mathbf{X}$ as $\mathbf{X} = (\mathbf{X}_1,\mathbf{X}_2)$, where $\mathbf{X}_2\in\R^{n\times h}, h\geq 1$.  Keeping conformity, partition $\bm\beta^T = (\bm\beta_1^T,\bm\beta_2^T)$, as well.  Let $SSE_1$ denote the residual of squares obtained by fitting $\mathbf{y} = \mathbf{X}_1\bm\beta_1^\star + \bm\epsilon$.
+\begin{itemize}
+\item[(a)] Show that $SSE_1 \geq SSE$.
+\begin{itemize}
+\item[] \textbf{Solution:}  First notice that we write
+\begin{align*}
+SSE &= \mathbf{y}'(\mathbf{I} - \mathbf{P}_{C(\mathbf{X})})\mathbf{y} \\
+SSE_1 &= \mathbf{y}'(\mathbf{I} - \mathbf{P}_{C(\mathbf{X}_1)})\mathbf{y}.
+\end{align*}
+Recall in class that we showed
+\[
+\mathbf{P}_{C(\mathbf{X})} = \mathbf{P}_{C(\mathbf{X}_1)} + \mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}
+\]
+and from here it follows that
+\[
+\mathbf{P}_{C(\mathbf{X})} - \mathbf{P}_{C(\mathbf{X}_1)} = \mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}.
+\]
+Using the property that all projection matrices are positive semidefinite, we have
+\begin{align*}
+SSE_1 - SSE = \mathbf{y}'(\mathbf{P}_{C(\mathbf{X})} - \mathbf{P}_{C(\mathbf{X}_1)})\mathbf{y} = \mathbf{y}'\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}\mathbf{y} \geq 0.
+\end{align*}
+Therefore, we see that
+\[
+SSE_1 \geq SSE.
+\]
+\end{itemize}
+
+\item[(b)] Show that $(SSE_1 - SSE) / \sigma^2$ has a $\chi^2$ distribution.  Find the degrees of freedom and the noncentrality parameter.
+\begin{itemize}
+\item[] \textbf{Solution:}  By part (a), we see that
+\[
+\frac{SSE_1-SSE}{\sigma^2} = \frac{1}{\sigma^2}\mathbf{y}'\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}\mathbf{y} \sim \chi^2_d(p)
+\]
+since $\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}$ is a projection matrix and is therefore idempotent.  The degrees of freedom $d$ is given by
+\begin{align*}
+d &= \text{rank}(\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}) = \text{tr}\big{(}\mathbf{P}_{C(\mathbf{X})}\big{)} - \text{tr}\big{(}\mathbf{P}_{C(\mathbf{X}_1)}\big{)} \\
+&= \text{rank}(\mathbf{X}) - \text{rank}(\mathbf{X}_1) = h.
+\end{align*}
+The noncentrality parameter $p$ is 
+\begin{align*}
+p &= \frac{1}{2\sigma^2}\bm\beta'\mathbf{X}'\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}\mathbf{X}\bm\beta \\
+&= \frac{1}{2\sigma^2}\bm\beta_2'\mathbf{X}_2'\mathbf{X}_2\bm\beta_2.
+\end{align*}
+\end{itemize}
+
+\newpage
+
+\item[(c)] Show that $SSE$ and $SSE_1 - SSE$ are independent.
+\begin{itemize}
+\item[] \textbf{Solution:}  Again notice that we can write
+\begin{align*}
+SSE &= \mathbf{y}'(\mathbf{I}-\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}')\mathbf{y} = \mathbf{y}'(\mathbf{I} - \mathbf{P}_{C(\mathbf{X})})\mathbf{y}\\
+SSE_1 - SSE &= \mathbf{y}'(\mathbf{X}(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}' - \mathbf{X}_1(\mathbf{X}_1'\mathbf{X}_1)^{-1}\mathbf{X}_1')\mathbf{y} = \mathbf{y}'\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)}\mathbf{y}.
+\end{align*}
+Then, it is a known result that since $\mathbf{y} \sim N(\mathbf{X}\bm\beta,\sigma^2\mathbf{I})$, these are independent if and only if
+\begin{align*}
+(\mathbf{I} - \mathbf{P}_{C(\mathbf{X})})\cdot\sigma^2\mathbf{I}\cdot\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)} &= \mathbf{0} \\
+\Longleftrightarrow\hspace{5mm} (\mathbf{I} - \mathbf{P}_{C(\mathbf{X})})\mathbf{P}_{C(\mathbf{X})\cap C^\perp(\mathbf{X}_1)} &= \mathbf{0}.
+\end{align*}
+This is clear since $C(\mathbf{X})\cap C^\perp(\mathbf{X}_1) \subseteq C(\mathbf{X})$ and $(\mathbf{I} - \mathbf{P}_{C(\mathbf{X})}) = \mathbf{P}_{C^\perp(\mathbf{X})}$.
+\end{itemize}
+
+\item[(d)] Derive the likelihood ratio test statistic to test the hypothesis $H_0\colon \bm\beta_2 = \mathbf{0}$ vs $H_1\colon \bm\beta_2 \not= \mathbf{0}$.
+\begin{itemize}
+\item[] \textbf{Solution:}  First notice that the MLE for $\sigma^2$ is a function of $\widehat{\bm\beta}_1$ and $\widehat{\bm\beta}_2$.  Therefore, under the null hypothesis,
+\[
+\widehat{\sigma^2}_0 = SSE_1 / n.
+\]
+Then, the likelihood ratio test statistic for this hypothesis is given by
+\begin{align*}
+\Lambda(\mathbf{y}) &= \frac{L\left(\widehat{\bm\beta_1},\mathbf{0},\widehat{\sigma^2}_0\mid\mathbf{y}\right)}{L\left(\widehat{\bm\beta_1},\widehat{\bm\beta_2},\widehat{\sigma^2}\mid\mathbf{y}\right)} = \frac{\left(\widehat{\sigma^2}_0\right)^{-\frac{n}{2}} \exp\left\{-\frac{1}{2\widehat{\sigma^2}_0}(\mathbf{y} - \mathbf{X}_1\widehat{\bm\beta}_1)'(\mathbf{y} - \mathbf{X}_1\widehat{\bm\beta}_1)\right\}}{\left(\widehat{\sigma^2}\right)^{-\frac{n}{2}} \exp\left\{-\frac{1}{2\widehat{\sigma^2}}(\mathbf{y} - \mathbf{X}\widehat{\bm\beta})'(\mathbf{y} - \mathbf{X}\widehat{\bm\beta})\right\}} \\
+&= \left(\frac{SSE_1}{SSE}\right)^{-\frac{n}{2}} \frac{\exp\left\{-\frac{n}{2}\right\}}{\exp\left\{-\frac{n}{2}\right\}} = \left(\frac{SSE_1}{SSE}\right)^{-\frac{n}{2}}.
+\end{align*}
+\end{itemize}
+
+\item[(e)] Explicitly derive the level $\alpha$ rejection region of this likelihood ratio test.
+\begin{itemize}
+\item[] \textbf{Solution:}  Notice that we can rewrite the likelihood ratio test as
+\begin{align*}
+\Lambda(\mathbf{y}) &= \left(\frac{SSE_1}{SSE}\right)^{-\frac{n}{2}} = \left(\frac{SSE_1-SSE}{SSE} + 1\right)^{-\frac{n}{2}} \\
+&= \left(\frac{(SSE_1-SSE)/h}{SSE/(n-k-1)}\cdot \frac{h}{n-k-1} + 1\right)^{-\frac{n}{2}} \\
+&= \left(\frac{h}{n-k-1}\cdot F_{h,n-k-1} + 1\right)^{-\frac{n}{2}}
+\end{align*}
+where we get the central $F_{h,n-k-1}$ statistic using the previous parts and the fact that under the null, the centrality parameter $p$ in part (b) is $0$.  Then, we notice that the likelihood ratio test statistic is monotone decreasing in the $F$ statistic.  As a consequence, high values of $F_{h,n-k-1}$ favors the full model, and reduces the value of $\Lambda(\mathbf{y})$, which also favors the full model.  Therefore, they are equivalent tests and so the level $\alpha$ rejection region is given by $F_{1-\alpha,h,n-k-1}$ since everything else is just constant.
+\end{itemize}
+\end{itemize}
+
+\end{itemize}
+
+
+
+
+
+
+\end{document}

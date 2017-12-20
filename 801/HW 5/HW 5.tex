@@ -1,0 +1,236 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,bm,fullpage,array}
+
+\newcommand{\x}{\bm{x}}
+\renewcommand{\a}{\bm{a}}
+\renewcommand{\b}{\bm{b}}
+\renewcommand{\u}{\bm{u}}
+\renewcommand{\v}{\bm{v}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\zero}{\bm{0}}
+
+\title{Chase Joyner}
+\author{801 Homework 5}
+\date{November 10, 2015}
+
+\begin{document}
+\maketitle
+\section*{Problem 1:}  In testing a reduced model $Y = X_0\gamma + e$ against a full model $Y = X\beta + e$, what linear parametric function of the parameters is being tested?
+\begin{itemize}
+\item[] {\bf Solution:}  Since we are testing a reduced versus full model, we have $C(X_0) \subset C(X)$.  Therefore, there exists a matrix $U$ such that $X_0 = XU$.  Then, it follows that $X_0\gamma = XU\gamma$, i.e. $X_0\gamma = X(U\gamma)$ and so $\beta = U\gamma$.  This implies that $\beta \in C(U)$.  If we let $\Lambda$ be the matrix such that $C(\Lambda)^\perp = C(U)$, then it follows that we are simply testing $\Lambda^T\beta = 0$.
+\end{itemize}
+
+\section*{Problem 2:}  Show that $Y'(A - A_0)'V^{-1}(A - A_0)Y / [r(X) - r(X_0)]$ is the appropriate numerator mean square for testing model (4) against model (2), where model (4) is
+\[
+Q^{-1}Y = Q^{-1}X_0\beta_0 + Q^{-1}e, \hspace{5mm}Q^{-1}e \sim N(0,\sigma^2I)
+\]
+and model (2) is
+\[
+Q^{-1}Y  = Q^{-1}X\beta + Q^{-1}e, \hspace{5mm} Q^{-1}e \sim N(0, \sigma^2I).
+\]
+\begin{itemize}
+\item[] {\bf Solution:}  Define $Y^\star = Q^{-1}Y$ and the following two o.p.ms
+\begin{align*}
+M^\star &= Q^{-1}X(X'Q^{-1'}Q^{-1}X)^-X'Q^{-1'} \\
+M_0^\star &= Q^{-1}X_0(X_0'Q^{-1'}Q^{-1}X_0)^-X_0'Q^{-1'}.
+\end{align*}
+Recall that $A$ and $A_0$ are defined to be
+\[
+A = X(X'V^{-1}X)^-X'V^{-1}
+\]
+and
+\[
+A_0 = X_0(X_0'V^{-1}X_0)^-X_0'V^{-1}.
+\]
+Note that since $V = QQ'$, then $V^{-1} = Q^{-1'}Q^{-1}$.
+We know the numerator mean square is
+\[
+Y^{\star'}(M^\star - M_{0}^\star)Y^\star / r(M^\star - M_0^\star),
+\]
+and we easily see that since $M^\star$ and $M^\star_0$ are o.p.ms and $Q$ is invertible,
+\[
+r(M^\star - M_0^\star) = r(M^\star) - r(M_0^\star) = r(Q^{-1}X) - r(Q^{-1}X_0) = r(X) - r(X_0).
+\]
+The last thing to show is the that
+\[
+Y^{\star'}(M^\star - M_0^\star)Y^\star = Y'(A-A_0)V^{-1}(A-A_0)Y.
+\]
+First note that each side above can be written as
+\[
+Y^{\star'}(M^\star - M_0^\star)Y^\star = \big{[} (M^\star - M_0^\star)Y^{\star} \big{]}'\big{[} (M^\star - M_0^\star)Y^{\star} \big{]}
+\]
+and
+\begin{align*}
+Y'(A-A_0)V^{-1}(A-A_0)Y &= Y'(A-A_0)Q^{-1'}Q^{-1}(A-A_0)Y \\
+&= \big{[} Q^{-1}(A-A_0)Y \big{]}' \big{[} Q^{-1}(A-A_0)Y \big{]}.
+\end{align*}
+Therefore, it suffices to show that $Q^{-1}(A-A_0)Y = (M^\star - M_0^\star)Y^\star$.  Indeed,
+\begin{align*}
+(M^\star - M_0^\star)Y^\star &= \big{[} Q^{-1}X(X'V^{-1}X)^-X'Q^{-1'} - Q^{-1}X_0(X_0'V^{-1}X_0)^-X_0'Q^{-1'} \big{]}Q^{-1}Y \\
+&= Q^{-1}\big{[} X(X'V^{-1}X)^-X'V^{-1} - X_0(X_0'V^{-1}X_0)^-X_0'V^{-1} \big{]}Y \\
+&= Q^{-1}(A - A_0)Y.
+\end{align*}
+Therefore, this is the correct numerator mean square for testing model (4) against model (2).
+\end{itemize}
+
+\section*{Problem 3:}  Verify that the estimate of $\mu + \alpha_i$ is $\overline{y}_{i\cdot}$ and that the algebraic formulas for the sums of squares in the ANOVA table are correct.  Hint:  To find, for example, $Y(M - \frac{1}{n}J_n^n)Y = Y'M_\alpha Y$, use Exercise 4.2 to get $M_\alpha Y$ and recall that $Y'M_\alpha Y = (M_\alpha Y)'(M_\alpha Y)$.
+\begin{itemize}
+\item[] {\bf Solution:}    Recall that the LSE of $\rho'X\beta$ is $\rho'MY$.  Let $\rho = e_{N_i}$, i.e. the vector of all zeroes with a 1 in the $N_i$th position.  Then, we have
+\[
+\rho'X\beta = \mu + \alpha_i.
+\]
+Also, notice that
+\[
+MY = (\text{rep}(\overline{y}_{1\cdot}, N_1), ..., \text{rep}(\overline{y}_{t\cdot}, N_t))',
+\]
+where rep$(\overline{y}_{i\cdot}, N_i)$ denotes the vector of $\overline{y}_{i\cdot}$ of length $N_i$.  It now follows that
+\[
+\rho'MY = \overline{y}_{i\cdot},
+\]
+and hence the estimate of $\mu + \alpha_i$ is $\overline{y}_{i\cdot}$.  Next, we verify the algebraic forms of the four sums of squares given in the ANOVA table.  Let $n = \sum_{i=1}^t N_i$. The SS of the grand mean can be written as
+\[
+Y'\left(\frac{1}{n}J_n^n\right)Y = Y'\frac{1}{n}\begin{bmatrix}
+\sum y_{\cdot\cdot} \\ \vdots \\ \sum y_{\cdot\cdot}
+\end{bmatrix} = Y'\begin{bmatrix}
+\overline{y}_{\cdot\cdot} \\ \vdots \\ \overline{y}_{\cdot\cdot}
+\end{bmatrix} = \overline{y}_{\cdot\cdot}\sum y_{\cdot\cdot} = n\overline{y}^2_{\cdot\cdot}.
+\]
+This verifies the algebraic form of the SS of the grand mean.  Next, the SS of the treatments can be written as
+\begin{align*}
+Y'\left(M - \frac{1}{n}J_n^n\right) Y &= Y'MY - Y'\left(\frac{1}{n}J_n^n\right)Y = (MY)'(MY) - n\overline{y}^2_{\cdot\cdot} \\
+&= \sum_{i=1}^t N_i\overline{y}_{i\cdot}^2 - n\overline{y}_{\cdot\cdot}^2 = \sum_{i=1}^t N_i(\overline{y}_{i\cdot} - \overline{y}_{\cdot\cdot})^2.
+\end{align*}
+The last equality can be seen by
+\begin{align*}
+\sum_{i=1}^t N_i(\overline{y}_{i\cdot} - \overline{y}_{\cdot\cdot})^2 &= \sum_{i=1}^tN_i(\overline{y}_{i\cdot}^2 - 2\overline{y}_{\cdot\cdot}\overline{y}_{i\cdot} + \overline{y}_{\cdot\cdot}^2) \\
+&= \sum_{i=1}^t N_i\overline{y}_{i\cdot}^2 - 2\overline{y}_{\cdot\cdot}\sum_{i=1}^t N_i\overline{y}_{i\cdot} + n\overline{y}_{\cdot\cdot}^2 \\
+&= \sum_{i=1}^tN_i\overline{y}_{i\cdot}^2 - 2\overline{y}_{\cdot\cdot}\sum y_{\cdot\cdot} + n\overline{y}_{\cdot\cdot}^2 \\
+&= \sum_{i=1}^tN_i\overline{y}_{i\cdot}^2 - 2n\overline{y}_{\cdot\cdot}^2 + n\overline{y}_{\cdot\cdot}^2 \\
+&= \sum_{i=1}^tN_i\overline{y}_{i\cdot}^2 - n\overline{y}_{\cdot\cdot}^2.
+\end{align*}
+This verifies the algebraic form of the SS of the treatments.  Next, we verify the algebraic form of the SS of the error.  The SS of the error can be written as
+\begin{align*}
+Y'(I - M)Y = Y'Y - Y'MY = \sum y_{\cdot\cdot}^2 - \sum_{i=1}^tN_i\overline{y}_{i\cdot}^2 = \sum_{i=1}^t\sum_{j=1}^{N_i} (y_{ij} - \overline{y}_{i\cdot})^2.
+\end{align*}
+The last equality can be seen by
+\begin{align*}
+\sum_{i=1}^t\sum_{j=1}^{N_i} (y_{ij} - \overline{y}_{i\cdot})^2 &= \sum_{i=1}^t\sum_{j=1}^{N_i} (y_{ij}^2 - 2y_{ij}\overline{y}_{i\cdot} + \overline{y}_{i\cdot}^2) \\
+&= \sum_{i=1}^t\sum_{j=1}^{N_i} y_{ij}^2 - 2 \sum_{i=1}^t\overline{y}_{i\cdot} \sum_{j=1}^{N_i} y_{ij} + \sum_{i=1}^t N_i\overline{y}_{i\cdot}^2 \\
+&= \sum_{i=1}^t\sum_{j=1}^{N_i} y_{ij}^2 - 2\sum_{i=1}^t \overline{y}_{i\cdot}y_{i\cdot} + \sum_{i=1}^t N_i\overline{y}_{i\cdot}^2 \\
+&= \sum_{i=1}^t\sum_{j=1}^{N_i} y_{ij}^2 - 2\sum_{i=1}^t \overline{y}_{i\cdot}N_i\overline{y}_{i\cdot} + \sum_{i=1}^t N_i\overline{y}_{i\cdot}^2 \\
+&= \sum_{i=1}^t\sum_{j=1}^{N_i} y_{ij}^2 - \sum_{i=1}^t N_i\overline{y}_{i\cdot}^2
+\end{align*}
+This verifies the algebraic form of the SS of the errors.  The algebraic form of the total SS is trivial.  Therefore, we have confirmed the algebraic form of all of the sums of squares in the ANOVA table.
+\end{itemize}
+
+\section*{Problem 4:}  Show that $\alpha_1 = \alpha_2 = ... = \alpha_t$ if and only if all contrasts are zero.
+\begin{itemize}
+\item[] {\bf Solution:}  Assume that $\alpha_1 = \alpha_2 = ... = \alpha_t$ and that $\lambda$ be any vector satisfying $\lambda' J_{t} = 0$, i.e. $\sum_{i=1}^t \lambda_i = 0$.  We want to show that
+\[
+\sum_{i=1}^t\lambda_i \alpha_i = 0.
+\]
+By assumption, $\alpha_i = \alpha_1$ for all $i=1,...,t$.  Therefore, we have
+\[
+\sum_{i=1}^t\lambda_i \alpha_i = \alpha_1\sum_{i=1}^t\lambda_i = 0.
+\]
+Thus, since $\lambda$ was any vector with $\lambda' J_{t} = 0$, all contrasts are zero. \\
+Now for the converse, assume that all contrasts are zero, i.e. for any vector $\lambda$ satisfying
+\[
+\sum_{i=1}^t \lambda_i = 0, \tag{$\star$}
+\]
+we have
+\[
+\sum_{i=1}^t \lambda_i\alpha_i = 0. \tag{$\star\star$}
+\]
+Take $\lambda = (1,-1,0,...,0)'$.  Then, clearly this $\lambda$ satisfies $(\star)$ and implies $\alpha_1 = \alpha_2$ by $(\star\star)$.  Next, take $\lambda = (0,1,-1,0,...,0)'$.  Then, by the same logic, we obtain $\alpha_2 = \alpha_3$.  Repeating this process will show that $\alpha_1 = \alpha_2 = ... = \alpha_t$.
+\end{itemize}
+
+\newpage
+\section*{Problem 5:}  After the final exam of spring quarter, 30 of the subjects of the previous experiment decided to test the sturdiness of 3 brands of sport coats and 2 brands of shirts.  In this study, sturdiness was measured as the length of time before tearing when the instructor was hung by his collar out of his second-story office window.  Each brand was randomly assigned to 6 students, but the instructor was occasionally dropped before his collar tore, resulting in some missing data.  The data are listed below.
+\begin{itemize}
+\item[] Coat 1: \hspace{1mm} 2.34 \hspace{1mm} 2.46 \hspace{1mm} 2.83 \hspace{1mm} 2.04 \hspace{1mm} 2.69 
+\item[] \vspace{-3mm} Coat 2: \hspace{1mm} 2.64 \hspace{1mm} 3.00 \hspace{1mm} 3.19 \hspace{1mm} 3.83
+\item[] \vspace{-3mm}  Coat 3: \hspace{1mm} 2.61 \hspace{1mm} 2.07 \hspace{1mm} 2.80 \hspace{1mm} 2.58 \hspace{1mm} 2.98 \hspace{1mm} 2.30
+\item[] \vspace{-3mm}  Shirt \hspace{-0.19mm}1: \hspace{1mm} 1.32 \hspace{1mm} 1.62 \hspace{1mm} 1.92 \hspace{1mm} 0.88 \hspace{1mm} 1.50 \hspace{1mm} 1.30
+\item[] \vspace{-3mm}  Shirt \hspace{-0.19mm}2: \hspace{1mm} 0.41 \hspace{1mm} 0.83 \hspace{1mm} 0.53 \hspace{1mm} 0.32 \hspace{1mm} 1.62
+\end{itemize}
+\begin{itemize}
+\item[(a)]  Give an ANOVA table for these data, and perform and interpret the $F$ test for the differences between brands.
+\item[(b)]  Test whether, on average, these brands of coats are sturdier than these brands of shirts.
+\item[(c)] Give three contrasts that are mutually orthogonal and orthogonal to the contrast in (b).  Compute the sums of squares for all four contrasts.
+\item[(d)]  Give a 95$\%$ confidence interval for the difference in sturdiness between shirt brands 1 and 2.  Is one brand significantly sturdier than the other?
+\end{itemize}
+\begin{itemize}
+\item[] {\bf Solution:}
+\begin{itemize}
+\item[(a)] Below is the ANOVA table for these data:
+\begin{center}
+\begin{tabular}{|c||c||c||c||c|}
+\hline
+\hspace{3mm}{\bf Source}\hspace{2mm} & {\bf df} & {\bf SS} & {\bf MS} & {\bf F} \\
+\hline
+\hline
+treatment & 4 & 18.2959 & 4.5739 & 28.29818 \\
+error & 21 & 3.3943 & 0.16163 & - \\
+\hline
+total & 25 & 21.69019 & - & - \\
+\hline
+\end{tabular}
+\end{center}
+These values were calculated in R and obtained by the following formulas:
+\begin{align*}
+df_R &= t - 1 = 4; \\
+df_E &= n - t = 21 \\
+SSR &= \sum_{i=1}^5 N_i(\overline{y}_{i\cdot} - \overline{y}_{\cdot\cdot})^2 = 18.2959 \\
+SSE &= \sum_{i=1}^5\sum_{j=1}^{N_i} (y_{ij} - \overline{y}_{i\cdot})^2 = 3.3943 \\
+MSR &= SSR / df_R = 4.5739 \\
+MSE &= SSE / df_E = 0.16163 \\
+F &= MSR / MSE = 28.29818,
+\end{align*}
+where $N_i$ is the $i$th element of $N = (5, 4, 6, 6, 5)$.  The R code can be found attached at the end of the homework.
+Note that $f(.95, 4, 21) = 2.8401$.  Since $F > 2.8401$, we reject $H_0 \colon \alpha_1 = ... = \alpha_5$ and conclude there is a significant difference between at least two brands.
+\item[(b)]  Recall from section 4.2 in the textbook that we reject $H_0\colon \frac{\alpha_1+\alpha_2+\alpha_3}{3} = \frac{\alpha_4+\alpha_5}{2}$ if
+\[
+\frac{\left(\sum_{i=1}^t\lambda_i\overline{y}_{i\cdot}\right)^2 \Big{/} \left(\sum_{i=1}^t \lambda_i^2 / N_i\right)}{MSE} > F(1-\alpha, 1, df_E),
+\]
+where $\lambda = (\lambda_1, ..., \lambda_t)$ satisfies $\sum_{i=1}^t\lambda_i = 0$.  Take $\lambda$ to be the vector
+\[
+\lambda = \left( \frac{1}{3}, \frac{1}{3}, \frac{1}{3}, -\frac{1}{2}, -\frac{1}{2} \right).
+\]
+Then, we calculate the F stat by the above formula
+\[
+F = \frac{\left(\frac{1}{3}\overline{y}_{1\cdot} + \frac{1}{3}\overline{y}_{2\cdot}+\frac{1}{3}\overline{y}_{3\cdot} - \frac{1}{2}\overline{y}_{4\cdot} - \frac{1}{2}\overline{y}_{5\cdot}\right)^2}{\frac{1}{9}\cdot\frac{1}{5} + \frac{1}{9}\cdot\frac{1}{4} + \frac{1}{9}\cdot\frac{1}{6} + \frac{1}{4}\cdot\frac{1}{6} + \frac{1}{4}\cdot\frac{1}{5}} \cdot \frac{1}{0.16163} = 104.9664.
+\]
+Again, this calculation was done in R and in the code section.  We compare this to $f(.95, 1, 21) = 4.325$ and since $104.9664 > 4.325$, we reject $H_0$ and conclude a difference in sturdiness between coats and shirts, on average.
+\item[(c)]  The contrast used in part (b) was 
+$
+\lambda = \left( \frac{1}{3}, \frac{1}{3}, \frac{1}{3}, -\frac{1}{2}, -\frac{1}{2} \right).
+$  Notice that three contrasts orthogonal to this contrast and between themselves are
+\begin{align*}
+\lambda_1 &= (0, 1, -1, 0, 0) \\
+\lambda_2 &= (0,0,0,1,-1)
+\end{align*}
+and
+\[
+\lambda_3 = \left(1, -\frac{1}{2}, -\frac{1}{2}, 0, 0\right).
+\]
+Their associated sums of squares are
+\begin{align*}
+SS &= \left(\sum_{i=1}^5\lambda_{i}\overline{y}_{i\cdot}\right)^2 \Big{/} \left(\sum_{i=1}^5 \lambda_{i}^2 / N_i\right) = 16.96621 \\
+SS_1 &= \left(\sum_{i=1}^5\lambda_{1i}\overline{y}_{i\cdot}\right)^2 \Big{/} \left(\sum_{i=1}^5 \lambda_{1i}^2 / N_i\right) = 0.88817 \\
+SS_2 &= \left(\sum_{i=1}^5\lambda_{2i}\overline{y}_{i\cdot}\right)^2 \Big{/} \left(\sum_{i=1}^5 \lambda_{2i}^2 / N_i\right) = 1.26604 \\
+SS_3 &= \left(\sum_{i=1}^5\lambda_{3i}\overline{y}_{i\cdot}\right)^2 \Big{/} \left(\sum_{i=1}^5 \lambda_{3i}^2 / N_i\right) = 0.49707.
+\end{align*}
+These values were calculated using R and the code can be found at the end.
+\item[(d)]  Recall from section 4.2 of the textbook that we reject $H_0\colon \alpha_4 = \alpha_5$ if
+\[
+\frac{\left| \sum_{i=1}^t\lambda_i\overline{y}_{i\cdot} \right|}{\sqrt{MSE\cdot\sum_{i=1}^t\lambda_i^2\big{/}N_i}} > t\left(1-\frac{\alpha}{2},df_E\right).
+\]
+Then, taking $\lambda = (1,-1)$, a 95$\%$ confidence interval for the difference between shirt brand 1 and shirt brand 2 is
+\[
+\left[\overline{y}_{4\cdot} - \overline{y}_{5\cdot} \pm t(.975, 21)\sqrt{MSE\cdot\sum_{i=1}^2\lambda_i^2 \big{/}N_i} \right] = [0.17506, 1.18761].
+\]
+Since 0 is not in this interval, we conclude there is a difference between shirt brands 1 and 2.
+\end{itemize}
+\end{itemize}
+\end{document}
