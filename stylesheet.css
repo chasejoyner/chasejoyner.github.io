@@ -12,7 +12,6 @@ html
 	text-align: center;
 	font-family: Verdana;
 	font-size: 14pt;
-	font-weight: bold;
 	color: black;
 }
 #wrapper p
@@ -56,10 +55,11 @@ html
 #wrapper a
 {
 	text-decoration: none;
-	color: #C0392B;
-	font-family: Arial black;
+	color: #E54C00;
+	font-family: Arial;
+
 }
 #info
 {
-	margin: 0 auto;
+	margin: 5 auto;
 }

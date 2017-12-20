@@ -1,0 +1,416 @@
+##########################################################
+##########################################################
+###########				       ###########	
+###########	       Chase Joyner            ###########
+###########        Mthsc 885 Homework 3        ###########
+###########          October 15, 2015          ###########
+###########				       ###########
+##########################################################
+##########################################################
+
+
+
+##########################################################
+##########################################################
+##########################################################
+#######  Problem 1  ####### 
+
+# Drug Data:
+# Column 1: Identification code
+# Column 2: Age at enrollment
+# Column 3: Depression Score
+# Column 4: Drug use histroy 1=Never, 2=Previous, 3=Recent
+# Column 5: Number of prior drug treatments
+# Column 6: Race 0=White and 1=Otherwise
+# Column 7: Treatment randomization id 0=Short and 1=Long
+# Column 8: Treatment site 0=Site A and 1=Site B
+# Column 9: Response Variable -- Remained drug free for 12 months 1=Yes and 0=No
+
+data = read.table(file.choose());
+
+Y = data[,9];
+x0 = rep(1,dim(data)[1]);
+x1 = data[,2];
+x2 = data[,3];
+x3 = data[,4];
+x4 = data[,5];
+x5 = data[,6];
+x6 = data[,7];
+x7 = data[,8];
+
+####### Add dummy variables for qualitative variables #######
+h1 = as.numeric(x3==1); ## Never
+h2 = as.numeric(x3==2); ## Previous -- Recent is baseline
+r1 = as.numeric(x5==1); ## Otherwise -- White is baseline
+t1 = as.numeric(x6==1); ## Long -- Short is baseline
+s1 = as.numeric(x7==1); ## Site B -- Site A is baseline
+
+####### Get an initial idea on where to start ######
+logit = glm(Y ~ x1 + x2 + h1 + h2 + x4 + r1 + t1 + s1, family = binomial(link = logit));    ## AIC = 637.2
+probit = glm(Y ~ x1 + x2 + h1 + h2 + x4 + r1 + t1 + s1, family = binomial(link = probit));  ## AIC = 637.4
+summary(logit);
+summary(probit);
+
+####### Both links imply intercept, x1, h1, x4, and t1 are significant given rest are in the model              #######
+####### Recall that we had qualitative variables, so we could consider collapsing h2 into the baseline (Recent) #######
+####### Then we do stepAIC -- forward and backward to obtain starting models, then consider interactions        #######
+logit = glm(Y ~ x1 + x2 + h1 + x4 + r1 + t1 + s1, family = binomial(link = logit));     ## AIC = 635.4
+probit = glm(Y ~ x1 + x2 + h1 + x4 + r1 + t1 + s1, family = binomial(link = probit));   ## AIC = 635.7
+summary(logit);
+summary(probit);
+
+step.logit = step(logit, direction = "both");
+step.probit = step(probit, direction = "both");
+
+####### Both links indicate the model with x1, h1, x4, and t1                #######
+####### We will now just consider logit link from here, since smaller AICs   #######
+####### Now we look at possible interaction terms                            #######
+full = glm(Y ~ x1 + x2 + h1 + x4 + r1 + t1 + s1, family = binomial(link = logit));     ## AIC = 635.4
+red = glm(Y ~ x1 + h1 + x4 + t1, family = binomial(link = logit));                     ## AIC = 631
+anova(red, full, test = "Chisq");
+
+####### Here we obtain a large p-value, indicating the reduced model is sufficient #######
+####### Let's look at possible interaction terms                                   #######
+model = glm(Y ~ (x1 + h1 + x4 + t1)^2, family = binomial(link = logit));               ## AIC = 631.9
+summary(model);
+
+####### We see that x1:x4 might be significant, let's add it to the reduced model #######
+red2 = glm(Y ~ x1 + h1 + x4 + t1 + x1:x4, family = binomial(link = logit));  ## AIC = 628.7
+summary(red2);
+
+####### We see that red2 says x1 is insignificant now, so for parsimony, drop x1:x4, and keep x1 #######
+####### Now let's consider higher order terms                                                    #######
+x1.2 = x1^2;
+x4.2 = x4^2;
+red3 = glm(Y ~ x1 + h1 + x4 + t1 + x1.2, family = binomial(link = logit));
+red4 = glm(Y ~ x1 + h1 + x4 + t1 + x4.2, family = binomial(link = logit));
+
+####### Here we see that neither higher order term is significant ######
+####### Conclude that red model is our model                      ######
+red = glm(Y ~ x1 + h1 + x4 + t1, family = binomial(link = logit));
+summary(red);
+
+####### Now use R to find 3 top best models #######
+library(bestglm)
+tmp = data.frame("X" = cbind(x1, x2, h1, x4, r1, t1, s1), "Y" = Y);
+res1 = bestglm(Xy = tmp, family = binomial, IC = "AIC", TopModels = 3, method = "exhaustive", intercept = TRUE);
+res1$BestModels;
+
+####### We see that the best model is our current reduced model        #######
+####### Let these three be our candidate models, now we cross validate #######
+model1 = glm(Y ~ x1 + h1 + x4 + t1, family = binomial(link = logit));
+model2 = glm(Y ~ x1 + h1 + x4 + r1 + t1, family = binomial(link = logit));
+model3 = glm(Y ~ x1 + h1 + x4 + t1 + s1, family = binomial(link = logit));
+
+library(boot);
+glm.diag.plots(model1, iden = TRUE); 
+
+####### Residual plot is as expected since we fit logistic model.  Observation 471 is influential, #######
+####### observations 350, 575, 19, 120, and 7 are influential and high leverage.                   ####### 
+ 
+glm.diag.plots(model2, iden = TRUE);
+
+####### Residual plot is again as expected.  Here, observation 350 became not high leverage. #######                                                         ######
+
+glm.diag.plots(model3, iden = TRUE);
+
+####### Residual plot is again as expected.  Here, it seems that observation 19 became not influential ######
+####### and observation 350 became not high leverage.                                                  ######
+
+####### Cross validate the three models #######
+res1 = res2 = res3 = 0;
+p = sample(1:575, 10);
+
+for(i in 1:10){
+	newY = Y[-p[i]];
+	newx1 = x1[-p[i]];
+	newh1 = h1[-p[i]];
+	newx4 = x4[-p[i]];
+	newt1 = t1[-p[i]];
+	newr1 = r1[-p[i]];
+	news1 = s1[-p[i]];
+	X1 = c(1, x1[p[i]], h1[p[i]], x4[p[i]], t1[p[i]]);
+	X2 = c(1, x1[p[i]], h1[p[i]], x4[p[i]], r1[p[i]], t1[p[i]]);
+	X3 = c(1, x1[p[i]], h1[p[i]], x4[p[i]], t1[p[i]], s1[p[i]]);
+	mod1 = glm(newY ~ newx1 + newh1 + newx4 + newt1, family = binomial(link = logit));
+	mod2 = glm(newY ~ newx1 + newh1 + newx4 + newr1 + newt1, family = binomial(link = logit));
+	mod3 = glm(newY ~ newx1 + newh1 + newx4 + newt1 + news1, family = binomial(link = logit));
+
+
+	res1 = res1 + (Y[p[i]] - mod1$coefficients %*% X1)^2;
+	res2 = res2 + (Y[p[i]] - mod2$coefficients %*% X2)^2;
+	res3 = res3 + (Y[p[i]] - mod3$coefficients %*% X3)^2;
+}
+
+####### res1 - 22.14126, res2 = 23.6422, res3 = 22.56049.  So we see model1 has the smallest prediction error #######
+####### and it is also the easiest to interpret model                                                         #######
+####### So I choose model1 as my final model, which is defined as 					      #######
+####### Y = -3.08509 + 0.053083 * x1 + 0.735059 * h1 - 0.066286 * x4 + 0.466711 * t1                          #######
+
+
+
+
+
+
+
+
+##########################################################
+##########################################################
+##########################################################
+#######  Problem 2  ####### 
+
+# Data:
+# Column 1: ID
+# Column 2: Crab color
+# Column 3: Spine Condition
+# Column 4: Carapace width
+# Column 5: Weight
+# Column 6: Satellites
+
+data = read.table(file.choose());
+
+Y = data[,6];
+x0 = rep(1,dim(data)[1]);
+x1 = data[,2];
+x2 = data[,3];
+x3 = data[,4];
+x4 = data[,5];
+
+unique(x1); ## To check how many factors we need for colors
+
+####### Create dummy variables #######
+c1 = as.numeric(x1==1);
+c2 = as.numeric(x1==2); 
+c3 = as.numeric(x1==3);
+s1 = as.numeric(x2==1);
+s2 = as.numeric(x2==2); 
+
+####### Intuitively, spine condition will not be significant predictor #######
+
+####### Get an initial idea on where to start ######
+log = glm(Y ~ x3 + x4 + c1 + c2 + c3 + s1 + s2, family = poisson(link = log));    ## AIC = 920.86
+summary(log);
+
+####### The spine condition is not significant with everything else in the model, further indicating #######
+####### that this predictor variable might not be significant for this model                         #######
+####### It appears that we should collapse some of the dummy variables, but in this situation 	     #######
+####### it does not make sense to collapse any categories together.  Now we use forward and          #######
+####### backward AIC.
+
+step.log = step(log, direction = "both");
+
+####### The step function using both directions indicated the predictors x4, c1, and c2 as reduced model #######
+####### Note that s1 and s2 were actually dropped from the model                                         #######
+full = log;
+red = glm(Y ~ x4 + c1 + c2, family = poisson(link = log));
+summary(red);                                                   ## AIC = 915.08
+anova(red, full, test = "Chisq");
+
+####### ANOVA gives P value 0.6959, indicating the reduced model is sufficient #######
+
+model = glm(Y ~ (x4 + c1 + c2)^2, family = poisson(link = log));
+summary(model);   ## AIC = 908.55
+
+####### Note the interaction c1:c2 does not make sense, so let's fit the model without it #######
+model = glm(Y ~ x4 + c1 + c2 + x4:c1 + x4:c2, family = poisson(link = log));
+summary(model);  ## AIC = 908.55
+
+####### Let's check for higher order terms #######
+x4.2 = x4^2;
+model = glm(Y ~ x4 + c1 + c2 + x4:c1 + x4:c2 + x4.2, family = poisson(link = log));
+summary(model);   ## AIC = 902.55
+
+####### Note that the AIC is reduced, but now c2 and x4:c2 become insignificant #######
+####### Notice that c2 might be insignificant now because of x4:c2, so let's    #######
+####### dropping the interaction term x4:c2                                     #######
+model = glm(Y ~ x4 + c1 + c2 + x4:c1 + x4.2, family = poisson(link = log)); 
+summary(model);   ## AIC = 901.83
+
+####### Everything is significant and we have the lowest AIC out of the models so far #######
+####### Now use bestglm function to obtain candidate models                             #######
+library(bestglm);
+x3.2 = x3^2;
+tmp = data.frame("X" = cbind(x3, x4, c1, c2, c3, s1, s2, x3.2, x4.2), "Y" = Y);
+res = bestglm(Xy = tmp, family = poisson, IC = "AIC", TopModels = 3, method = "exhaustive", intercept = TRUE);
+res$BestModels;
+
+####### The bestglm function indicated that x3 might be quadraticly related to Y, which the step function could not pick up #######
+####### Notice that the crab spine condition is still not a significant predictor.  So the three models to consider are     #######
+model1 = glm(Y ~ x3 + x4 + c1 + c2 + x3.2, family = poisson(link = log));        ## AIC = 901.078
+model2 = glm(Y ~ x4 + c1 + c2 + x4:c1 + x4.2, family = poisson(link = log));     ## AIC = 901.83
+model3 = glm(Y ~ x3 + x4 + c3 + x3.2, family = poisson(link = log));             ## AIC = 901.906
+
+####### Diagnostics of these models #######
+library(boot);
+glm.diag.plots(model1, iden = TRUE);  ## Here there appears to be about 16 influential points using this model, and 16 high leverage points.
+glm.diag.plots(model2, iden = TRUE);  ## Here about 15 influential points, and about 11 high leverage points.
+glm.diag.plots(model3, iden = TRUE);  ## Here about 9 influential points, and about 11 high leverage points.
+
+## Cross-validate
+
+res1 = res2 = res3 = 0;
+p = sample(1:173, 5);
+
+x4.c1 = x4*c1;
+
+for(i in 1:5){
+	newY = Y[-p[i]];
+	newc1 = c1[-p[i]];
+	newc2 = c2[-p[i]];
+	newc3 = c3[-p[i]];
+	newx3 = x3[-p[i]];
+	newx4 = x4[-p[i]];
+	newx3.2 = x3.2[-p[i]];
+	newx4.2 = x4.2[-p[i]];
+	newx4.c1 = x4.c1[-p[i]];
+	X1 = c(1, x3[p[i]], x4[p[i]], c1[p[i]], c2[p[i]], x3.2[p[i]]);
+	X2 = c(1, x4[p[i]], c1[p[i]], c2[p[i]], x4.c1[p[i]], x4.2[p[i]]);
+	X3 = c(1, x3[p[i]], x4[p[i]], c3[p[i]], x3.2[p[i]]);
+	mod1 = glm(newY ~ newx3 + newx4 + newc1 + newc2 + newx3.2, family = poisson(link = log));
+	mod2 = glm(newY ~ newx4 + newc1 + newc2 + newx4.c1 + newx4.2, family = poisson(link = log));
+	mod3 = glm(newY ~ newx3 + newx4 + newc3 + newx3.2, family = poisson(link = log));
+
+
+	res1 = res1 + (Y[p[i]] - mod1$coefficients %*% X1)^2;
+	res2 = res2 + (Y[p[i]] - mod2$coefficients %*% X2)^2;
+	res3 = res3 + (Y[p[i]] - mod3$coefficients %*% X3)^2;
+}
+
+## res1 = 2.59, res2 = 2.85, res3 = 3.06.  Model 1 also had the smallest AIC ##
+## The final model is ##
+## Y = -20.833522 + 1.494626 * x3 + 0.678886 * x4 + 0.378522 * c1 + 0.234012 * c2 - 0.027755 * x3^2 ##
+ 
+
+
+
+
+
+
+
+##########################################################
+##########################################################
+##########################################################
+#######  Problem 3  ####### 
+
+# Data:
+# Column 1: Sex
+# Column 2: Age
+# Column 3: Finish Time
+# Column 4: Place
+
+data = read.table(file.choose(), header = TRUE);
+
+Y = data[,3];
+x1 = data[,1];
+x2 = data[,2];
+
+N = length(Y);
+
+## We have missing data, we just pull it out since it's a small portion of our data set ##
+tmp = c(NA);
+s = 1;
+
+for(i in 1:N){
+	if(x2[i] == 0){
+		tmp[s] = i;
+		s = s + 1;
+	}
+}
+
+Y = Y[-tmp];
+x1 = x1[-tmp];
+x2 = x2[-tmp];
+
+## Only 2 factors for sex, so need one dummy variable ##
+s1 = as.numeric(x1 == 1);  ## Baseline is male
+
+## Get an initial idea of where to start ##
+## Believe data to be right-skewed, try Gamma with log and inverse link ##
+log = glm(Y ~ s1 + x2, family = Gamma(link = log));
+inverse = glm(Y ~ s1 + x2, family = Gamma(link = inverse));
+
+summary(log);  # AIC = 67296, Sex significant, Age is not.  Against intuition.  Positive coeff on females, makes sense.
+summary(inverse);  # AIC = 67296, Sex significant, Age is not.  Against intuition.  Negative coeff on females, doens't make sense.
+
+## Now try step AIC ##
+step.log = step(log, direction = "both");  ## Claims to leave Sex and remove Age, AIC = 67296
+step.inverse = step(inverse, direction = "both");  ## Again, claims to leave Sex and remove Age, AIC = 67296
+
+## It appears inverse gaussian has similar results, but smaller AIC.  So we proceed with this ##
+## Check full versus reduced models ##
+full = log;
+red = glm(Y ~ s1, family = Gamma(link = log));
+anova(red, full, test = "Chisq");
+
+full = inverse;
+red = glm(Y ~ s1, family = Gamma(link = inverse));
+anova(red, full, test = "Chisq");
+
+## Reduced models looks sufficient ##
+
+## Now we look for higher-order terms and interactions ##
+mod = glm(Y ~ (s1 + x2)^2, family = Gamma(link = inverse));
+summary(mod);                                                      ## AIC = 67293, iteraction s1*x2 is significant
+
+x2.2 = x2^2;
+mod1 = glm(Y ~ s1 + x2 + x2.2, family = Gamma(link = inverse));
+summary(mod1);                                                     ## AIC = 65574, x2^2 seems significant
+
+## Check model with both of these included, then run step AIC ##
+mod = glm(Y ~ s1 + x2 + x2.2 + s1:x2, family = Gamma(link = inverse));
+summary(mod);                                                      ## AIC = 65569, all terms significant
+
+step = step(mod, direction = "both");                              ## Doesn't remove anything, all terms significant.
+
+## Run Bestglm ##
+library(bestglm);
+tmp = data.frame("X" = cbind(s1, x2, x2.2, s1*x2), "Y" = Y);
+res = bestglm(Xy = tmp, family = Gamma(link = inverse), IC = "AIC", TopModels = 3, method = "exhaustive", intercept = TRUE);
+res$BestModels;
+
+## Best glm confirms that mod is a good model.  We will use these top 3 models to run diagnostics and cross-validate ##
+## to choose best model. Actually, all of these models want to include age, this is true based on intuition also.    ##
+s1.x2 = s1*x2;
+model1 = glm(Y ~ s1 + x2 + x2.2 + s1.x2, family = Gamma(link = inverse));  ## AIC = 65569
+model2 = glm(Y ~ s1 + x2 + x2.2, family = Gamma(link = inverse));          ## AIC = 65574
+model3 = glm(Y ~ x2 + x2.2 + s1.x2, family = Gamma(link = inverse));       ## AIC = 65710
+
+
+## Diagnostics on these models ##
+library(boot);
+glm.diag.plots(model1, iden = TRUE);
+glm.diag.plots(model2, iden = TRUE);
+glm.diag.plots(model3, iden = TRUE);
+
+## The diagnostic plots for models 1 and 2 show a lot of observations with high influence and high leverage ##
+## Because of this, I chose model 3 ##
+## Now we cross-validate to ensure model 3 is reasonable. ##
+
+## Cross-validate
+
+res1 = res2 = res3 = 0;
+p = sample(0:17000, 100);
+
+for(i in 1:100){
+	newY = Y[-p[i]];
+	news1 = s1[-p[i]];
+	newx2 = x2[-p[i]];
+	newx2.2 = x2.2[-p[i]];
+	news1.x2 = s1.x2[-p[i]];
+	X1 = c(1, s1[p[i]], x2[p[i]], x2.2[p[i]], s1.x2[p[i]]);
+	X2 = c(1, s1[p[i]], x2[p[i]], x2.2[p[i]]);
+	X3 = c(1, x2[p[i]], x2.2[p[i]], s1.x2[p[i]]);
+
+	mod1 = glm(newY ~ news1 + newx2 + newx2.2 + news1.x2, family = inverse.gaussian);
+	mod2 = glm(newY ~ news1 + newx2 + newx2.2, family = inverse.gaussian);
+	mod3 = glm(newY ~ newx2 + newx2.2 + news1.x2, family = inverse.gaussian);
+
+	res1 = res1 + (Y[p[i]] - mod1$coefficients %*% X1)^2;
+	res2 = res2 + (Y[p[i]] - mod2$coefficients %*% X2)^2;
+	res3 = res3 + (Y[p[i]] - mod3$coefficients %*% X3)^2;
+}
+
+
+
+
+

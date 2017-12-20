@@ -1,0 +1,643 @@
+#######################################
+##########  Chase Joyner     ##########
+##########  885 Homework 2   ##########
+##########  October 1, 2015  ##########
+#######################################
+
+################################
+########## Problem 1a ##########
+################################
+n = c(10, 50, 100);
+iter = 1000;
+p = .1
+c = 3;
+alpha = .05;
+results = matrix(NA, nrow = length(n), ncol = 4);
+colnames(results) = c("Estimate", "ASE", "LB", "UB");
+res = matrix(NA, nrow = iter, ncol = 4);
+
+prob1a = function(Z, c, alpha){
+
+	## Preliminaries ##
+	n = length(Z);	
+
+	## MLE of Pstar ##
+	pstarhat = mean(Z);
+
+	## By invariance property of MLEs ##
+	phat = 1 - (1 - pstarhat)^(1 / c);
+
+	## Asymptotic std error ##
+	p.se = (1 / c) * sqrt((pstarhat * (1 - pstarhat)^((2 - c) / c)) / n);
+
+	## CI for p ##
+	UB = phat + qnorm(1 - alpha / 2) * p.se;
+	LB = phat - qnorm(1 - alpha / 2) * p.se;
+
+	return(c(phat, p.se, LB, UB));
+}
+	
+################################
+########## Problem 1b ##########
+################################
+J = c(25, 50, 100, 200);
+c = c(4, 6, 8, 10);
+p = seq(.001, .2, .001);
+alpha = 0.05;
+
+## Number of data sets to be generated ##
+n = 1000;
+
+## Hold results of 1000 data sets for (J,c,p) ##
+res = matrix(NA, nrow = n, ncol = 4);
+
+## Create three arrays, one for each figure ##
+## Each array has length(J) elements, consisting of ##
+## matrix with length(p) rows, length(c) cols ##
+## where each component is desired result to ##
+## be plotted in figures ##
+arr1 = array(NA, c(length(p), length(c), length(J)));
+arr2 = array(NA, c(length(p), length(c), length(J)));
+arr3 = array(NA, c(length(p), length(c), length(J)));
+
+
+for(i in 1:length(J)){
+
+	for(j in 1:length(c)){
+
+		for(k in 1:length(p)){
+
+			## For coverage probabilites ##
+			count = 0;
+
+			for(l in 1:n){
+				
+				data = matrix(rbinom(J[i] * c[j], 1, p[k]), nrow = J[i], ncol = c[j]);
+				Z = apply(data, 1, max);
+				res[l,] = prob1a(Z, c[j], alpha);
+				count = count + (p[k] >= res[l,3] && p[k] <= res[l,4]); 
+			}
+			
+			empiricals = apply(res, 2, mean);
+			arr1[k,j,i] = empiricals[1] - p[k];
+			arr2[k,j,i] = sd(res[,1]) - empiricals[2];
+			arr3[k,j,i] = count / n;
+
+			print(c(i,j,k));
+		}
+
+	}
+
+}
+
+
+
+######## Figure 1 ########
+par(mfrow = c(2,2));
+plot(p, as.vector(arr1[,1,1]), ylab = "bias", ylim = c(-.05, .05), main = "J = 25", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,1]), col = "green");
+lines(p, as.vector(arr1[,3,1]), col = "blue");
+lines(p, as.vector(arr1[,4,1]), col = "black");
+
+plot(p, as.vector(arr1[,1,2]), ylab = "bias", ylim = c(-.05, .05), main = "J = 50", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,2]), col = "green");
+lines(p, as.vector(arr1[,3,2]), col = "blue");
+lines(p, as.vector(arr1[,4,2]), col = "black");
+
+plot(p, as.vector(arr1[,1,3]), ylab = "bias", ylim = c(-.05, .05), main = "J = 100", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,3]), col = "green");
+lines(p, as.vector(arr1[,3,3]), col = "blue");
+lines(p, as.vector(arr1[,4,3]), col = "black");
+
+plot(p, as.vector(arr1[,1,4]), ylab = "bias", ylim = c(-.05, .05), main = "J = 200", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,4]), col = "green");
+lines(p, as.vector(arr1[,3,4]), col = "blue");
+lines(p, as.vector(arr1[,4,4]), col = "black");
+
+
+######## Figure 2 ########
+par(mfrow = c(2,2));
+plot(p, as.vector(arr2[,1,1]), ylab = "Std. Error Differences", ylim = c(-.005,.005), main = "J = 25", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,1]), col = "green");
+lines(p, as.vector(arr2[,3,1]), col = "blue");
+lines(p, as.vector(arr2[,4,1]), col = "black");
+
+plot(p, as.vector(arr2[,1,2]), ylab = "Std. Error Differences", ylim = c(-.005,.005), main = "J = 50", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,2]), col = "green");
+lines(p, as.vector(arr2[,3,2]), col = "blue");
+lines(p, as.vector(arr2[,4,2]), col = "black");
+
+plot(p, as.vector(arr2[,1,3]), ylab = "Std. Error Differences", ylim = c(-.005,.005), main = "J = 100", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,3]), col = "green");
+lines(p, as.vector(arr2[,3,3]), col = "blue");
+lines(p, as.vector(arr2[,4,3]), col = "black");
+
+plot(p, as.vector(arr2[,1,4]), ylab = "Std. Error Differences", ylim = c(-.005,.005), main = "J = 200", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,4]), col = "green");
+lines(p, as.vector(arr2[,3,4]), col = "blue");
+lines(p, as.vector(arr2[,4,4]), col = "black");
+
+
+
+######## Figure 3 ########
+par(mfrow = c(2,2));
+plot(p, as.vector(arr3[,1,1]), ylab = "Coverage", ylim = c(0,1), main = "J = 25", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,1]), col = "green");
+lines(p, as.vector(arr3[,3,1]), col = "blue");
+lines(p, as.vector(arr3[,4,1]), col = "black");
+abline(1-alpha,0);
+
+plot(p, as.vector(arr3[,1,2]), ylab = "Coverage", ylim = c(0,1), main = "J = 50", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,2]), col = "green");
+lines(p, as.vector(arr3[,3,2]), col = "blue");
+lines(p, as.vector(arr3[,4,2]), col = "black");
+abline(1-alpha,0);
+
+plot(p, as.vector(arr3[,1,3]), ylab = "Coverage", ylim = c(0,1), main = "J = 100", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,3]), col = "green");
+lines(p, as.vector(arr3[,3,3]), col = "blue");
+lines(p, as.vector(arr3[,4,3]), col = "black");
+abline(1-alpha,0);
+
+plot(p, as.vector(arr3[,1,4]), ylab = "Coverage", ylim = c(0,1), main = "J = 200", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,4]), col = "green");
+lines(p, as.vector(arr3[,3,4]), col = "blue");
+lines(p, as.vector(arr3[,4,4]), col = "black");
+abline(1-alpha,0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################
+########## Problem 1c ##########
+################################
+prob1c = function(Z, cj){
+
+	## Create log-likelihood function as a function ##
+	llik = function(p, Z, Cj){
+                pz = Se + (1 - Se - Sp) * (1 - p)^Cj;
+		res = -sum(Z * log(pz) + (1 - Z) * log(1-pz));
+		return(res);
+	}
+	
+	## Optimize the llik function ##
+	p.hat = optimize(llik, c(.001,1), Cj = cj, Z = Z)$minimum;
+
+	## Asymptotic variance ##
+	pjss = Se + (1 - p.hat)^cj * (1 - Se - Sp);
+	dp = -cj * (1 - Se - Sp) * (1 - p.hat)^(cj - 1);
+	dp2 = cj * (cj - 1) * (1 - Se - Sp) * (1 - p.hat)^(cj - 2);
+	var = -sum(Z * (-1 / (pjss^2) * dp^2 + 1 / pjss * dp2) - (1 - Z) * (1 / (1 - pjss)^2 * dp^2 + 1 / (1 - pjss) * dp2));
+
+	## Confidence Interval ##
+	LB = p.hat - qnorm(1 - alpha / 2) * sqrt(var^(-1));
+	UB = p.hat + qnorm(1 - alpha / 2) * sqrt(var^(-1));	
+
+	## Calculate second way ##
+	# Se = sqrt((1 / length(Z)) * (hessian(llik, p.hat, Cj = cj, Z = Z))^(-1));
+
+	return(c(p.hat, sqrt(1 / var), LB, UB));
+}
+
+
+
+################################
+########## Problem 1d ##########
+################################
+J = c(25, 50, 100, 200);
+lambda = c(2, 4, 6, 8);
+iter = 100;
+alpha = 0.05;
+p = seq(.001, .2, .001);
+Se = 0.95;
+Sp = 0.98;
+res = matrix(NA, nrow = iter, ncol = 4);
+
+## Create three arrays, one for each figure ##
+## Each array has length(J) elements, consisting of ##
+## matrix with length(p) rows, length(lambda) cols ##
+## where each component is desired result to ##
+## be plotted in figures ##
+arr1 = array(NA, c(length(p), length(lambda), length(J)));
+arr2 = array(NA, c(length(p), length(lambda), length(J)));
+arr3 = array(NA, c(length(p), length(lambda), length(J)));
+
+for(j in 1:length(J)){
+	
+	for(k in 1:length(lambda)){
+
+		for(l in 1:length(p)){
+
+			## For coverage probabilities ##
+			count = 0;
+
+			for(i in 1:iter){
+				cj = 2 + rpois(J[j], lambda[k]);
+				pstarstar = Se + (1 - Se - Sp) * (1 - p[l])^cj;
+				Z = rbinom(J[j], 1, pstarstar);
+
+				res[i,] = prob1c(Z, cj);
+
+				count = count + (p[l] >= res[i,3] && p[l] <= res[i,4]); 
+			}
+
+			empiricals = apply(res, 2, mean);
+			arr1[l,k,j] = empiricals[1] - p[l];
+			arr2[l,k,j] = sd(res[,1]) - empiricals[2];
+			arr3[l,k,j] = count / iter;
+			print(c(j,k,l));
+		}
+	}
+}
+
+######## Figure 1 ########
+par(mfrow = c(2,2));
+plot(p, as.vector(arr1[,1,1]), ylab = "bias", ylim = c(-.05, .05), main = "J = 25", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,1]), col = "green");
+lines(p, as.vector(arr1[,3,1]), col = "blue");
+lines(p, as.vector(arr1[,4,1]), col = "black");
+
+plot(p, as.vector(arr1[,1,2]), ylab = "bias", ylim = c(-.05, .05), main = "J = 50", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,2]), col = "green");
+lines(p, as.vector(arr1[,3,2]), col = "blue");
+lines(p, as.vector(arr1[,4,2]), col = "black");
+
+plot(p, as.vector(arr1[,1,3]), ylab = "bias", ylim = c(-.05, .05), main = "J = 100", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,3]), col = "green");
+lines(p, as.vector(arr1[,3,3]), col = "blue");
+lines(p, as.vector(arr1[,4,3]), col = "black");
+
+plot(p, as.vector(arr1[,1,4]), ylab = "bias", ylim = c(-.05, .05), main = "J = 200", type = "l", col = "red");
+lines(p, as.vector(arr1[,2,4]), col = "green");
+lines(p, as.vector(arr1[,3,4]), col = "blue");
+lines(p, as.vector(arr1[,4,4]), col = "black");
+
+
+
+######## Figure 2 ########
+par(mfrow = c(2,2));
+plot(p, as.vector(arr2[,1,1]), ylab = "Std. Error Differences", ylim = c(-.005, .005), main = "J = 25", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,1]), col = "green");
+lines(p, as.vector(arr2[,3,1]), col = "blue");
+lines(p, as.vector(arr2[,4,1]), col = "black");
+
+plot(p, as.vector(arr2[,1,2]), ylab = "Std. Error Differences", ylim = c(-.005, .005), main = "J = 50", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,2]), col = "green");
+lines(p, as.vector(arr2[,3,2]), col = "blue");
+lines(p, as.vector(arr2[,4,2]), col = "black");
+
+plot(p, as.vector(arr2[,1,3]), ylab = "Std. Error Differences", ylim = c(-.005, .005), main = "J = 100", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,3]), col = "green");
+lines(p, as.vector(arr2[,3,3]), col = "blue");
+lines(p, as.vector(arr2[,4,3]), col = "black");
+
+plot(p, as.vector(arr2[,1,4]), ylab = "Std. Error Differences", ylim = c(-.005, .005), main = "J = 200", type = "l", col = "red");
+lines(p, as.vector(arr2[,2,4]), col = "green");
+lines(p, as.vector(arr2[,3,4]), col = "blue");
+lines(p, as.vector(arr2[,4,4]), col = "black");
+
+
+
+######## Figure 3 ########
+par(mfrow = c(2,2));
+plot(p, as.vector(arr3[,1,1]), ylab = "Coverage", ylim = c(0,1), main = "J = 25", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,1]), col = "green");
+lines(p, as.vector(arr3[,3,1]), col = "blue");
+lines(p, as.vector(arr3[,4,1]), col = "black");
+abline(1-alpha,0);
+
+plot(p, as.vector(arr3[,1,2]), ylab = "Coverage", ylim = c(0,1), main = "J = 50", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,2]), col = "green");
+lines(p, as.vector(arr3[,3,2]), col = "blue");
+lines(p, as.vector(arr3[,4,2]), col = "black");
+abline(1-alpha,0);
+
+plot(p, as.vector(arr3[,1,3]), ylab = "Coverage", ylim = c(0,1), main = "J = 100", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,3]), col = "green");
+lines(p, as.vector(arr3[,3,3]), col = "blue");
+lines(p, as.vector(arr3[,4,3]), col = "black");
+abline(1-alpha,0);
+
+plot(p, as.vector(arr3[,1,4]), ylab = "Coverage", ylim = c(0,1), main = "J = 200", type = "l", col = "red");
+lines(p, as.vector(arr3[,2,4]), col = "green");
+lines(p, as.vector(arr3[,3,4]), col = "blue");
+lines(p, as.vector(arr3[,4,4]), col = "black");
+abline(1-alpha,0);
+
+
+
+
+
+
+
+
+
+
+
+########################################################################################
+####################                   Problem 2a                   #################### 
+########################################################################################
+prob2a = function(Z, X, c, se, sp, alpha){
+
+	llik = function(B, Z, X, Se, Sp, c){
+
+		## To create pjstar ##
+		pindex = NULL;
+		#for(i in 1:length(c)){
+#
+#			for(j in 1:c[i]){
+#
+#				pindex = append(pindex, i);
+#			}
+#		}
+		
+		pindex = c;
+		
+		pij = exp(X %*% B) / (1 + exp(X %*% B));
+		pjs = 1 - by(1-pij, pindex, prod);
+
+		pjss = Se * pjs + (1 - Sp) * (1 - pjs);
+
+		res = -sum(Z * log(pjss) + (1 - Z) * log(1 - pjss));
+
+		return(res);
+	}
+
+	res = optim(rep(0, ncol(X)), llik, method = "Nelder-Mead", Z = Z, X = X, Se = se, Sp = sp, c = c, hessian = TRUE);
+
+	betahat = res$par;
+
+	## Asymptotic Information Matrix  and ASE ##
+	I.mat = solve(res$hessian);
+	SE = sqrt(diag(I.mat));
+
+	## Confidence Interval ##
+	LB = betahat - qnorm(1 - alpha / 2) * SE;
+	UB = betahat + qnorm(1 - alpha / 2) * SE;
+
+	## Marginal Wald Tests and LRTs ##
+	## H0: Beta_k = 0 vs H1: Beta_k != 0 ##
+	W = rejectW = pval = rejP = pLR = rejPLR = LR = rejL = rep(NA, ncol(X));
+
+	for(i in 1:ncol(X)){
+		R1 = t(rep(0, ncol(X)));
+		R1[i] = 1;
+		W[i] = t(R1 %*% betahat) %*% solve(R1 %*% I.mat %*% t(R1)) %*% (R1 %*% betahat);
+	
+		## Calculate rejection region ##
+		rejectW[i] = W[i] > qchisq(0.975, 1) || W[i] < qchisq(0.025, 1);
+
+		## Pvalue ##
+		pval[i] = 2 * (1 - pnorm(abs(W[i])));
+		rejP[i] = pval[i] < alpha;
+
+		## LRT ##
+		Xred = X[,-i];
+		res.red = optim(rep(0, ncol(Xred)), llik, method = "Nelder-Mead", Z = Z, X = Xred, Se = se, Sp = sp, c = c);
+		LR[i] = -2 * res.red$value / res$value;
+		rejL[i] = LR[i] > qchisq(0.975, 1) || LR[i] < qchisq(0.025, 1);
+		pLR[i] = pchisq(LR[i], 1);
+		rejPLR[i] = pLR[i] < alpha;
+			
+	}
+
+	## H0: Beta2 = ... = Betap = 0 vs H1: at least one not 0 -- Wald Test and LRT ##
+	R2 = diag(ncol(X));
+	R2 = R2[-1,];
+	r = rep(0, ncol(X));
+	
+	W2 = t(R2 %*% betahat) %*% solve(R2 %*% I.mat %*% t(R2)) %*% (R2 %*% betahat);
+	Full.test = W > qchisq(0.975, 1) || W < qchisq(0.025, 1);
+	
+	return(list(MLE = betahat, Var = SE, LB = LB, UB = UB, Imat = I.mat, Wald = W, RejectW = rejectW, P = pval, RejectP = rejP, LRT = LR, P.LR = pLR, RejectPLR = rejPLR, RejectL = rejL, Wald.Full = W2, Full = Full.test));
+}
+
+
+
+J = 25
+lambda = 4
+## Number of data sets to be generated ##
+iter = 10;
+## True beta ##
+Beta = c(-1, 0.75, 1.3);
+alpha = .05;
+Se = .95;
+Sp = .98;
+
+## Matrix to save results of each (lambda, J) ##
+res = list();
+
+cj = 2 + rpois(J, lambda);
+X = matrix(NA, nrow = sum(cj), ncol = length(Beta));
+X[,1] = 1;
+X[,2] = rnorm(sum(cj));
+X[,3] = rnorm(sum(cj));
+pij = exp(X %*% Beta) / (1 + exp(X %*% Beta));
+
+pindex = NULL;
+for(i in 1:length(cj)){
+
+	for(h in 1:cj[i]){
+		pindex = append(pindex, i);
+	}
+}
+
+for(k in 1:iter){
+
+	data = rbinom(sum(cj), 1, pij);
+	Zj = by(data, pindex, max);
+	Zj = as.vector(Zj);
+	Z = rbinom(length(Zj), 1, Se * Zj + (1 - Sp) * (1 - Zj));
+	res[[k]] = prob2a(Z, X, cj, Se, Sp, alpha);
+			
+	print(c(k));	
+}
+
+
+
+##### Create tables for parts (i), (ii), (iii) #####
+## Table 1 will have mean MLE, mean ASE, mean LB, mean UB of iterations ##
+## Table 2 will have mean marginal Wald stat, mean p value ##
+Table1 = matrix(NA, nrow = 4, ncol = length(Beta));
+Table2 = matrix(NA, nrow = 2, ncol = length(Beta));
+Table3 = matrix(NA, nrow = 2, ncol = 1);
+
+tmp1 = tmp2 = tmp3 = tmp4 = 0;
+for(i in 1:iter){
+	tmp1 = tmp1 + res[[i]]$MLE;
+	tmp2 = tmp2 + res[[i]]$Var;
+	tmp3 = tmp3 + res[[i]]$LB;
+	tmp4 = tmp4 + res[[i]]$UB;
+}
+Table1[1,] = tmp1 / iter;
+Table1[2,] = tmp2 / iter;
+Table1[3,] = tmp3 / iter;
+Table1[4,] = tmp4 / iter;
+
+tmp1 = tmp2 = tmp3 = tmp4 = 0;
+for(i in 1:iter){
+	tmp1 = tmp1 + res[[i]]$Wald;
+	tmp2 = tmp2 + res[[i]]$P
+	
+}
+Table2[1,] = tmp1 / iter;
+Table2[2,] = tmp2 / iter;
+
+tmp1 = tmp2 = 0;
+for(i in 1:iter){
+	tmp1 = tmp1 + res[[i]]$Wald.Full;
+	tmp2 = tmp2 + res[[i]]$Full;
+}
+Table3[1,] = tmp1 / iter;
+Table3[2,] = tmp2 / iter;
+
+## Create mean I(beta) for part b ##
+IB = 0;
+for(i in 1:iter){
+	IB = IB + res[[i]]$Imat;
+}
+IB = IB / iter;
+
+
+
+
+
+
+
+
+
+########################################################################################
+####################       Problem 2b -- Some Problems Here         #################### 
+########################################################################################
+alpha = 0.05;
+
+MLE = Table1[1,];
+Var = Table1[2,];
+
+prob2b = function(X, alpha, MLE, Var, IB){
+
+	pijCI = matrix(NA, ncol = 2, nrow = sum(cj));
+	pij.hat = exp(X %*% MLE) / (1 + exp(X %*% MLE));
+
+	for(i in 1:length(pijCI)){
+	
+		pijCI[i,1] = pij.hat[i] - qnorm(alpha / 2) * 
+
+
+	}
+	
+	LB = pij.hat - qnorm(alpha / 2) * (((exp(X %*% MLE) * X) / (1 + exp(X %*% MLE))^2)^2 %*% solve(IB));
+
+}
+	
+
+
+########################################################################################
+####################                     Problem 2c                 #################### 
+########################################################################################
+J = c(25, 50, 100, 200);
+lambda = c(2, 4, 6, 8);
+Beta = c(-1, 0.75, 1.3);
+iter = 10;
+alpha = 0.05;
+Se = 0.95;
+Sp = 0.98;
+res = list();
+
+## Create three arrays, one for each figure ##
+## Each array has length(J) elements, consisting of ##
+## matrix with length(p) rows, length(lambda) cols ##
+## where each component is desired result to ##
+## be plotted in figures ##
+#arr1 = array(NA, c(length(p), length(lambda), length(J)));
+#arr2 = array(NA, c(length(p), length(lambda), length(J)));
+#arr3 = array(NA, c(length(p), length(lambda), length(J)));
+
+for(j in 1:length(J)){
+
+	for(l in 1:length(lambda)){
+
+		cj = 2 + rpois(J[j], lambda[l]);
+		X = matrix(NA, nrow = sum(cj), ncol = length(Beta));
+		X[,1] = 1;
+		X[,(2:length(Beta))] = rnorm((length(Beta) - 1) * sum(cj));
+	
+		pij = exp(X %*% Beta) / (1 + exp(X %*% Beta));
+
+		pindex = NULL;
+		for(k in 1:length(cj)){
+
+			for(h in 1:cj[k]){
+				pindex = append(pindex, k);
+			}
+		}
+
+		for(i in 1:iter){
+
+			data = rbinom(sum(cj), 1, pij);
+			Zj = by(data, pindex, max);
+			Zj = as.vector(Zj);
+			Z = rbinom(length(Zj), 1, Se * Zj + (1 - Sp) * (1 - Zj));
+			res[[i]] = prob2a(Z, X, cj, Se, Sp, alpha);
+
+
+		}
+	
+		print(c(j,l));
+
+	}
+
+
+}
+
+
+
+
+
+
+
+
+########################################################################################
+####################                     Problem 2d                 #################### 
+########################################################################################
+
+data = read.table(file.choose());
+data = data[,-1];
+data = data[,-4];
+names(data) = c("Response", "Pool Size", "Pool ID", "Age", "Gender", "Hours");
+cj = data[,3];  ## this is really the pindex ##
+Z = as.vector(by(data[,1], cj, max));
+X = as.matrix(data[,(4:6)]);
+X = cbind(rep(1, length(X[,2])), X);
+Se = 0.95;
+Sp = 0.95;
+alpha = 0.05;
+
+res = prob2a(Z, X, cj, Se, Sp, alpha);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

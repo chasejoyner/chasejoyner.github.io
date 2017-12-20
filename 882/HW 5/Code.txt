@@ -1,0 +1,126 @@
+###########################################################
+###########################################################
+#####
+#####                 Chase Joyner
+#####                 882 Homework 5
+#####
+###########################################################
+###########################################################
+
+library(mvtnorm)
+library(MCMCpack)
+
+## True values ##
+n = 100
+beta.true = c(3, 0.5, 1.25)
+sigma.true = 1
+p1 = 3
+p2 = 3
+
+## Generate covariate and data ##
+x1 = rnorm(n, 2, 1)
+x2 = rbinom(n, 1, 0.5)
+x3 = rbinom(n, 1, 0.5)
+X1 = cbind(rep(1, n), x1, x2)
+X2 = cbind(rep(1, n), x1, x3)
+Y = as.vector(X1 %*% beta.true + rnorm(n, 0, sigma.true^2))
+
+## Hyperparameters ##
+beta10 = rep(0, p1)
+beta20 = rep(0, p2)
+Sigma10 = 100 * diag(p1)
+Sigma20 = 100 * diag(p2)
+a10 = b10 = a20 = b20 = 1
+
+## Exact Bayes ##
+A1 = solve(Sigma10) %*% beta10 + t(X1) %*% Y
+A2 = solve(Sigma20) %*% beta20 + t(X2) %*% Y
+Cmat1 = solve(t(X1) %*% X1 + solve(Sigma10))
+Cmat2 = solve(t(X2) %*% X2 + solve(Sigma20))
+C1s = (2*pi)^(-n / 2) * b10^a10 / gamma(a10) * det(Sigma10)^(-1/2) * det(Cmat1)^(1/2)
+C2s = (2*pi)^(-n / 2) * b20^a20 / gamma(a20) * det(Sigma20)^(-1/2) * det(Cmat2)^(1/2)
+mu1 = Cmat1 %*% A1
+mu2 = Cmat2 %*% A2
+B1 = (1/2) * (t(Y) %*% Y + t(beta10) %*% solve(Sigma10) %*% beta10 - t(mu1) %*% A1) + b10
+alpha1 = n/2 + a10
+B2 = (1/2) * (t(Y) %*% Y + t(beta20) %*% solve(Sigma20) %*% beta20 - t(mu2) %*% A2) + b20
+alpha2 = n/2 + a20
+B.exact = C1s / C2s * gamma(alpha1) / (B1^alpha1) * B2^alpha2 / gamma(alpha2)
+
+## Method 1 ##
+S = 100000
+lik1.est = rep(-99, S)
+lik2.est = rep(-99, S)
+sigmasq1 = sigmasq2 = 1
+for(t in 1:S){
+	beta1 = as.vector(rmvnorm(1, beta10, sigmasq1 * Sigma10))
+	beta2 = as.vector(rmvnorm(1, beta20, sigmasq2 * Sigma20))
+	sigmasq1 = 1 / rgamma(1, a10, b10)
+	sigmasq2 = 1 / rgamma(1, a20, b20)
+	lik1.est[t] = dmvnorm(Y, X1%*%beta1, sigmasq1 * diag(n))
+	lik2.est[t] = dmvnorm(Y, X2%*%beta2, sigmasq2 * diag(n))
+	print(S - t)
+}
+B01.1 = mean(lik1.est) / mean(lik2.est)
+
+## Method 2 ##
+S = 100000
+lik1.est = rep(-99, S)
+lik2.est = rep(-99, S)
+sigmasq1 = sigmasq2 = 1
+a1 = a2 = 2
+b1 = 1.051	## MSE under model 1
+b2 = 1.151	## MSE under model 2
+for(t in 1:S){
+	beta1 = as.vector(rmvnorm(1, solve(t(X1)%*%X1)%*%t(X1)%*%Y, sigmasq1 * solve(t(X1)%*%X1)))
+	beta2 = as.vector(rmvnorm(1, solve(t(X2)%*%X2)%*%t(X2)%*%Y, sigmasq2 * solve(t(X2)%*%X2)))
+	dbeta1p = dmvnorm(beta1, beta10, sigmasq1 * Sigma10)
+	dbeta2p = dmvnorm(beta2, beta20, sigmasq2 * Sigma20)
+	dbeta1i = dmvnorm(beta1, solve(t(X1)%*%X1)%*%t(X1)%*%Y, sigmasq1 * solve(t(X1)%*%X1))
+	dbeta2i = dmvnorm(beta2, solve(t(X2)%*%X2)%*%t(X2)%*%Y, sigmasq2 * solve(t(X2)%*%X2))
+	sigmasq1 = rinvgamma(1, a1, b1)
+	sigmasq2 = rinvgamma(1, a2, b2)
+	dsigmasq1i = dinvgamma(sigmasq1, a1, b1)
+	dsigmasq2i = dinvgamma(sigmasq2, a2, b2)
+	dsigmasq1p = dinvgamma(sigmasq1, a10, b10)
+	dsigmasq2p = dinvgamma(sigmasq2, a20, b20)
+	w1 = (dbeta1p * dsigmasq1p) / (dbeta1i * dsigmasq1i)
+	w2 = (dbeta2p * dsigmasq2p) / (dbeta2i * dsigmasq2i)
+	lik1.est[t] = w1 * dmvnorm(Y, X1%*%beta1, sigmasq1 * diag(n))
+	lik2.est[t] = w2 * dmvnorm(Y, X2%*%beta2, sigmasq2 * diag(n))
+}
+B01.2 = mean(lik1.est) / mean(lik2.est)
+
+## Method 3 ##
+S = 100000
+lik1.est = rep(-99, S)
+lik2.est = rep(-99, S)
+sigmasq1 = sigmasq2 = 1
+weights1 = weights2 = rep(-99, S)
+a1 = a2 = 2
+b1 = 1.051	## MSE under model 1
+b2 = 1.151	## MSE under model 2
+for(t in 1:S){
+	beta1 = as.vector(rmvnorm(1, solve(t(X1)%*%X1)%*%t(X1)%*%Y, sigmasq1 * solve(t(X1)%*%X1)))
+	beta2 = as.vector(rmvnorm(1, solve(t(X2)%*%X2)%*%t(X2)%*%Y, sigmasq2 * solve(t(X2)%*%X2)))
+	dbeta1p = dmvnorm(beta1, beta10, sigmasq1 * Sigma10)
+	dbeta2p = dmvnorm(beta2, beta20, sigmasq2 * Sigma20)
+	dbeta1i = dmvnorm(beta1, solve(t(X1)%*%X1)%*%t(X1)%*%Y, sigmasq1 * solve(t(X1)%*%X1))
+	dbeta2i = dmvnorm(beta2, solve(t(X2)%*%X2)%*%t(X2)%*%Y, sigmasq2 * solve(t(X2)%*%X2))
+	sigmasq1 = rinvgamma(1, a1, b1)
+	sigmasq2 = rinvgamma(1, a2, b2)
+	dsigmasq1p = dinvgamma(sigmasq1, a10, b10)
+	dsigmasq2p = dinvgamma(sigmasq2, a20, b20)
+	dsigmasq1i = dinvgamma(sigmasq1, a1, b1)
+	dsigmasq2i = dinvgamma(sigmasq2, a2, b2)
+	w1 = (dbeta1p * dsigmasq1p) / (dbeta1i * dsigmasq1i)
+	w2 = (dbeta2p * dsigmasq2p) / (dbeta2i * dsigmasq2i)
+	lik1.est[t] = w1 * dmvnorm(Y, X1%*%beta1, sigmasq1 * diag(n))
+	lik2.est[t] = w2 * dmvnorm(Y, X2%*%beta2, sigmasq2 * diag(n))
+	weights1[t] = w1
+	weights2[t] = w2
+	print(S - t)
+}
+top = sum(lik1.est) / sum(weights1)
+bot = sum(lik2.est) / sum(weights2)
+B01.3 = top / bot

@@ -1,0 +1,102 @@
+###################################
+###################################
+#####
+#####             Chase Joyner
+#####           882 Homework 4
+#####
+###################################
+###################################
+
+## Required libraries ##
+library(MASS)
+library(mvtnorm)
+library(coda)
+
+###################################
+##### Problem 1
+
+BIWLS = function(Y, X, iter = 1e4){
+
+	## Preliminaries ##
+	n = length(Y)
+	p = dim(X)[2]
+	R = 100*diag(p)
+	a = rep(1, p)
+
+	## Initial values ##
+	beta = rep(0, p)
+	acc = 0
+	
+	## Save records ##
+	Beta = matrix(-99, nrow = iter, ncol = p)
+
+	## Compute only once ##
+	IR = solve(R)
+	IRa = IR %*% a
+
+	## Link function for pi ##
+	link = function(u){
+		expXB = exp(X %*% u)
+		val = expXB / (1 + expXB)
+		return(val)
+	}
+
+	llik = function(s){
+		pi = link(s)
+		val = -(1/2)*t(s-a)%*%IR%*%(s-a) + sum(Y*log(pi/(1-pi))) + sum(log(1-pi))
+		return(val)
+	}
+
+	for(i in 1:iter){
+		## Update beta ##
+		pi.t = as.vector(link(beta))
+		newY.t = X %*% beta + (Y - pi.t) / (pi.t * (1 - pi.t))
+		Wt = diag(pi.t * (1 - pi.t))
+		Ct = solve(IR + t(X) %*% Wt %*% X)
+		mt = Ct %*% (IRa + t(X) %*% Wt %*% newY.t)
+		beta.s = as.vector(rmvnorm(1, mt, Ct))
+		pi.s = as.vector(link(beta.s))
+		newY.s = X %*% beta.s + (Y - pi.s) / (pi.s * (1 - pi.s))
+		Ws = diag(pi.s * (1 - pi.s))
+		Cs = solve(IR + t(X) %*% Ws %*% X)
+		ms = Cs %*% (IRa + t(X) %*% Ws %*% newY.s)
+		r = exp(llik(beta.s) - llik(beta) + dmvnorm(beta, ms, Cs, log = TRUE) - dmvnorm(beta.s, mt, Ct, log = TRUE))
+		z = rbinom(1, 1, min(r, 1))
+		if(z == 1){
+			beta = beta.s
+			acc = acc + 1
+		}
+		Beta[i,] = beta
+		print(c(i))
+	}
+	return(list(Beta = Beta, accept = acc / iter))	
+}
+
+## Generate some data and run ##
+#par(mfrow = c(2,1))
+#n = 1000
+#beta.true = c(-1, 0.5)
+#X = cbind(rep(1, n), rnorm(n, 2, 1))
+#probs = exp(X %*% beta.true) / (1 + exp(X %*% beta.true))
+#Y = rbinom(n, 1, probs)
+#res = BIWLS(Y, X)
+#apply(res$Beta, 1, mean)
+
+## Analyze diabetes data ##
+library(MASS)
+data(Pima.tr)
+data(Pima.te)
+pima = rbind(Pima.tr, Pima.te)
+Y = as.vector(pima[, 8]) 
+Y[Y == "Yes"] = 1 
+Y[Y == 'No'] = 0 
+Y = as.numeric(Y)
+X = cbind(1, as.matrix(pima[,5]))
+res = BIWLS(Y, X)
+apply(res$Beta, 2, mean)
+Beta.mcmc1 = as.mcmc(res$Beta[1,])
+Beta.mcmc2 = as.mcmc(res$Beta[2,])
+autocorr.plot(Beta.mcmc1)
+autocorr.plot(Beta.mcmc2)
+effectiveSize(Beta.mcmc1)
+effectiveSize(Beta.mcmc2)

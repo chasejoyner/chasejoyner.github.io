@@ -1,0 +1,190 @@
+#############################################
+##########  Chase Joyner 	   ##########
+##########  Mthsc 885 - 9/12/15    ##########
+##########  Homework 1 simulations ##########
+##########  M-estimation	   ##########
+#############################################
+
+#################################
+##########  Example 1  ##########
+#################################
+n = c(10, 50, 100);
+iter = 10000;
+
+## True values ##
+theta = c(1.3, 0.8);
+
+## Matrices to store variances ##
+V = matrix(NA, nrow = length(n), ncol = 2);
+Vmat = matrix(NA, nrow = iter, ncol = 2 * length(n));
+Vmat.mean = matrix(NA, nrow = length(n), ncol = 2);
+	
+
+## Simulation ##
+for(i in 1:length(n)){
+
+	Ybar = Yvar = c(NA, iter);
+	
+	## Begin iterations ##
+	for(j in 1:iter){
+		Y = rnorm(n[i], theta[1], theta[2]);
+		Ybar[j] = mean(Y);
+		Yvar[j] = var(Y);
+		theta.h = c(Ybar[j], Yvar[j]);
+
+		A.theta0 = diag(2);
+
+		Bn = matrix(NA, nrow = 2, ncol = 2);
+		Bn[1,1] = Yvar[j];
+		Bn[1,2] = Bn[2,1] = (1 / n[i]) * sum((Y - Ybar[j]) * ((Y - Ybar[j])^2 - Yvar[j]));
+		Bn[2,2] = (1 / n[i]) * sum(((Y - Ybar[j])^2 - Yvar[j])^2);
+
+		Vmat[j, 2*i-1] = (solve(A.theta0) %*% Bn %*% t(solve(A.theta0)))[1,1] / n[i];
+		Vmat[j, 2*i] = (solve(A.theta0) %*% Bn %*% t(solve(A.theta0)))[2,2] / n[i];
+	}
+
+	V[i, 1] = var(Ybar);
+	V[i, 2] = var(Yvar);
+
+	Vmat.mean[i, 1] = mean(Vmat[, 2*i-1]);
+	Vmat.mean[i, 2] = mean(Vmat[, 2*i]);
+}
+
+########## Check results ##########
+par(mfrow = c(1,2));
+plot(n, Vmat.mean[,1], type = "l", col = "red", main = "Mean Variance Estimate");
+lines(n, V[,1], col = "black");
+plot(n, Vmat.mean[,2], type="l", col="red", main="Variance Variance Estimate");
+lines(n, V[,2], col="black"); 
+
+
+
+
+#################################
+##########  Example 2  ##########
+#################################
+n = c(10, 50, 100);
+iter = 10000;
+
+## True values ##
+thetay = c(1.3, 0.8);
+thetax = c(3, 0.75);
+
+## Matrices to store variances ##
+V = matrix(NA, nrow = length(n), ncol = 1);
+Vmat = matrix(NA, nrow = iter, ncol = length(n));
+Vmat.mean = matrix(NA, nrow = length(n), ncol = 1);
+
+## Simulation ##
+for(i in 1:length(n)){
+	
+	Ybar = Xbar = c(NA, iter);
+	thetahat = c(NA, iter);
+
+	for(j in 1:iter){
+		Y = rnorm(n[i], thetay[1], thetay[2]);
+		X = rnorm(n[i], thetax[1], thetax[2]);
+		Ybar[j] = mean(Y);
+		Xbar[j] = mean(X);
+		thetahat[j] = Ybar[j] / Xbar[j];
+
+		An = Xbar[j];
+		Bn = (1 / n[i]) * sum((Y - thetahat[j]*X)^2);
+		Vn = (1 / An)^2 * Bn;
+
+		Vmat[j, i] = (1 / n[i]) * (1 / An)^2 * Bn;
+	}
+
+	V[i] = var(thetahat);
+	Vmat.mean[i] = mean(Vmat[,i]);
+}
+
+########## Check results ##########
+par(mfrow=c(1,1));
+plot(n, Vmat.mean, type = "l", col = "red", main = "Theta Variance Estimate");
+lines(n, V, col = "black");
+
+
+
+
+
+#################################
+##########  Example 3  ##########
+#################################
+n = c(10, 50, 100);
+iter = 10000;
+
+## True values ##
+theta = c(3, 0.5);
+
+## Matrices to store variances ##
+V = matrix(NA, nrow = length(n), ncol = 4);
+Vmat = matrix(NA, nrow = iter, ncol = 4*length(n));
+Vmat.mean = matrix(NA, nrow = length(n), ncol = 4);
+
+## Simulation ##
+for(i in 1:length(n)){
+
+	Ybar = c(NA, iter);
+	Yvar = c(NA, iter);
+	Ysd = c(NA, iter);
+	Ylogvar = c(NA, iter);
+
+	for(j in 1:iter){
+		Y = rnorm(n[i], theta[1], theta[2]);	
+		Ybar[j] = mean(Y);
+		Yvar[j] = var(Y);
+		Ysd[j] = sd(Y);
+		Ylogvar[j] = log(Yvar[j]);
+		thetahat = c(Ybar[j], Yvar[j], Ysd[j], Ylogvar[j]);
+
+		An = diag(4);
+		An[1,1] = 1 / thetahat[2];
+		An[2,2] = 1 / (2 * thetahat[2]^2);
+		An[3,2] = -1 / (2 * sqrt(thetahat[2]));
+		An[4,2] = -1 / thetahat[2];
+		
+		Bn = diag(4);
+		Bn[3,3] = Bn[4,4] = 0;
+		Bn[1,1] = 1 / thetahat[2];
+		Bn[2,2] = (1 / n[i]) * sum((((Y - Ybar[j])^2 - Yvar[j])^2) * (1 / (4 * Yvar[j]^4)));
+		Bn[1,2] = Bn[2,1] = (1 / n[i]) * sum(((Y - Ybar[j])^3) * (1 / (2 * Yvar[j]^(3/2))));
+
+		tmp = solve(An) %*% Bn %*% t(solve(An));		
+
+		Vmat[j, 4*i-3] = tmp[1,1] / n[i];
+		Vmat[j, 4*i-2] = tmp[2,2] / n[i];
+		Vmat[j, 4*i-1] = tmp[3,3] / n[i];
+		Vmat[j, 4*i] = tmp[4,4] / n[i];
+	}
+
+	V[i, 1] = var(Ybar);
+	V[i, 2] = var(Yvar);
+	V[i, 3] = var(Ysd);
+	V[i, 4] = var(Ylogvar);
+
+	Vmat.mean[i, 1] = mean(Vmat[,4*i-3]);
+	Vmat.mean[i, 2] = mean(Vmat[,4*i-2]);
+	Vmat.mean[i, 3] = mean(Vmat[,4*i-1]);
+	Vmat.mean[i, 4] = mean(Vmat[,4*i]);
+}
+
+########## Check results ##########
+par(mfrow=c(2,2));
+plot(n, Vmat.mean[,1], type = "l", col = "red", main = "Variance of Mean Estimate");
+lines(n, V[,1], col = "black");
+plot(n, Vmat.mean[,2], type = "l", col = "red", main = "Variance of Variance Estimate");
+lines(n, V[,2], col = "black");
+plot(n, Vmat.mean[,3], type = "l", col = "red", main = "Variance of SD Estimate");
+lines(n, V[,3], col = "black");
+plot(n, Vmat.mean[,4], type = "l", col = "red", main = "Variance of Log Variance Estimate");
+lines(n, V[,4], col = "black");
+
+
+
+
+
+
+
+
+		

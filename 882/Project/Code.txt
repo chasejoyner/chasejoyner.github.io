@@ -1,0 +1,313 @@
+##############################################################################
+##############################################################################
+#####
+#####		Chase Joyner
+#####		2016 Election Model
+#####		882 Project
+#####
+##############################################################################
+##############################################################################
+
+library(mvtnorm)
+library(truncnorm)
+
+path = "C:/Users/Norm/Desktop/882/Project/"
+
+## Read in past election results ##
+#past = read.table(paste0(path, "ElectionResults.txt"), header = TRUE, sep = "\t")
+## Read in past median income ##
+#median = read.table(paste0(path, "Median.txt"), header = TRUE, sep = "\t")
+## Read in education ##
+#education = read.table(paste0(path, "Education.txt"), header = TRUE, sep = "\t")
+#education = education[-45,]	## remove United States
+## Read in race ##
+#race = read.table(paste0(path, "Race.txt"), header = TRUE, sep = "\t")
+#race = race[,-c(6,7,8)]
+## Read in unemployment ##
+#unemp = read.table(paste0(path, "Unemployment.txt"), header = TRUE, sep = "\t")
+
+## Response variable ##
+#Y = cbind(c(past[,"DemWin2012"],past[,"DemWin2008"],past[,"DemWin2004"],past[,"DemWin2000"],past[,"DemWin1996"]))
+
+## Build X matrix ##
+#X1 = cbind(education[,2],education[,3],education[,4],education[,5],race[,2],race[,3],race[,4],race[,5],median[,4],unemp[,3])
+#X2 = cbind(education[,2],education[,3],education[,4],education[,5],race[,2],race[,3],race[,4],race[,5],median[,5],unemp[,4])
+#X3 = cbind(education[,2],education[,3],education[,4],education[,5],race[,2],race[,3],race[,4],race[,5],median[,6],unemp[,5])
+#X4 = cbind(education[,2],education[,3],education[,4],education[,5],race[,2],race[,3],race[,4],race[,5],median[,7],unemp[,6])
+#X5 = cbind(education[,2],education[,3],education[,4],education[,5],race[,2],race[,3],race[,4],race[,5],median[,8],unemp[,7])
+#X = rbind(X1,X2,X3,X4,X5)
+#X = t( (t(X)-apply(X,2,mean)) / apply(X,2,sd) )	## To standardize X
+
+## Build G matrix ##
+#G = rbind(diag(51),diag(51),diag(51),diag(51),diag(51))
+
+## Create D and W matrices ##
+#library(maps)
+#library(maptools)
+#library(spdep)
+#usa.state = map(database="state", fill=TRUE, plot=FALSE)
+#state.ID <- sapply(strsplit(usa.state$names, ":"), function(x) x[1])
+#usa.poly = map2SpatialPolygons(usa.state, IDs=state.ID)
+#usa.nb = poly2nb(usa.poly)
+#W = nb2mat(usa.nb, style="B")
+#W = as.matrix(W)
+#D = diag(rowSums(W))
+#write.csv(W,"W.csv")
+#write.csv(D,"D.csv")
+#W = read.table(paste0(path, "W.txt"), sep = "\t", header = TRUE)
+#D = read.table(paste0(path, "D.txt"), sep = "\t", header = TRUE)
+#states = W[,1]
+#D = D[,-1]
+#W = W[,-1]
+#colnames(D) = rownames(D) = colnames(W) = rownames(W) = states
+#Y = as.vector(Y)
+#W = as.matrix(W)
+#G = as.matrix(G)
+#X = as.matrix(X)
+#D = as.matrix(D)
+#save(Y,X,G,D,W, file="Data.RData")
+
+
+
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+##### Gibbs sampler #####
+
+modelfit = function(Y, X, R = diag(100, dim(X)[2]), G, D, rho, W, a = rep(1, dim(X)[2]), at = 1, bt = 1, iter = 1e5, verbose = TRUE){
+
+	n = dim(X)[1]
+	p = dim(X)[2]
+
+	## Save records ##
+	Beta = matrix(-99, ncol = iter, nrow = p)
+	bb = matrix(-99, ncol = iter, nrow = 51)
+	Tausq = rep(-99, iter)
+
+	## Initial values ##
+	beta = rep(1, p)
+	b = rep(0, 51)
+	tausq = 1
+
+	## Create Z ##
+	Z = rep(-99, n)
+	for(i in 1:n){
+		if(Y[i] == 0){
+			Z[i] = 1
+		}
+		if(Y[i] == 1){
+			Z[i] = -1
+		}
+	}
+
+	## Compute only once ##
+	XTX = t(X) %*% X
+	IR = solve(R)
+        IRa = IR %*% a 
+	C = solve(XTX + IR)
+	GTG = t(G) %*% G
+	DrW = D - rho * W
+        Gb = G %*% b
+        lower = rep(-99,n)
+        upper = rep(-99,n)
+        lower[Y==1] = 0
+        upper[Y==1] = Inf
+        lower[Y==0] = -Inf
+        upper[Y==0] = 0
+
+	for(t in 1:iter){
+
+		## Update beta ##
+		mu = as.vector(C %*% (IRa + t(X)%*%(Z - Gb)))
+		beta = as.vector(rmvnorm(1, mu, C))
+		
+                Xb = as.vector(X %*% beta)
+
+		## Update b ##
+		#Cs = solve(tausq * GTG + DrW)
+		#mus = as.vector(Cs %*% (tausq * t(G) %*% (Z -  Xb)))
+		#b = as.vector(rmvnorm(1, mus, as.matrix(Cs)))
+		Prec = tausq * GTG + DrW
+		CH = chol(Prec)
+		R1 = solve(CH, rnorm(51, 0, 1), sparse = TRUE)
+		R2 = solve(t(CH), t(tausq * (Z - Xb) %*% G), sparse = TRUE)
+		R3 = solve(CH, R2, sparse = TRUE)
+		b = as.vector(R1 + R3)
+                Gb = G %*% b
+                
+		## Update tausq ##
+		ats = as.vector(51/2 + at)
+		bts = as.vector(1/2 * t(b) %*% DrW %*% b + bt)
+		tausq = 1 / rgamma(1, ats, bts)
+
+		## Update Z ##
+                mz = as.vector(Xb + Gb)
+                Z = rtruncnorm(n, lower, upper, mz, 1)
+
+		## Update records ##
+		Beta[,t] = beta
+		bb[,t] = b
+		Tausq[t] = tausq
+		if(verbose){
+			if(t %% 100 == 0){
+				print(t)
+				#par(mfrow = c(2,1))
+				#plot(Tausq[1:t])
+			}			
+		}
+		
+
+	}
+	return(list("Beta" = Beta, "bb" = bb, "Tausq" = Tausq))
+}
+
+
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+##### Simulation Study #####
+
+library(mvtnorm)
+library(truncnorm)
+library(Matrix)
+path = "C:/Users/Norm/Desktop/882/Project/"
+load(paste0(path, "Data.RData"))
+
+beta.true = c(1,0,0,0,0,0,0,0,2,3)
+tausq.true = 1
+rho = 0.9
+DrW = D - rho * W
+
+## Make D and W sparse ##
+xw = yw = xd = yd = vw = vd = c()
+for(i in 1:51){
+	for(j in 1:51){
+		if(W[i,j] != 0){
+			xw = append(xw, i)
+			yw = append(yw, j)
+			vw = append(vw, W[i,j])
+		}
+		if(D[i,j] != 0){
+			xd = append(xd, i)
+			yd = append(yd, j)
+			vd = append(vd, D[i,j])
+		}
+	}
+}
+W = sparseMatrix(xw,yw,x=vw)
+D = sparseMatrix(xd,yd,x=vd)
+
+## Make G sparse ##
+xg = yg = vg = c()
+for(i in 1:dim(G)[1]){
+	for(j in 1:dim(G)[2]){
+		if(G[i,j] != 0){
+			xg = append(xg, i)
+			yg = append(yg, j)
+			vg = append(vg, G[i,j])
+		}
+	}
+}
+G = sparseMatrix(xg,yg,x=vg)
+
+sims = 250
+beta.save = matrix(-99, ncol = sims, nrow = length(beta.true))
+tausq.save = rep(-99, sims)
+for(i in 1:sims){
+	b = as.vector(rmvnorm(1, rep(0,51), tausq.true * solve(DrW)))
+	probs = rep(-99, 255)
+	for(j in 1:255){
+		probs[j] = pnorm(X[j,]%*%beta.true + G[j,]%*%b)
+	}
+	Y = rbinom(255, 1, probs)
+	res = modelfit(Y, X, D = D, G = G, rho = rho, W = W, verbose = FALSE)
+	beta.save[,i] = apply(res$Beta[,5000:10000],1,mean)
+	tausq.save[i] = mean(res$Tausq[5000:10000])
+	print(i)
+}
+
+par(mfrow = c(2,2))
+plot(res$Beta[1,], ylab = "Beta1", main = "Significant")
+plot(res$Beta[9,], ylab = "Beta9", main = "Significant")
+plot(res$Beta[10,], ylab = "Beta10", main = "Significant")
+plot(res$Tausq, ylab = "tausq", main = "Tausq")
+
+par(mfrow = c(2,2))
+plot(res$Beta[2,], ylab = "Beta2", main = "Inignificant")
+plot(res$Beta[3,], ylab = "Beta3", main = "Inignificant")
+plot(res$Beta[4,], ylab = "Beta4", main = "Inignificant")
+plot(res$Beta[5,], ylab = "Beta5", main = "Inignificant")
+
+par(mfrow = c(1,2))
+plot(res$Beta[6,], ylab = "Beta6", main = "Inignificant")
+plot(res$Beta[7,], ylab = "Beta7", main = "Inignificant")
+
+plot(res$Beta[8,], ylab = "Beta8", main = "Inignificant")
+
+apply(beta.save,1,mean)
+mean(tausq.save)
+
+#save(beta.save, tausq.save, file = "simulation.RData")
+
+
+
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+############################################################################################################################################
+##### Data application #####
+
+library(mvtnorm)
+library(coda)
+library(truncnorm)
+library(Matrix)
+path = "C:/Users/Norm/Desktop/882/Project/"
+load(paste0(path, "Data.RData"))
+
+res = modelfit(Y = Y, X = X, D = D, G = G, rho = 0.9, W = W)
+
+## Estimates ##
+apply(res$Beta[,50000:10000], 1, mean)
+
+## Read in past median income ##
+median = read.table(paste0(path, "Median.txt"), header = TRUE, sep = "\t")
+## Read in education ##
+education = read.table(paste0(path, "Education.txt"), header = TRUE, sep = "\t")
+education = education[-45,]	## remove United States
+## Read in race ##
+race = read.table(paste0(path, "Race.txt"), header = TRUE, sep = "\t")
+race = race[,-c(6,7,8)]
+## Read in unemployment ##
+unemp = read.table(paste0(path, "Unemployment.txt"), header = TRUE, sep = "\t")
+
+## Create new design matrix ##
+Xnew = cbind(education[,2],education[,3],education[,4],education[,5],race[,2],race[,3],race[,4],race[,5],median[,2],unemp[,2])
+
+HPDinterval(as.mcmc(res$Beta[1,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[2,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[3,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[4,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[5,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[6,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[7,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[8,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[9,50000:100000]), prob = 0.95)
+HPDinterval(as.mcmc(res$Beta[10,50000:100000]), prob = 0.95)
+
+## Predictions ##
+Probs = matrix(-99, ncol = 50000, nrow = 51)
+for(i in 1:51){
+	Probs[i,] = pnorm(X[i,] %*% res$Beta[,50001:100000] + res$bb[i,50001:100000])
+}
+
+
+
+

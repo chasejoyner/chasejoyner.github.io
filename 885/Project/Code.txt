@@ -1,0 +1,204 @@
+##################################
+############# BIRWLS #############
+
+
+library(MASS);
+library(mvtnorm);
+library(coda);
+
+iters = 1e3;
+
+###### Create matrix of covariates ######
+###### Rows = individuals, Cols = covariates, every c rows is a group ######
+X = matrix(NA, nrow = 400, ncol = 3);
+X[,1] = 1;
+X[,2] = rnorm(400, 2, 1); ## could cause problems with Xbar
+X[,3] = rbinom(400, 1, 0.5);
+
+###### True values ######
+beta = c(-3, 2, 1.1);
+alpha = 5;
+
+###### Create vector of latent variables and data ######
+###### Zmat rows = group, cols = individuals in group ######
+mu_ij = exp(X %*% beta);
+
+###### Results ######
+ALPHA = rep(NA, iters);
+BETA = matrix(rep(NA, length(beta) * iters), ncol = length(beta));
+
+for(t in 1:iters){
+
+	Zvec = rgamma(400, alpha, scale = mu_ij / alpha);
+	data = 1:100;
+
+	results = gamma2func(data, Zvec, X, c = 4);
+
+	ALPHA[t] = mean(results$Alpha[200:length(results$Alpha)]);
+	BETA[t,] = apply(results$Beta, 2, mean);
+	
+	print(c(t));
+}
+
+
+
+mean(ALPHA);
+apply(BETA, 2, mean);
+
+
+###### Check results ######
+results$accept.rate.alpha;
+results$accept.rate.beta;
+plot(as.mcmc(results$Alpha), main = "Alpha");
+plot(as.mcmc(results$Beta[,1]), main = "Beta1");
+plot(as.mcmc(results$Beta[,2]), main = "Beta2");
+plot(as.mcmc(results$Beta[,3]), main = "Beta3");
+mean(results$Alpha[5000:10000]);
+apply(results$Beta, 2, mean);
+
+
+###### GLM and results #######
+sd(results$Beta[,1]);
+sd(results$Beta[,2]);
+sd(results$Beta[,3]);
+res = glm(Zvec ~ X[,2] + X[,3], family = Gamma(link = "log"));
+summary(res);
+
+
+
+
+
+
+#################################################
+############ Metropolis-Hastings ################
+
+library(coda);
+
+## True values ##
+mu.t = 2.3;
+sigmasq.t = 0.8;
+
+## Hyper-parameters ##
+mu0 = n0 = alpha = beta = 1;
+
+## Sample size, number of data sets per iteration, iterations ##
+n = 250;
+N = 1000;
+iter = 1e4;
+
+## Save records to average later ##
+Mu.tmp = Sigmasq.tmp = rep(NA, iter);
+Mu = Sigmasq = SdMu = SdSigmasq = rep(NA, N);
+
+## Tuning parameters ##
+sd.mu = 0.3;
+sd.lsigmasq = 0.5;
+
+for(i in 1:N){
+
+	y = rnorm(n, mu.t, sqrt(sigmasq.t));
+	
+	## Starting values ##
+	mu = mean(y);
+	sigmasq = sd(y);
+	accept.mu = accept.sigmasq = 0;
+
+	for(j in 1:iter){
+		
+		## Sample mu ##
+		mu2 = rnorm(1, mu, sd.mu);
+		llik = (sigmasq)^(-(n + 1) / 2) * exp(-(1 / (2*sigmasq)) * (sum((y - mu)^2) + n0 * (mu - mu0)^2));
+		llik2 = (sigmasq)^(-(n + 1) / 2) * exp(-(1 / (2*sigmasq)) * (sum((y - mu2)^2) + n0 * (mu2 - mu0)^2));
+		r = llik2 / llik;
+		u = runif(1);
+		if(r > u){
+			mu = mu2;
+			accept.mu = accept.mu + 1;
+		}
+
+		## Sample sigmasq ##
+		sigmasq2 = exp(rnorm(1, log(sigmasq), sd.lsigmasq));
+		llik = (sigmasq)^(-(n + alpha + 1) / 2) * exp(-(1 / (2*sigmasq)) * (sum((y - mu)^2) + n0 * (mu - mu0)^2 + beta));
+		llik2 = (sigmasq2)^(-(n + alpha + 1) / 2) * exp(-(1 / (2*sigmasq2)) * (sum((y - mu)^2) + n0 * (mu - mu0)^2 + beta));
+		r = (llik2 / llik) * (sigmasq2 / sigmasq);
+		u = runif(1);
+		if(r > u){
+			sigmasq = sigmasq2;
+			accept.sigmasq = accept.sigmasq + 1;
+		}
+		
+		Mu.tmp[j] = mu;
+		Sigmasq.tmp[j] = sigmasq;
+	}
+	
+	Mu[i] = mean(Mu.tmp);
+	Sigmasq[i] = mean(Sigmasq.tmp);
+	SdMu = sd(Mu.tmp);
+	SdSigmasq = sd(Sigmasq.tmp);
+
+	print(c(i));
+}
+
+plot(as.mcmc(Mu.tmp));
+plot(as.mcmc(Sigmasq.tmp));
+accept.mu / iter;
+accept.sigmasq / iter;
+
+mean(Mu);
+mean(SdMu);
+mean(Sigmasq);
+mean(SdSigmasq);
+
+
+
+
+
+##########################################
+############# Gibbs Sampling #############
+
+library(coda);
+
+## True values ##
+mu = 2.3;
+sigmasq = 0.8;
+
+## Hyper-parameters ##
+mu0 = n0 = alpha = beta = 1;
+
+## Sample size, number of data sets per iteration, iterations ##
+n = 250;
+N = 1000;
+iter = 1e4;
+
+## Save records to average later ##
+Mu = Sigmasq = SdMu = SdSigmasq = rep(NA, N);
+
+for(i in 1:N){
+	
+	y = rnorm(n, mu, sqrt(sigmasq));
+	sigmasq2 = 1 / rgamma(N, (n + alpha) / 2, (1 / 2) * (sum(y^2) + n0 * mu0 + beta - (n * mean(y) + n0 * mu0)^2 / (n + n0)));
+	mu2 = rnorm(N, (n * mean(y) + n0 * mu0) / (n + n0), sqrt(sigmasq2 / (n + n0)));
+
+	Mu[i] = mean(mu2);
+	SdMu[i] = sd(mu2);
+	Sigmasq[i] = mean(sigmasq2);
+	SdSigmasq[i] = sd(sigmasq2);
+	print(c(i));
+}
+
+## Check results ##
+mean(Mu);
+mean(SdMu);
+mean(Sigmasq);
+mean(SdSigmasq);
+
+## Seems good.  Check convergence of one data set ##
+plot(as.mcmc(mu2), main = "Mu");
+plot(as.mcmc(sigmasq2), main = "Sigmasq");
+
+
+
+
+
+
+
