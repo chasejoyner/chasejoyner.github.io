@@ -91,6 +91,14 @@ ul li:before {
     left: 50px;
     text-align: left;
 }
+.top-right-div p {
+    text-align: right;
+    float: right;
+    padding-right: 25px;
+    font-size: 30pt;
+    font-weight: bold;
+    font-family: monospace;
+}
 
 
 .div-separator {
