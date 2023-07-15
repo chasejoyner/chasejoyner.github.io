@@ -65,6 +65,7 @@ ul li:before {
 }
 #top-table td {
     padding: 0px;
+    border: 1px solid black;
 }
 #top-table #img {
     width: 300px;
@@ -95,6 +96,7 @@ ul li:before {
 }
 
 .outer-container {
+    padding: 25px;
     text-align: center;
 }
 
