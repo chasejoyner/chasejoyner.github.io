@@ -57,18 +57,13 @@ ul li:before {
 
 
 #top-table {
-    width: 1000px;
     height: 240px;
     border-collapse: collapse;
     margin: 0px;
     padding: 0px;
 }
 #top-table td {
-    padding: 0px;
     border: 1px solid black;
-}
-#top-table #img {
-    width: 300px;
 }
 #top-table #myname {
     text-align: right;
