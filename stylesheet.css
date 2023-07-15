@@ -116,6 +116,7 @@ ul li:before {
     text-align: left;
     height: 240px;
     margin: 0px;
+    background-color: green;
 }
 .top-div p {
     text-align: right;
