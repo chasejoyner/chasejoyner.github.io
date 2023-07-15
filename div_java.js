@@ -1,5 +1,5 @@
 // Get all links and div contents
-const links = document.querySelectorAll('.top-right-div a');
+const links = document.querySelectorAll('.top-div a');
 const contents = document.querySelectorAll('.content');
 
 // Loop through all contents until it matches clicked link
