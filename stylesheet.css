@@ -48,11 +48,10 @@ ul li {
 }
 ul li span {
     display: table-cell;
-    font-size: 10.5pt;
 }
 ul li:before {
     content: "\003E";
-    font-size: 20pt;
+    font-size: 12pt;
     margin-left: 25px;
     margin-right: 10px;
 }
