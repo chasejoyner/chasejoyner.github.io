@@ -45,7 +45,7 @@ ul li {
     display: table;
     table-layout: fixed;
 }
-ul li .myspan {
+ul li span {
     display: table-cell;
     font-size: 10.5pt;
 }
