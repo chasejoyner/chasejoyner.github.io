@@ -47,7 +47,7 @@ ul li {
 }
 ul li span {
     display: table-cell;
-    font-size: 40pt;
+    font-size: 20pt;
 }
 ul li:before {
     content: "\003E";
