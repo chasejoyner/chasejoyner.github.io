@@ -14,7 +14,6 @@ a {
     font-size: 20pt;
 }
 a:hover {
-    color: black;
     text-decoration: underline;
 }
 .papers {
@@ -26,9 +25,9 @@ a:hover {
 .dynamic-link {
     text-decoration: none;
 }
-#underline {
+#active-link {
     text-decoration: underline;
-    color: black;
+    color: #2E4053;
 }
 
 
